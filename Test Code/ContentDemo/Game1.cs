@@ -80,6 +80,8 @@ namespace ContentDemo
             // TODO: Add your drawing code here
             spriteBatch.Begin();
             spriteBatch.Draw(ship, new Vector2(20, 20), Color.White);
+            spriteBatch.Draw(ship, new Vector2(60, 60), Color.Red); 
+            // I added a line
             spriteBatch.End();
 
             base.Draw(gameTime);
