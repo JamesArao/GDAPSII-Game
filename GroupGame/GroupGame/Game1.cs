@@ -36,7 +36,7 @@ namespace GroupGame
 
             // Select a random round to use
             int num = rgen.Next(round+2);
-            BinaryReader reader = new BinaryReader(File.OpenRead("Round" + num + ".dat"));
+            BinaryReader reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round" + num + ".dat"));
 
             // Try block
             try
