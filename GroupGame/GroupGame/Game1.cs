@@ -26,6 +26,8 @@ namespace GroupGame
         List<Projectile> projectiles = new List<Projectile>();
         Random rgen = new Random();
         KeyboardState kbState;
+        MouseState mState;
+        float rotationAngle;
         int round;
 
         // Method for advancing the round of our Horde Mode
@@ -35,7 +37,7 @@ namespace GroupGame
             enemies.Clear();
 
             // Select a random round to use
-            int num = rgen.Next(round+2);
+            int num = rgen.Next(1,round+1);
             BinaryReader reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round" + num + ".dat"));
 
             // Try block
@@ -139,6 +141,7 @@ namespace GroupGame
             // TODO: Add your update logic here
 
             kbState = Keyboard.GetState(); // Get the keyboard state
+            mState = Mouse.GetState(); // Get the mouse state
 
             // Switch statement based on gState
             switch (gState)
@@ -149,6 +152,11 @@ namespace GroupGame
 
                 // Game is in Horde Mode
                 case GameState.HordeMode:
+
+                    // Find the angle between the player and the mouse, use this to rotate the player when drawing
+                    int rotX = mState.X - c.Position.X;
+                    int rotY = mState.Y - c.Position.Y;
+                    rotationAngle = (float)Math.Atan2(rotY, rotX);
 
                     // Move the character based on user input, might change this to a method elsewhere to make this cleaner looking
                     if (kbState.IsKeyDown(Keys.W))
@@ -229,7 +237,7 @@ namespace GroupGame
 
                 // Game is in Horde Mode
                 case GameState.HordeMode:
-                    c.Draw(spriteBatch); // Draw the character
+                    c.Draw(spriteBatch,rotationAngle); // Draw the character
 
                     // Draw all alive enemies
                     foreach(Enemy e in enemies)

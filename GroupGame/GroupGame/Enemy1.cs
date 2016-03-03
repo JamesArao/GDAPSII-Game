@@ -27,16 +27,16 @@ namespace GroupGame
                     int newY = Position.Y;
 
                     // Compare enemy position to player position, change values accordingly
-                    if (Position.X < c.Position.X) newX++;
-                    if (Position.X > c.Position.X) newX--;
-                    if (Position.Y < c.Position.Y) newY++;
-                    if (Position.Y > c.Position.Y) newY--;
+                    if (Position.X < c.Position.X + c.Position.Width/2) newX++;
+                    if (Position.X > c.Position.X + c.Position.Width/2) newX--;
+                    if (Position.Y < c.Position.Y + c.Position.Height/2) newY++;
+                    if (Position.Y > c.Position.Y + c.Position.Height/2) newY--;
                     Position = new Rectangle(newX, newY, Position.Width, Position.Height);
                     break;
             }
         }
 
-        // Constructor
+        // Constructors
         public Enemy1(int posX, int posY):base(posX, posY)
         {
             Position = new Rectangle(posX, posY, 50, 50);
