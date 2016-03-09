@@ -21,7 +21,7 @@ namespace GroupGame
         // Override Shoot method
         public override void Shoot()
         {
-            throw new NotImplementedException();
+
         }
     }
 }

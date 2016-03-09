@@ -12,12 +12,20 @@ namespace GroupGame
     {
 
         private int speed;
+        private int shotDelay;
 
         // Speed property
         public int Speed
         {
             get { return speed; }
             set { speed = value; }
+        }
+
+        // Speed property
+        public int ShotDelay
+        {
+            get { return shotDelay; }
+            set { shotDelay = value; }
         }
 
         // Draw method, with the player rotating based on where the mouse is

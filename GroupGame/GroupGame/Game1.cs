@@ -180,11 +180,18 @@ namespace GroupGame
                     }
 
                     // Shooting
-                    if(mState.LeftButton == ButtonState.Pressed)
+                    if(mState.LeftButton == ButtonState.Pressed && c.ShotDelay == 0)
                     {
                         Projectile p = new Projectile(5, mState.X, mState.Y, c, rotationAngle);
                         p.Image = bulletImage;
                         projectiles.Add(p);
+                        c.ShotDelay = 20; // We can change this value depending on ability, stronger attacks have longer delays
+                    }
+
+                    // Removing shot delay
+                    if(c.ShotDelay > 0)
+                    {
+                        c.ShotDelay--;
                     }
 
                     // Move projectiles
