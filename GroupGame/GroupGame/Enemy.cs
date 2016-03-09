@@ -38,7 +38,7 @@ namespace GroupGame
         }
 
         // Method to move the enemy
-        public abstract void Move(Character c);
+        public abstract void Move(Character c, List<Enemy> enemies);
 
         // Method to change enemy state
         //public abstract void ChangeState(EnemyState state);
