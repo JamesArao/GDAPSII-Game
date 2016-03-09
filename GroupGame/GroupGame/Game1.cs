@@ -21,6 +21,7 @@ namespace GroupGame
         GameState gState;
         Texture2D enemyImage;
         Texture2D playerImage;
+        Texture2D bulletImage;
         Character c;
         List<Enemy> enemies = new List<Enemy>();
         List<Projectile> projectiles = new List<Projectile>();
@@ -37,8 +38,9 @@ namespace GroupGame
             enemies.Clear();
 
             // Select a random round to use
-            int num = rgen.Next(1,round+1);
-            BinaryReader reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round" + num + ".dat"));
+            //int num = rgen.Next(1,round+1);
+            //BinaryReader reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round" + num + ".dat"));
+            BinaryReader reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round1.dat"));
 
             // Try block
             try
@@ -116,6 +118,7 @@ namespace GroupGame
             // Load images and set playerImage
             enemyImage = this.Content.Load<Texture2D>("EnemyThing");
             playerImage = this.Content.Load<Texture2D>("Hero");
+            bulletImage = this.Content.Load<Texture2D>("Bullet");
             c.Image = playerImage;
         }
 
@@ -176,6 +179,22 @@ namespace GroupGame
                         c.Position = new Rectangle(c.Position.X + c.Speed, c.Position.Y, c.Position.Width, c.Position.Height);
                     }
 
+                    // Shooting
+                    if(mState.LeftButton == ButtonState.Pressed)
+                    {
+                        Projectile p = new Projectile(5, mState.X, mState.Y, c, rotationAngle);
+                        p.Image = bulletImage;
+                        projectiles.Add(p);
+                    }
+
+                    // Move projectiles
+                    foreach(Projectile p in projectiles)
+                    {
+                        if (p.MovementCount < 150) p.Move();
+                        else projectiles.Remove(p);
+                    }
+
+
                     // Foreach loop that goes through all enemy objects in the enemies list
                     bool enemyAlive = false;
 
@@ -195,6 +214,7 @@ namespace GroupGame
                             if (p.CheckCollision(e) == true && e.Alive == true)
                             {
                                 e.Health -= p.Damage;
+                                //projectiles.Remove(p);
                             }
                         }
 
@@ -243,6 +263,11 @@ namespace GroupGame
                     foreach(Enemy e in enemies)
                     {
                         if(e.Alive == true) e.Draw(spriteBatch);
+                    }
+
+                    foreach(Projectile p in projectiles)
+                    {
+                        p.Draw(spriteBatch);
                     }
 
                     break;
