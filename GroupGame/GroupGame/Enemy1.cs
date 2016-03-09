@@ -12,7 +12,7 @@ namespace GroupGame
     {
 
         // Override the Move method
-        public override void Move(Character c)
+        public override void Move(Character c, List<Enemy> enemies)
         {
             // Switch statement based on EState
             switch (EState)
@@ -27,10 +27,70 @@ namespace GroupGame
                     int newY = Position.Y;
 
                     // Compare enemy position to player position, change values accordingly
-                    if (Position.X < c.Position.X) newX++;
-                    if (Position.X > c.Position.X) newX--;
-                    if (Position.Y < c.Position.Y) newY++;
-                    if (Position.Y > c.Position.Y) newY--;
+                    if (Position.X < c.Position.X)
+                    {
+                        bool collides = false;
+                        foreach (Enemy others in enemies)
+                        {
+                            if (new Rectangle(newX + 1, newY, 50, 50).Intersects(others.Position) == true && others.Position != this.Position)
+                            {
+                                collides = true;
+                            }
+
+                        }
+                        if (collides != true)
+                        {
+                            newX++; ;
+                        }
+                    }
+                    if (Position.X > c.Position.X) 
+                    {
+                        bool collides = false;
+                        foreach (Enemy others in enemies)
+                        {
+                            if(new Rectangle(newX - 1, newY, 50, 50).Intersects(others.Position) == true && others.Position != this.Position)
+                            {
+                                collides = true;
+                            }
+                            
+                        }
+                        if(collides != true)
+                        {
+                            newX--;
+                        }
+                    }
+                    if (Position.Y < c.Position.Y) 
+                    {
+                        bool collides = false;
+                        foreach (Enemy others in enemies)
+                        {
+                            if (new Rectangle(newX, newY + 1, 50, 50).Intersects(others.Position) == true && others.Position != this.Position)
+                            {
+                                collides = true;
+                            }
+
+                        }
+                        if (collides != true)
+                        {
+                            newY++;
+                        }
+                    }
+                    if (Position.Y > c.Position.Y) 
+                    {
+                        bool collides = false;
+                        foreach (Enemy others in enemies)
+                        {
+                            if (new Rectangle(newX, newY - 1, 50, 50).Intersects(others.Position) == true && others.Position != this.Position)
+                            {
+                                collides = true;
+                            }
+
+                        }
+                        if (collides != true)
+                        {
+                            newY--;
+                        }
+                    }
                     Position = new Rectangle(newX, newY, Position.Width, Position.Height);
                     break;
             }

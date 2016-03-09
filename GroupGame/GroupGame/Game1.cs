@@ -203,7 +203,7 @@ namespace GroupGame
                         // If the enemy is alive, it moves, and the enemyAlive boolean is set to true
                         if (e.Alive == true)
                         {
-                            e.Move(c);
+                            e.Move(c, enemies);
                             enemyAlive = true;
                         }
 
@@ -243,7 +243,7 @@ namespace GroupGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Cyan);
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
