@@ -19,9 +19,13 @@ namespace GroupGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         GameState gState;
+        // images
         Texture2D enemyImage;
         Texture2D playerImage;
         Texture2D bulletImage;
+        Texture2D startButton;
+        Rectangle rSButton;
+        Rectangle mRectangle;
         Character c;
         List<Enemy> enemies = new List<Enemy>();
         List<Projectile> projectiles = new List<Projectile>();
@@ -79,8 +83,8 @@ namespace GroupGame
             IsMouseVisible = true;
 
             // Change the GameState to HordeMode for testing
-            gState = GameState.HordeMode;
-            
+            //gState = GameState.HordeMode;
+
             // Adjust window size
             /*graphics.PreferredBackBufferWidth = 900;
             graphics.PreferredBackBufferHeight = 30;
@@ -100,6 +104,7 @@ namespace GroupGame
             // Create a character1 in the center of the screen
             c = new Character1(GraphicsDevice.Viewport.Width/2, GraphicsDevice.Viewport.Height/2);
 
+            gState = GameState.Menu;
             base.Initialize();
         }
 
@@ -114,6 +119,9 @@ namespace GroupGame
 
 
             // TODO: use this.Content to load your game content here
+
+            // Load images for start screen
+            startButton = this.Content.Load<Texture2D>("Start");
 
             // Load images and set playerImage
             enemyImage = this.Content.Load<Texture2D>("EnemyThing");
@@ -151,6 +159,14 @@ namespace GroupGame
             {
                 // Game is in Menu
                 case GameState.Menu:
+
+                    // Checks to see if the start button has been pressed
+                    rSButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rSButton.Width/2), (GraphicsDevice.Viewport.Height / 2) - (rSButton.Height/2), startButton.Width/4, startButton.Height/4);
+                    Rectangle mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+                    if (mState.LeftButton == ButtonState.Pressed && mRectangle.Intersects(rSButton))
+                    {
+                        gState = GameState.HordeMode;
+                    }
                     break;
 
                 // Game is in Horde Mode
@@ -275,6 +291,15 @@ namespace GroupGame
             {
                 // Game is in Menu
                 case GameState.Menu:
+                    Rectangle mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+                    if (rSButton.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(startButton , rSButton, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(startButton, rSButton, Color.White);
+                    }
                     break;
 
                 // Game is in Horde Mode
