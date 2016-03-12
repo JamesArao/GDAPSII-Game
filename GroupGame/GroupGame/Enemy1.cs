@@ -32,7 +32,7 @@ namespace GroupGame
                         bool collides = false;
                         foreach (Enemy others in enemies)
                         {
-                            if (new Rectangle(newX + 1, newY, 50, 50).Intersects(others.Position) == true && others.Position != this.Position)
+                            if (new Rectangle(newX + 1, newY, 50, 50).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
                             {
                                 collides = true;
                             }
@@ -48,7 +48,7 @@ namespace GroupGame
                         bool collides = false;
                         foreach (Enemy others in enemies)
                         {
-                            if(new Rectangle(newX - 1, newY, 50, 50).Intersects(others.Position) == true && others.Position != this.Position)
+                            if(new Rectangle(newX - 1, newY, 50, 50).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
                             {
                                 collides = true;
                             }
@@ -64,7 +64,7 @@ namespace GroupGame
                         bool collides = false;
                         foreach (Enemy others in enemies)
                         {
-                            if (new Rectangle(newX, newY + 1, 50, 50).Intersects(others.Position) == true && others.Position != this.Position)
+                            if (new Rectangle(newX, newY + 1, 50, 50).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
                             {
                                 collides = true;
                             }
@@ -80,7 +80,7 @@ namespace GroupGame
                         bool collides = false;
                         foreach (Enemy others in enemies)
                         {
-                            if (new Rectangle(newX, newY - 1, 50, 50).Intersects(others.Position) == true && others.Position != this.Position)
+                            if (new Rectangle(newX, newY - 1, 50, 50).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
                             {
                                 collides = true;
                             }

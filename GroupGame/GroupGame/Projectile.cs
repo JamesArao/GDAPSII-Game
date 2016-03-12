@@ -12,9 +12,12 @@ namespace GroupGame
     {
         private int damage;
         private int movementCount;
+        private float fPosX;
+        private float fPosY;
         private float moveX;
         private float moveY;
         private float angle;
+        private bool pierce;
 
         // Damage Property
         public int Damage
@@ -30,6 +33,13 @@ namespace GroupGame
             set { movementCount = value; }
         }
 
+        // Pierce Property
+        public bool Pierce
+        {
+            get { return pierce; }
+            set { pierce = value; }
+        }
+
         // CheckCollision method
         public bool CheckCollision(GameObject obj)
         {
@@ -39,8 +49,10 @@ namespace GroupGame
 
         // Move method
         public void Move()
-        { 
-            Position = new Rectangle(Position.X + (int)moveX, Position.Y + (int)moveY, Position.Width, Position.Height);
+        {
+            fPosX += moveX;
+            fPosY += moveY;
+            Position = new Rectangle((int)fPosX, (int)fPosY, Position.Width, Position.Height);
         }
 
         // Override draw method
@@ -54,15 +66,16 @@ namespace GroupGame
         }
 
         // Constructor
-        public Projectile(int dmg, int x, int y, Character c, float ang)
+        public Projectile(int dmg, int x, int y, Character c, float ang, bool p)
         {
             damage = dmg;
-            //moveX = x - c.Position.X;
-            //moveY = y - c.Position.Y;
             angle = ang;
             moveX = -(float)Math.Sin(ang - Math.PI / 2) * 4;
             moveY = (float)Math.Cos(ang - Math.PI / 2) * 4;
             Position = new Rectangle(c.Position.X, c.Position.Y, 40, 40);
+            fPosX = c.Position.X;
+            fPosY = c.Position.Y;
+            pierce = p;
         }
     }
 }

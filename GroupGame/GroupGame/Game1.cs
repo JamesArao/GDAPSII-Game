@@ -57,7 +57,7 @@ namespace GroupGame
                     switch(type)
                     {
                         case "1":
-                            Enemy e = new Enemy1(x, y);
+                            Enemy e = new Enemy1(c.Position.X-500+x, c.Position.Y-300+y);
                             e.Image = enemyImage;
                             enemies.Add(e);
                             break;
@@ -182,7 +182,7 @@ namespace GroupGame
                     // Shooting
                     if(mState.LeftButton == ButtonState.Pressed && c.ShotDelay == 0)
                     {
-                        Projectile p = new Projectile(5, mState.X, mState.Y, c, rotationAngle);
+                        Projectile p = new Projectile(25, mState.X, mState.Y, c, rotationAngle, false);
                         p.Image = bulletImage;
                         projectiles.Add(p);
                         c.ShotDelay = 20; // We can change this value depending on ability, stronger attacks have longer delays
@@ -215,13 +215,28 @@ namespace GroupGame
                         }
 
                         // Foreach loop that goes through all projectile objects in the projectiles list
+                        for(int i = projectiles.Count; i > 0; i--)
+                        {
+                            if (projectiles[i-1].CheckCollision(e) == true && e.Alive == true)
+                            {
+                                e.Health -= projectiles[i-1].Damage;
+                                if (projectiles[i-1].Pierce == false)
+                                {
+                                    projectiles.RemoveAt(i-1);
+                                }
+                            }
+                        }
+
                         foreach (Projectile p in projectiles)
                         {
                             // If the projectile is colliding with the enemy, and the enemy is alive, the enemy is damaged
                             if (p.CheckCollision(e) == true && e.Alive == true)
                             {
                                 e.Health -= p.Damage;
-                                //projectiles.Remove(p);
+                                if (p.Pierce == false)
+                                {
+                                    //projectiles.Remove(p);
+                                }
                             }
                         }
 
