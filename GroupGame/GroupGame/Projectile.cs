@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GroupGame
 {
-    class Projectile:GameObject
+    class Projectile : GameObject
     {
         private int damage;
         private int movementCount;
@@ -18,6 +18,11 @@ namespace GroupGame
         private float moveY;
         private float angle;
         private bool pierce;
+
+        const int projY = 0;
+        const int projHeight = 32;
+        const int projWidth = 32;
+        const int projX = 0;
 
         // Damage Property
         public int Damage
@@ -56,13 +61,13 @@ namespace GroupGame
         }
 
         // Override draw method
-        public void Draw(SpriteBatch sprite)
+        public void Draw(SpriteBatch sprite, int f)
         {
             // Create a Vector2 origin which equals the center of the player
-            Vector2 origin = new Vector2(Image.Width / 2, Image.Height / 2);
+            Vector2 origin = new Vector2(16, 16);
 
             // Draw the player at it's position plus the origin, and rotate it based on the rAngle passed in
-            sprite.Draw(Image, new Rectangle(Position.X + (int)origin.X / 4, Position.Y + (int)origin.Y / 4, Position.Width, Position.Height), null, Color.White, angle, origin, SpriteEffects.None, 0);
+            sprite.Draw(Image, new Rectangle(Position.X + (int)origin.X / 4, Position.Y + (int)origin.Y / 4, Position.Width, Position.Height), new Rectangle(projX + f * projWidth, projY, projWidth, projHeight), Color.White, angle - (float)Math.PI / 2, origin, SpriteEffects.None, 0);
         }
 
         // Constructor

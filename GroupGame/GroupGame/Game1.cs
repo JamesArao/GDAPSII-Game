@@ -22,6 +22,7 @@ namespace GroupGame
         // images
         Texture2D enemyImage;
         Texture2D playerImage;
+        Texture2D playerWalking;
         Texture2D bulletImage;
         Texture2D startButton;
         Rectangle rSButton;
@@ -34,6 +35,16 @@ namespace GroupGame
         MouseState mState;
         float rotationAngle;
         int round;
+
+        enum HeroState { Still, Walking };
+        HeroState heroState = HeroState.Still;
+        int framePlayer;
+        int frameProjectile;
+        double timePerFrame = 100;
+        int numFramesPlayer;
+        int numFramesProjectile = 4;
+        int framesElapsedPlayer;
+        int framesElapsedProjectile;
 
         // Method for advancing the round of our Horde Mode
         public void AdvanceRound()
@@ -125,9 +136,9 @@ namespace GroupGame
 
             // Load images and set playerImage
             enemyImage = this.Content.Load<Texture2D>("EnemyThing");
-            playerImage = this.Content.Load<Texture2D>("Hero");
-            bulletImage = this.Content.Load<Texture2D>("Bullet");
-            c.Image = playerImage;
+            playerImage = this.Content.Load<Texture2D>("Fire Still");
+            playerWalking = this.Content.Load<Texture2D>("Fire Move");
+            bulletImage = this.Content.Load<Texture2D>("Fire Bullet");
         }
 
         /// <summary>
@@ -153,6 +164,41 @@ namespace GroupGame
 
             kbState = Keyboard.GetState(); // Get the keyboard state
             mState = Mouse.GetState(); // Get the mouse state
+
+            // switch for states
+            switch (heroState)
+            {
+                case HeroState.Still:
+                    if (kbState.IsKeyDown(Keys.W) || kbState.IsKeyDown(Keys.A) || kbState.IsKeyDown(Keys.S) || kbState.IsKeyDown(Keys.D))
+                        heroState = HeroState.Walking;
+                    break;
+
+                case HeroState.Walking:
+                    if (kbState.IsKeyUp(Keys.W) && kbState.IsKeyUp(Keys.A) && kbState.IsKeyUp(Keys.S) && kbState.IsKeyUp(Keys.D))
+                        heroState = HeroState.Still;
+                    break;
+            }
+
+            // sets number of frames and what sprite is being used
+            if (heroState == HeroState.Walking)
+            {
+                c.Image = playerWalking;
+                numFramesPlayer = 8;
+            }
+            else if (heroState == HeroState.Still)
+            {
+                c.Image = playerImage;
+                numFramesPlayer = 3;
+            }
+
+
+
+            // which frame to draw
+            framesElapsedPlayer = (int)(gameTime.TotalGameTime.TotalMilliseconds / timePerFrame);
+            framePlayer = framesElapsedPlayer % numFramesPlayer;
+
+            framesElapsedProjectile = (int)(gameTime.TotalGameTime.TotalMilliseconds / timePerFrame);
+            frameProjectile = framesElapsedProjectile % numFramesProjectile;
 
             // Switch statement based on gState
             switch (gState)
@@ -304,17 +350,17 @@ namespace GroupGame
 
                 // Game is in Horde Mode
                 case GameState.HordeMode:
-                    c.Draw(spriteBatch,rotationAngle); // Draw the character
+                    c.Draw(spriteBatch,rotationAngle, framePlayer); // Draw the character
 
                     // Draw all alive enemies
-                    foreach(Enemy e in enemies)
+                    foreach (Enemy e in enemies)
                     {
-                        if(e.Alive == true) e.Draw(spriteBatch);
+                        if (e.Alive == true) e.Draw(spriteBatch);
                     }
 
-                    foreach(Projectile p in projectiles)
+                    foreach (Projectile p in projectiles)
                     {
-                        p.Draw(spriteBatch);
+                        p.Draw(spriteBatch, frameProjectile);
                     }
 
                     break;
