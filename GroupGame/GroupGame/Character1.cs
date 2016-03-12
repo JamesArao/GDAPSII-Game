@@ -17,11 +17,5 @@ namespace GroupGame
             Position = new Rectangle(x, y, 50, 50);
             Speed = 2;
         }
-
-        // Override Shoot method
-        public override void Shoot()
-        {
-
-        }
     }
 }

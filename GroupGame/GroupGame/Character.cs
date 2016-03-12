@@ -42,9 +42,6 @@ namespace GroupGame
             sprite.Draw(Image, new Rectangle(Position.X + (int)origin.X / 4, Position.Y + (int)origin.Y / 4, Position.Width, Position.Height), new Rectangle(heroX + f * heroWidth, heroY, heroWidth, heroHeight), Color.White, rAngle - (float)Math.PI / 2, origin, SpriteEffects.None, 0);
         }
 
-        // Abstract Shoot method
-        abstract public void Shoot();
-
         // Constructor
         public Character(int x, int y)
         {

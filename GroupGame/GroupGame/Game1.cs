@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 enum GameState { Menu, HordeMode }; // GameState enum for keeping track of what state our game is in
+enum AbilityState { a1, a2, a3, a4 }; // Ability enum for keeping track of the ability the player is using
 
 namespace GroupGame
 {
@@ -18,12 +19,15 @@ namespace GroupGame
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        SpriteFont sFont;
         GameState gState;
+        AbilityState aState;
         // images
         Texture2D enemyImage;
         Texture2D playerImage;
         Texture2D playerWalking;
         Texture2D bulletImage;
+        Texture2D meleeImage;
         Texture2D startButton;
         Rectangle rSButton;
         Rectangle mRectangle;
@@ -32,6 +36,7 @@ namespace GroupGame
         List<Projectile> projectiles = new List<Projectile>();
         Random rgen = new Random();
         KeyboardState kbState;
+        KeyboardState previousKbState;
         MouseState mState;
         float rotationAngle;
         int round;
@@ -87,6 +92,100 @@ namespace GroupGame
             round++; // Increase the round number
         }
 
+        // Method for the player moving
+        public void PlayerMove()
+        {
+            // Move the character based on user input
+            if (kbState.IsKeyDown(Keys.W))
+            {
+                c.Position = new Rectangle(c.Position.X, c.Position.Y - c.Speed, c.Position.Width, c.Position.Height);
+            }
+            if (kbState.IsKeyDown(Keys.A))
+            {
+                c.Position = new Rectangle(c.Position.X - c.Speed, c.Position.Y, c.Position.Width, c.Position.Height);
+            }
+            if (kbState.IsKeyDown(Keys.S))
+            {
+                c.Position = new Rectangle(c.Position.X, c.Position.Y + c.Speed, c.Position.Width, c.Position.Height);
+            }
+            if (kbState.IsKeyDown(Keys.D))
+            {
+                c.Position = new Rectangle(c.Position.X + c.Speed, c.Position.Y, c.Position.Width, c.Position.Height);
+            }
+        }
+
+        // Method for changing the ability the player is using
+        public void PlayerChangeAbility()
+        {
+            // Switch based on aState
+            switch (aState)
+            {
+                // If E is pressed, increase the ability by one. If Q is pressed, decrease the ability by one
+                case AbilityState.a1:
+                    if (kbState.IsKeyDown(Keys.E) && previousKbState.IsKeyUp(Keys.E)) aState = AbilityState.a2;
+                    if (kbState.IsKeyDown(Keys.Q) && previousKbState.IsKeyUp(Keys.Q)) aState = AbilityState.a4;
+                    break;
+
+                case AbilityState.a2:
+                    if (kbState.IsKeyDown(Keys.E) && previousKbState.IsKeyUp(Keys.E)) aState = AbilityState.a3;
+                    if (kbState.IsKeyDown(Keys.Q) && previousKbState.IsKeyUp(Keys.Q)) aState = AbilityState.a1;
+                    break;
+
+                case AbilityState.a3:
+                    if (kbState.IsKeyDown(Keys.E) && previousKbState.IsKeyUp(Keys.E)) aState = AbilityState.a4;
+                    if (kbState.IsKeyDown(Keys.Q) && previousKbState.IsKeyUp(Keys.Q)) aState = AbilityState.a2;
+                    break;
+
+                case AbilityState.a4:
+                    if (kbState.IsKeyDown(Keys.E) && previousKbState.IsKeyUp(Keys.E)) aState = AbilityState.a1;
+                    if (kbState.IsKeyDown(Keys.Q) && previousKbState.IsKeyUp(Keys.Q)) aState = AbilityState.a3;
+                    break;
+            }
+        }
+
+        // Method for the player shooting
+        public void PlayerShoot()
+        {
+            // If player is clicking and they have no ShotDelay they will fire a projectile
+            if (mState.LeftButton == ButtonState.Pressed && c.ShotDelay == 0)
+            {
+                switch (aState)
+                {
+                    // Test of a melee attack
+                    case AbilityState.a1:
+                        Projectile p1 = new Projectile(5, c, rotationAngle, 15, true); // Create a new projectile that will travel in the direction of the mouse
+                        p1.Image = meleeImage; // Set the image of the projectile
+                        projectiles.Add(p1); // Add the projectile to the list
+                        c.ShotDelay = 40; // Set the ShotDelay of the player. We can change this value depending on ability, stronger attacks have longer delays
+                        break;
+
+                    // The original shooting attack
+                    case AbilityState.a2:
+                        Projectile p2 = new Projectile(25, mState.X, mState.Y, c, rotationAngle, 100, false);
+                        p2.Image = bulletImage;
+                        projectiles.Add(p2);
+                        c.ShotDelay = 20; 
+                        break;
+
+                    // Test of a piercing attack with a different size
+                    case AbilityState.a3:
+                        Projectile p3 = new Projectile(10, mState.X, mState.Y, 100, 100, c, rotationAngle, 120, true);
+                        p3.Image = bulletImage;
+                        projectiles.Add(p3);
+                        c.ShotDelay = 80;
+                        break;
+
+                    // Test of a rapid fire attack
+                    case AbilityState.a4:
+                        Projectile p4 = new Projectile(2, mState.X, mState.Y, c, rotationAngle, 90, false);
+                        p4.Image = bulletImage;
+                        projectiles.Add(p4);
+                        c.ShotDelay = 2;
+                        break;
+                }
+            }
+        }
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -134,11 +233,15 @@ namespace GroupGame
             // Load images for start screen
             startButton = this.Content.Load<Texture2D>("Start");
 
-            // Load images and set playerImage
+            // Load images
             enemyImage = this.Content.Load<Texture2D>("EnemyThing");
             playerImage = this.Content.Load<Texture2D>("Fire Still");
             playerWalking = this.Content.Load<Texture2D>("Fire Move");
             bulletImage = this.Content.Load<Texture2D>("Fire Bullet");
+            meleeImage = this.Content.Load<Texture2D>("Melee");
+
+            // Load fonts
+            sFont = this.Content.Load<SpriteFont>("SpriteFont1");
         }
 
         /// <summary>
@@ -162,6 +265,7 @@ namespace GroupGame
 
             // TODO: Add your update logic here
 
+            previousKbState = kbState; // Set previous keyboard state
             kbState = Keyboard.GetState(); // Get the keyboard state
             mState = Mouse.GetState(); // Get the mouse state
 
@@ -223,32 +327,9 @@ namespace GroupGame
                     int rotY = mState.Y - c.Position.Y;
                     rotationAngle = (float)Math.Atan2(rotY, rotX);
 
-                    // Move the character based on user input, might change this to a method elsewhere to make this cleaner looking
-                    if (kbState.IsKeyDown(Keys.W))
-                    {
-                        c.Position = new Rectangle(c.Position.X, c.Position.Y - c.Speed, c.Position.Width, c.Position.Height);
-                    }
-                    if (kbState.IsKeyDown(Keys.A))
-                    {
-                        c.Position = new Rectangle(c.Position.X - c.Speed, c.Position.Y, c.Position.Width, c.Position.Height);
-                    }
-                    if (kbState.IsKeyDown(Keys.S))
-                    {
-                        c.Position = new Rectangle(c.Position.X, c.Position.Y + c.Speed, c.Position.Width, c.Position.Height);
-                    }
-                    if (kbState.IsKeyDown(Keys.D))
-                    {
-                        c.Position = new Rectangle(c.Position.X + c.Speed, c.Position.Y, c.Position.Width, c.Position.Height);
-                    }
-
-                    // Shooting
-                    if(mState.LeftButton == ButtonState.Pressed && c.ShotDelay == 0)
-                    {
-                        Projectile p = new Projectile(25, mState.X, mState.Y, c, rotationAngle, false);
-                        p.Image = bulletImage;
-                        projectiles.Add(p);
-                        c.ShotDelay = 20; // We can change this value depending on ability, stronger attacks have longer delays
-                    }
+                    PlayerMove();
+                    PlayerChangeAbility();
+                    PlayerShoot();
 
                     // Removing shot delay
                     if(c.ShotDelay > 0)
@@ -257,10 +338,15 @@ namespace GroupGame
                     }
 
                     // Move projectiles
-                    foreach(Projectile p in projectiles)
+                    for (int i = projectiles.Count; i > 0; i--)
                     {
-                        if (p.MovementCount < 150) p.Move();
-                        else projectiles.Remove(p);
+                        if (projectiles[i - 1].Moving == true) projectiles[i - 1].Move();
+                        else projectiles[i - 1].MoveStationary(c,rotationAngle);
+                        projectiles[i - 1].Count++;
+                        if (projectiles[i - 1].Count == projectiles[i - 1].CountMax)
+                        {
+                            projectiles.RemoveAt(i - 1);
+                        }
                     }
 
 
@@ -276,7 +362,7 @@ namespace GroupGame
                             enemyAlive = true;
                         }
 
-                        // Foreach loop that goes through all projectile objects in the projectiles list
+                        // For loop that goes through all projectile objects in the projectiles list
                         for(int i = projectiles.Count; i > 0; i--)
                         {
                             if (projectiles[i-1].CheckCollision(e) == true && e.Alive == true)
@@ -351,7 +437,7 @@ namespace GroupGame
                 // Game is in Horde Mode
                 case GameState.HordeMode:
                     c.Draw(spriteBatch,rotationAngle, framePlayer); // Draw the character
-
+                    spriteBatch.DrawString(sFont, aState.ToString(), new Vector2(30, 30), Color.Black);
                     // Draw all alive enemies
                     foreach (Enemy e in enemies)
                     {
@@ -360,7 +446,8 @@ namespace GroupGame
 
                     foreach (Projectile p in projectiles)
                     {
-                        p.Draw(spriteBatch, frameProjectile);
+                        if (p.Moving == true) p.Draw(spriteBatch, frameProjectile);
+                        else p.DrawStationary(spriteBatch, frameProjectile, rotationAngle);
                     }
 
                     break;
