@@ -1,4 +1,8 @@
-﻿using System;
+﻿// GameObject
+// Class for objects in our game
+// Coders: Kiernan Brown
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

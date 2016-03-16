@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Projectile
+// Class for projectiles the player shoots
+// Coders: Kiernan Brown, Nick Federico, Austin Richardson
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -62,9 +66,9 @@ namespace GroupGame
         }
 
         // CheckCollision method
-        public bool CheckCollision(GameObject obj)
+        public bool CheckCollision(Enemy e)
         {
-            if (Position.Intersects(obj.Position)) return true;
+            if (Position.Intersects(e.CRect)) return true;
             else return false;
         }
 
@@ -90,8 +94,8 @@ namespace GroupGame
             // Create a Vector2 origin which equals the center of the player
             Vector2 origin = new Vector2(16, 16);
 
-            // Draw the player at it's position plus the origin, and rotate it based on the rAngle passed in
-            sprite.Draw(Image, new Rectangle(Position.X + (int)origin.X / 4, Position.Y + (int)origin.Y / 4, Position.Width, Position.Height), new Rectangle(projX + f * projWidth, projY, projWidth, projHeight), Color.White, angle - (float)Math.PI / 2, origin, SpriteEffects.None, 0);
+            // Draw the projectile at it's position plus half its size, and rotate it based on the rAngle passed in
+            sprite.Draw(Image, new Rectangle(Position.X + Position.Width/2, Position.Y + Position.Height/2, Position.Width, Position.Height), new Rectangle(projX + f * projWidth, projY, projWidth, projHeight), Color.White, angle - (float)Math.PI / 2, origin, SpriteEffects.None, 0);
         }
 
         // Draw method for stationary projectile

@@ -1,4 +1,9 @@
-﻿using System;
+﻿
+// Character
+// Abstract class for characters
+// Coders: Kiernan Brown, Nick Federico
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +17,7 @@ namespace GroupGame
     {
         private int speed;
         private int shotDelay;
+        private int health;
 
         const int heroY = 0;
         const int heroHeight = 32;
@@ -32,6 +38,13 @@ namespace GroupGame
             set { shotDelay = value; }
         }
 
+        // Health property
+        public int Health
+        {
+            get { return health; }
+            set { health = value; }
+        }
+
         // Draw method, with the player rotating based on where the mouse is
         public void Draw(SpriteBatch sprite, float rAngle, int f)
         {
@@ -46,6 +59,7 @@ namespace GroupGame
         public Character(int x, int y)
         {
             Position = new Rectangle(x, y, Position.Width, Position.Height);
+            Health = 100;
         }
     }
 }
