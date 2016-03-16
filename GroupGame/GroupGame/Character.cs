@@ -1,5 +1,4 @@
-﻿
-// Character
+﻿// Character
 // Abstract class for characters
 // Coders: Kiernan Brown, Nick Federico
 
@@ -48,11 +47,11 @@ namespace GroupGame
         // Draw method, with the player rotating based on where the mouse is
         public void Draw(SpriteBatch sprite, float rAngle, int f)
         {
-            // Create a Vector2 origin which equals the center of the player
+            // Create a Vector2 origin which equals the center of one frame of the player image
             Vector2 origin = new Vector2(16, 16);
 
-            // Draw the player at it's position plus the origin, and rotate it based on the rAngle passed in
-            sprite.Draw(Image, new Rectangle(Position.X + (int)origin.X / 4, Position.Y + (int)origin.Y / 4, Position.Width, Position.Height), new Rectangle(heroX + f * heroWidth, heroY, heroWidth, heroHeight), Color.White, rAngle - (float)Math.PI / 2, origin, SpriteEffects.None, 0);
+            // Draw the player at it's position plus half its size, and rotate it based on the rAngle passed in
+            sprite.Draw(Image, new Rectangle(Position.X + Position.Width/2, Position.Y + Position.Height/2, Position.Width, Position.Height), new Rectangle(heroX + f * heroWidth, heroY, heroWidth, heroHeight), Color.White, rAngle - (float)Math.PI / 2, origin, SpriteEffects.None, 0);
         }
 
         // Constructor

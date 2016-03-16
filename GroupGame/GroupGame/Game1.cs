@@ -193,7 +193,7 @@ namespace GroupGame
 
                     // Test of a rapid fire attack
                     case AbilityState.a4:
-                        Projectile p4 = new Projectile(2, mState.X, mState.Y, c, rotationAngle, 90, false);
+                        Projectile p4 = new Projectile(3, mState.X, mState.Y, c, rotationAngle, 90, false);
                         p4.Image = bulletImage;
                         projectiles.Add(p4);
                         c.ShotDelay = 2;
@@ -246,7 +246,7 @@ namespace GroupGame
             // Load images for start screen
             startButton = this.Content.Load<Texture2D>("Start");
 
-            // Load images
+            // Load images for the game
             enemyImage = this.Content.Load<Texture2D>("EnemyThing");
             playerImage = this.Content.Load<Texture2D>("Fire Still");
             playerWalking = this.Content.Load<Texture2D>("Fire Move");
@@ -338,8 +338,8 @@ namespace GroupGame
                 case GameState.HordeMode:
 
                     // Find the angle between the player and the mouse, use this to rotate the player when drawing
-                    int rotX = mState.X - c.Position.X;
-                    int rotY = mState.Y - c.Position.Y;
+                    int rotX = mState.X - (c.Position.X + c.Position.Width/2);
+                    int rotY = mState.Y - (c.Position.Y + c.Position.Height/2);
                     rotationAngle = (float)Math.Atan2(rotY, rotX);
 
                     PlayerMove();
@@ -367,7 +367,6 @@ namespace GroupGame
 
                     // Foreach loop that goes through all enemy objects in the enemies list
                     bool enemyAlive = false;
-
                     foreach (Enemy e in enemies)
                     {
                         // If the enemy is alive, it moves, and the enemyAlive boolean is set to true
