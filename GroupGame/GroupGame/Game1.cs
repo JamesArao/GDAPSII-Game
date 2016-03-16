@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-enum GameState { Menu, HordeMode }; // GameState enum for keeping track of what state our game is in
+enum GameState { Menu, HordeMode, Paused }; // GameState enum for keeping track of what state our game is in
 enum AbilityState { a1, a2, a3, a4 }; // Ability enum for keeping track of the ability the player is using
 
 namespace GroupGame
@@ -29,7 +29,11 @@ namespace GroupGame
         Texture2D bulletImage;
         Texture2D meleeImage;
         Texture2D startButton;
+        Texture2D whiteBox;
+        Texture2D paused;
+        Texture2D menu;
         Rectangle rSButton;
+        Rectangle rMButton;
         Rectangle mRectangle;
         Character c;
         List<Enemy> enemies = new List<Enemy>();
@@ -239,6 +243,9 @@ namespace GroupGame
             playerWalking = this.Content.Load<Texture2D>("Fire Move");
             bulletImage = this.Content.Load<Texture2D>("Fire Bullet");
             meleeImage = this.Content.Load<Texture2D>("Melee");
+            whiteBox = this.Content.Load<Texture2D>("whiteSquare");
+            paused = this.Content.Load<Texture2D>("Pause");
+            menu = this.Content.Load<Texture2D>("menuButton");
 
             // Load fonts
             sFont = this.Content.Load<SpriteFont>("SpriteFont1");
@@ -322,6 +329,14 @@ namespace GroupGame
                 // Game is in Horde Mode
                 case GameState.HordeMode:
 
+                    // checks to see if the player paused the game
+                    kbState = Keyboard.GetState();
+                    if (kbState.IsKeyDown(Keys.P) && previousKbState.IsKeyUp(Keys.P))
+                    {
+                        gState = GameState.Paused;
+                        previousKbState = kbState;
+                    }
+
                     // Find the angle between the player and the mouse, use this to rotate the player when drawing
                     int rotX = mState.X - c.Position.X;
                     int rotY = mState.Y - c.Position.Y;
@@ -348,7 +363,6 @@ namespace GroupGame
                             projectiles.RemoveAt(i - 1);
                         }
                     }
-
 
                     // Foreach loop that goes through all enemy objects in the enemies list
                     bool enemyAlive = false;
@@ -402,6 +416,22 @@ namespace GroupGame
                     }
 
                     break;
+
+                // Game is paused
+                case GameState.Paused:
+                    kbState = Keyboard.GetState();
+                    if (kbState.IsKeyDown(Keys.P) && previousKbState.IsKeyUp(Keys.P))
+                    {
+                        gState = GameState.HordeMode;
+                        previousKbState = kbState;
+                    }
+                    rMButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (rMButton.Height / 2), menu.Width / 4, menu.Height / 4);
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+                    if (mState.LeftButton == ButtonState.Pressed && mRectangle.Intersects(rMButton))
+                    {
+                        gState = GameState.Menu;
+                    }
+                    break;
             }
 
             base.Update(gameTime);
@@ -450,6 +480,35 @@ namespace GroupGame
                         else p.DrawStationary(spriteBatch, frameProjectile, rotationAngle);
                     }
 
+                    break;
+
+                case GameState.Paused:
+                    c.Draw(spriteBatch, rotationAngle, framePlayer); // Draw the character
+                    spriteBatch.DrawString(sFont, aState.ToString(), new Vector2(30, 30), Color.Black);
+                    // Draw all alive enemies
+                    foreach (Enemy e in enemies)
+                    {
+                        if (e.Alive == true) e.Draw(spriteBatch);
+                    }
+
+                    foreach (Projectile p in projectiles)
+                    {
+                        if (p.Moving == true) p.Draw(spriteBatch, frameProjectile);
+                        else p.DrawStationary(spriteBatch, frameProjectile, rotationAngle);
+                    }
+                    // Draw pause
+                    spriteBatch.Draw(whiteBox, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.Gray * .5f);
+                    spriteBatch.Draw(paused, new Rectangle((GraphicsDevice.Viewport.Width / 2) - (paused.Width / 8), (GraphicsDevice.Viewport.Height / 2) - (paused.Height / 2), paused.Width / 4, paused.Height / 4), Color.White);
+                    // Draw menu
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+                    if (rSButton.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(menu, rMButton, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(menu, rMButton, Color.White);
+                    }
                     break;
             }
             spriteBatch.End();
