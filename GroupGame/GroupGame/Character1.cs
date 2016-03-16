@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Character1
+// Class for the first character, inherits from Character
+// Coders: Kiernan Brown
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Game1
+// Runs the game
+// Coders: Kiernan Brown, James Arao, Nick Federico, Austin Richardson
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +12,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 enum GameState { Menu, HordeMode }; // GameState enum for keeping track of what state our game is in
-enum AbilityState { a1, a2, a3, a4 }; // Ability enum for keeping track of the ability the player is using
+enum AbilityState { a1, a2, a3, a4 }; // AbilityState enum for keeping track of the ability the player is using
+enum HeroState { Still, Walking }; // HeroState enum for keeping track of the state of the player
 
 namespace GroupGame
 {
@@ -22,27 +27,39 @@ namespace GroupGame
         SpriteFont sFont;
         GameState gState;
         AbilityState aState;
-        // images
+        HeroState heroState = HeroState.Still;
+        Random rgen = new Random();
+
+        // Images
         Texture2D enemyImage;
         Texture2D playerImage;
         Texture2D playerWalking;
         Texture2D bulletImage;
         Texture2D meleeImage;
         Texture2D startButton;
+        Texture2D rectangle;
+        Texture2D circle;
+
+        // Rectangles for buttons and mouse
         Rectangle rSButton;
         Rectangle mRectangle;
+        
+        // Characters, enemies, and projectiles
         Character c;
         List<Enemy> enemies = new List<Enemy>();
         List<Projectile> projectiles = new List<Projectile>();
-        Random rgen = new Random();
+
+        // Keyboard states
         KeyboardState kbState;
         KeyboardState previousKbState;
         MouseState mState;
         float rotationAngle;
-        int round;
 
-        enum HeroState { Still, Walking };
-        HeroState heroState = HeroState.Still;
+        // Ints for round and score
+        int round;
+        int score;
+
+        // Variables for animating
         int framePlayer;
         int frameProjectile;
         double timePerFrame = 100;
@@ -59,7 +76,6 @@ namespace GroupGame
 
             // Select a random round to use
             //int num = rgen.Next(1,round+1);
-            //BinaryReader reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round" + num + ".dat"));
             BinaryReader reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round1.dat"));
 
             // Try block
@@ -192,9 +208,6 @@ namespace GroupGame
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-            // Change the GameState to HordeMode for testing
-            //gState = GameState.HordeMode;
-
             // Adjust window size
             /*graphics.PreferredBackBufferWidth = 900;
             graphics.PreferredBackBufferHeight = 30;
@@ -239,6 +252,8 @@ namespace GroupGame
             playerWalking = this.Content.Load<Texture2D>("Fire Move");
             bulletImage = this.Content.Load<Texture2D>("Fire Bullet");
             meleeImage = this.Content.Load<Texture2D>("Melee");
+            rectangle = this.Content.Load<Texture2D>("WhiteRectangle");
+            circle = this.Content.Load<Texture2D>("WhiteCircle");
 
             // Load fonts
             sFont = this.Content.Load<SpriteFont>("SpriteFont1");
@@ -391,6 +406,7 @@ namespace GroupGame
                         // If the enemy's health is 0 or less, it dies
                         if(e.Health <= 0)
                         {
+                            if (e is Enemy1 && e.Alive == true) score += 100;
                             e.Alive = false;
                         }
                     }
@@ -437,7 +453,8 @@ namespace GroupGame
                 // Game is in Horde Mode
                 case GameState.HordeMode:
                     c.Draw(spriteBatch,rotationAngle, framePlayer); // Draw the character
-                    spriteBatch.DrawString(sFont, aState.ToString(), new Vector2(30, 30), Color.Black);
+
+
                     // Draw all alive enemies
                     foreach (Enemy e in enemies)
                     {
@@ -446,8 +463,39 @@ namespace GroupGame
 
                     foreach (Projectile p in projectiles)
                     {
-                        if (p.Moving == true) p.Draw(spriteBatch, frameProjectile);
+                        if (p.Moving == true)
+                        {
+                            p.Draw(spriteBatch, frameProjectile);
+                        }
                         else p.DrawStationary(spriteBatch, frameProjectile, rotationAngle);
+                    }
+
+                    // Code for drawing interface
+                    spriteBatch.DrawString(sFont, "Round " + round, new Vector2(GraphicsDevice.Viewport.Width - 100, GraphicsDevice.Viewport.Height - 40), Color.Black);
+                    spriteBatch.DrawString(sFont, "Score", new Vector2(30, GraphicsDevice.Viewport.Height - 60), Color.Black);
+                    spriteBatch.DrawString(sFont, "" + score, new Vector2(30, GraphicsDevice.Viewport.Height - 40), Color.Black);
+                    spriteBatch.Draw(rectangle, new Rectangle(25, 20, 42, 50), Color.DodgerBlue);
+                    spriteBatch.Draw(rectangle, new Rectangle(25, 40, 300, 35), Color.DodgerBlue);
+                    spriteBatch.Draw(circle, new Rectangle(300, 10, 100, 100), Color.DodgerBlue);
+                    spriteBatch.DrawString(sFont, "Life", new Vector2(30, 25), Color.Black);
+                    spriteBatch.Draw(rectangle, new Rectangle(30, 45, 200, 20), Color.Red);
+                    spriteBatch.Draw(rectangle, new Rectangle(30, 45, c.Health * 2, 20), Color.LawnGreen);
+
+                    // Switch statement that draws the image for the ability the player is using for the interface
+                    switch (aState)
+                    {
+                        case AbilityState.a1:
+                            spriteBatch.Draw(meleeImage, new Rectangle(330, 40, 40, 40), Color.White);
+                            break;
+                        case AbilityState.a2:
+                            spriteBatch.Draw(bulletImage, new Rectangle(330, 40, 40, 40), new Rectangle(32, 0, 32, 32), Color.White);
+                            break;
+                        case AbilityState.a3:
+                            spriteBatch.Draw(bulletImage, new Rectangle(323, 30, 55, 55), new Rectangle(32, 0, 32, 32), Color.White);
+                            break;
+                        case AbilityState.a4:
+                            spriteBatch.Draw(bulletImage, new Rectangle(336, 45, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                            break;
                     }
 
                     break;

@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Enemy
+// Abstract class for enemies
+// Coders: Kiernan Brown
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +19,7 @@ namespace GroupGame
         private int health;
         private EnemyState eState;
         private bool alive = true;
+        private Rectangle cRect;
 
         // Health property
         public int Health
@@ -35,6 +40,13 @@ namespace GroupGame
         {
             get { return alive; }
             set { alive = value; }
+        }
+
+        // CRect Property
+        public Rectangle CRect
+        {
+            get { return cRect; }
+            set { cRect = value; }
         }
 
         // Method to move the enemy
