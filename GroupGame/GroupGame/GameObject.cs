@@ -15,9 +15,8 @@ namespace GroupGame
 {
     class GameObject
     {
-        private Texture2D image;
-        private Rectangle position;
-        private Color color = Color.White;
+        private Texture2D image; // Image of the object
+        private Rectangle position; // Position of the object
 
         // Position property
         public Rectangle Position

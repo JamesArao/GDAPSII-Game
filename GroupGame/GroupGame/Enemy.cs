@@ -16,10 +16,10 @@ namespace GroupGame
 {
     abstract class Enemy:GameObject
     {
-        private int health;
-        private EnemyState eState;
-        private bool alive = true;
-        private Rectangle cRect;
+        private int health; // Health of the enemy
+        private EnemyState eState; // State the enemy is in
+        private bool alive = true; // Is the enemy alive
+        private Rectangle cRect; // Rectangle for enemy collision
 
         // Health property
         public int Health
@@ -51,9 +51,6 @@ namespace GroupGame
 
         // Method to move the enemy
         public abstract void Move(Character c, List<Enemy> enemies);
-
-        // Method to change enemy state
-        //public abstract void ChangeState(EnemyState state);
 
         // Parameterized constructor
         public Enemy(int posX, int posY)

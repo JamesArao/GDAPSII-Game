@@ -37,12 +37,14 @@ namespace GroupGame
                         bool collides = false;
                         foreach (Enemy others in enemies)
                         {
+                            // If the enemy intersects the position of another enemy that is alive, collides is true
                             if (new Rectangle(newX + 1, newY, 50, 50).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
                             {
                                 collides = true;
                             }
 
                         }
+                        // If the enemy is not colliding with another enemy (collides is not true), it moves
                         if (collides != true)
                         {
                             newX++; ;
@@ -102,14 +104,12 @@ namespace GroupGame
             }
         }
 
-        //
-
-        // Constructors
+        // Constructor
         public Enemy1(int posX, int posY):base(posX, posY)
         {
-            Position = new Rectangle(posX, posY, 50, 50);
-            CRect = new Rectangle(posX + 7, posY + 7, 36, 36);
-            Health = 100;
+            Position = new Rectangle(posX, posY, 50, 50); // Set position
+            CRect = new Rectangle(posX + 7, posY + 7, 36, 36); // Set the cRect based on the position
+            Health = 100; // Set health
             EState = EnemyState.Chase; // Set EState to chase, for testing
         }
     }
