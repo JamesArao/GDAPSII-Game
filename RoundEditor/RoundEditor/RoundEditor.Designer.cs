@@ -70,21 +70,21 @@
             // saveRoundToolStripMenuItem
             // 
             this.saveRoundToolStripMenuItem.Name = "saveRoundToolStripMenuItem";
-            this.saveRoundToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveRoundToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.saveRoundToolStripMenuItem.Text = "Save Round";
             this.saveRoundToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // loadRoundToolStripMenuItem
             // 
             this.loadRoundToolStripMenuItem.Name = "loadRoundToolStripMenuItem";
-            this.loadRoundToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadRoundToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.loadRoundToolStripMenuItem.Text = "Load Round";
             this.loadRoundToolStripMenuItem.Click += new System.EventHandler(this.loadRoundToolStripMenuItem_Click);
             // 
             // clearRoundToolStripMenuItem
             // 
             this.clearRoundToolStripMenuItem.Name = "clearRoundToolStripMenuItem";
-            this.clearRoundToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.clearRoundToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.clearRoundToolStripMenuItem.Text = "Clear Round";
             this.clearRoundToolStripMenuItem.Click += new System.EventHandler(this.clearRoundToolStripMenuItem_Click);
             // 

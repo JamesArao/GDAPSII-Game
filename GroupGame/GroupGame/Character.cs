@@ -14,10 +14,11 @@ namespace GroupGame
 {
     abstract class Character : GameObject
     {
-        private int speed;
-        private int shotDelay;
-        private int health;
+        private int speed; // Speed the character moves at
+        private int shotDelay; // Int that acts as a way of delaying player shooting, decreases by one every frame
+        private int health; // Health of the player
 
+        // Values for animation
         const int heroY = 0;
         const int heroHeight = 32;
         const int heroWidth = 32;

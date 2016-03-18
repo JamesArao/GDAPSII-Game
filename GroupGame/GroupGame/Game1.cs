@@ -317,8 +317,6 @@ namespace GroupGame
                 numFramesPlayer = 3;
             }
 
-
-
             // which frame to draw
             framesElapsedPlayer = (int)(gameTime.TotalGameTime.TotalMilliseconds / timePerFrame);
             framePlayer = framesElapsedPlayer % numFramesPlayer;
@@ -483,7 +481,6 @@ namespace GroupGame
                 // Game is in Horde Mode
                 case GameState.HordeMode:
                     c.Draw(spriteBatch,rotationAngle, framePlayer); // Draw the character
-
 
                     // Draw all alive enemies
                     foreach (Enemy e in enemies)

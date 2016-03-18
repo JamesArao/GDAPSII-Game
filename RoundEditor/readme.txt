@@ -7,9 +7,9 @@ are any issues or bugs with this tool, or any other features or additions that y
 
 Descripton of the user interface and what you can do with this tool
 
-Create Enemy: Creates a label of an enemy on the screen. These labels can be dragged around and repositioned using the mouse. The text
-for the label will depend on what enemy type you have selected in the list box next to the button. 
-Clear Button: Clears the list of enemies and all the labels on the screen. This will clear the current round you have.
+Add Enemy 1-5: Adds a label for an enemy onto the screen depending on the enemy number you choose. You can drag the enemy around by left
+clicking and holding. Enemies can be deleted by right clicking them.
+Save Round: Allows a user to save the current round as a .dat file. 
 Load Round: Allows a user to load in a .dat file for a round and view or edit it. Loading a round WILL CLEAR THE CURRENT ROUND. Save
 the round you are working on before loading another round in order to avoid losing work.
-Save Round: Allows a user to save the current round as a .dat file. 
+Clear Round: Clears the list of enemies and all the labels on the screen. This will clear the current round you have.
