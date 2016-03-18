@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-enum GameState { Menu, HordeMode }; // GameState enum for keeping track of what state our game is in
+enum GameState { Menu, HordeMode, Paused }; // GameState enum for keeping track of what state our game is in
 enum AbilityState { a1, a2, a3, a4 }; // AbilityState enum for keeping track of the ability the player is using
 enum HeroState { Still, Walking }; // HeroState enum for keeping track of the state of the player
 
@@ -37,12 +37,16 @@ namespace GroupGame
         Texture2D bulletImage;
         Texture2D meleeImage;
         Texture2D startButton;
+        Texture2D whiteBox;
+        Texture2D paused;
+        Texture2D menu;
         Texture2D rectangle;
         Texture2D circle;
 
         // Rectangles for buttons and mouse
         Rectangle rSButton;
         Rectangle mRectangle;
+        Rectangle rMButton;
         
         // Characters, enemies, and projectiles
         Character c;
@@ -252,6 +256,9 @@ namespace GroupGame
             playerWalking = this.Content.Load<Texture2D>("Fire Move");
             bulletImage = this.Content.Load<Texture2D>("Fire Bullet");
             meleeImage = this.Content.Load<Texture2D>("Melee");
+            whiteBox = this.Content.Load<Texture2D>("whiteSquare");
+            paused = this.Content.Load<Texture2D>("Pause");
+            menu = this.Content.Load<Texture2D>("menuButton");
             rectangle = this.Content.Load<Texture2D>("WhiteRectangle");
             circle = this.Content.Load<Texture2D>("WhiteCircle");
 
@@ -337,6 +344,14 @@ namespace GroupGame
                 // Game is in Horde Mode
                 case GameState.HordeMode:
 
+                    // checks to see if the player paused the game
+                    kbState = Keyboard.GetState();
+                    if (kbState.IsKeyDown(Keys.P) && previousKbState.IsKeyUp(Keys.P))
+                    {
+                        gState = GameState.Paused;
+                        previousKbState = kbState;
+                    }
+
                     // Find the angle between the player and the mouse, use this to rotate the player when drawing
                     int rotX = mState.X - (c.Position.X + c.Position.Width/2);
                     int rotY = mState.Y - (c.Position.Y + c.Position.Height/2);
@@ -417,6 +432,22 @@ namespace GroupGame
                     }
 
                     break;
+
+                case GameState.Paused:
+                    kbState = Keyboard.GetState();
+                    if (kbState.IsKeyDown(Keys.P) && previousKbState.IsKeyUp(Keys.P))
+                    {
+                        gState = GameState.HordeMode;
+                        previousKbState = kbState;
+                    }
+                    rMButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (rMButton.Height / 2), menu.Width / 4, menu.Height / 4);
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+                    if (mState.LeftButton == ButtonState.Pressed && mRectangle.Intersects(rMButton))
+                    {
+                        gState = GameState.Menu;
+                    }
+                    break;
+
             }
 
             base.Update(gameTime);
@@ -496,7 +527,35 @@ namespace GroupGame
                             spriteBatch.Draw(bulletImage, new Rectangle(336, 45, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
                             break;
                     }
+                    break;
 
+                case GameState.Paused:
+                    c.Draw(spriteBatch, rotationAngle, framePlayer); // Draw the character
+                    spriteBatch.DrawString(sFont, aState.ToString(), new Vector2(30, 30), Color.Black);
+                    // Draw all alive enemies
+                    foreach (Enemy e in enemies)
+                    {
+                        if (e.Alive == true) e.Draw(spriteBatch);
+                    }
+
+                    foreach (Projectile p in projectiles)
+                    {
+                        if (p.Moving == true) p.Draw(spriteBatch, frameProjectile);
+                        else p.DrawStationary(spriteBatch, frameProjectile, rotationAngle);
+                    }
+                    // Draw pause
+                    spriteBatch.Draw(whiteBox, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.Gray * .5f);
+                    spriteBatch.Draw(paused, new Rectangle((GraphicsDevice.Viewport.Width / 2) - (paused.Width / 8), (GraphicsDevice.Viewport.Height / 2) - (paused.Height / 2), paused.Width / 4, paused.Height / 4), Color.White);
+                    // Draw menu
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+                    if (rMButton.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(menu, rMButton, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(menu, rMButton, Color.White);
+                    }
                     break;
             }
             spriteBatch.End();
