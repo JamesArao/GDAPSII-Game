@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-enum GameState { Menu, HordeMode, Paused }; // GameState enum for keeping track of what state our game is in
+enum GameState { Menu, HordeMode, Paused, Options}; // GameState enum for keeping track of what state our game is in
 enum AbilityState { a1, a2, a3, a4 }; // AbilityState enum for keeping track of the ability the player is using
 enum HeroState { Still, Walking }; // HeroState enum for keeping track of the state of the player
 
@@ -37,6 +37,7 @@ namespace GroupGame
         Texture2D bulletImage;
         Texture2D meleeImage;
         Texture2D startButton;
+        Texture2D optionsButton;
         Texture2D whiteBox;
         Texture2D paused;
         Texture2D menu;
@@ -45,8 +46,10 @@ namespace GroupGame
 
         // Rectangles for buttons and mouse
         Rectangle rSButton;
+        Rectangle rOButton;
         Rectangle mRectangle;
         Rectangle rMButton;
+        Rectangle rFButton;
         
         // Characters, enemies, and projectiles
         Character c;
@@ -71,6 +74,12 @@ namespace GroupGame
         int numFramesProjectile = 4;
         int framesElapsedPlayer;
         int framesElapsedProjectile;
+
+        // Values used for screen movement 
+        int globalX;
+        int globalY;
+        //const int MAX_X = 1500;
+        //const int MAX_Y = 1000;
 
         // Method for advancing the round of our Horde Mode
         public void AdvanceRound()
@@ -206,6 +215,18 @@ namespace GroupGame
             }
         }
 
+        public void ResetGame()
+        {
+            enemies.Clear();
+            projectiles.Clear();
+            c.Position = new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2, c.Position.Width, c.Position.Height);
+            c.Health = 100;
+            round = 0;
+            score = 0;
+            aState = AbilityState.a1;
+            AdvanceRound();
+        }
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -229,7 +250,8 @@ namespace GroupGame
             // TODO: Add your initialization logic here
 
             // Create a character1 in the center of the screen
-            c = new Character1(GraphicsDevice.Viewport.Width/2, GraphicsDevice.Viewport.Height/2);
+            graphics.IsFullScreen = true;
+            c = new Character1(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
 
             gState = GameState.Menu;
             base.Initialize();
@@ -249,6 +271,7 @@ namespace GroupGame
 
             // Load images for start screen
             startButton = this.Content.Load<Texture2D>("Start");
+            optionsButton = this.Content.Load<Texture2D>("Options");
 
             // Load images for the game
             enemyImage = this.Content.Load<Texture2D>("EnemyThing");
@@ -332,10 +355,16 @@ namespace GroupGame
 
                     // Checks to see if the start button has been pressed
                     rSButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rSButton.Width/2), (GraphicsDevice.Viewport.Height / 2) - (rSButton.Height/2), startButton.Width/4, startButton.Height/4);
+                    rOButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rOButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (rOButton.Height), startButton.Width / 4, startButton.Height / 4);
                     Rectangle mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
                     if (mState.LeftButton == ButtonState.Pressed && mRectangle.Intersects(rSButton))
                     {
+                        ResetGame();
                         gState = GameState.HordeMode;
+                    }
+                    if (mState.LeftButton == ButtonState.Pressed && mRectangle.Intersects(rOButton))
+                    {
+                        gState = GameState.Options;
                     }
                     break;
 
@@ -446,6 +475,22 @@ namespace GroupGame
                     }
                     break;
 
+                // Game is in Menu
+                case GameState.Options:
+
+                    // Checks to see if the start button has been pressed
+                    rSButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rSButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) - (rSButton.Height / 2), startButton.Width / 4, startButton.Height / 4);
+                    rOButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rOButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (rOButton.Height), startButton.Width / 4, startButton.Height / 4);
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+                    if (mState.LeftButton == ButtonState.Pressed && mRectangle.Intersects(rSButton))
+                    {
+                    }
+                    if (mState.LeftButton == ButtonState.Pressed && mRectangle.Intersects(rOButton))
+                    {
+                        gState = GameState.Options;
+                    }
+                    break;
+
             }
 
             base.Update(gameTime);
@@ -475,6 +520,15 @@ namespace GroupGame
                     else
                     {
                         spriteBatch.Draw(startButton, rSButton, Color.White);
+                    }
+
+                    if (rOButton.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(optionsButton, rOButton, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(optionsButton, rOButton, Color.White);
                     }
                     break;
 
