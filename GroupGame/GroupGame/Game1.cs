@@ -38,6 +38,9 @@ namespace GroupGame
         Texture2D meleeImage;
         Texture2D startButton;
         Texture2D optionsButton;
+        Texture2D fullscreenButton;
+        Texture2D okButton;
+        Texture2D cancelButton;
         Texture2D whiteBox;
         Texture2D paused;
         Texture2D menu;
@@ -60,6 +63,7 @@ namespace GroupGame
         KeyboardState kbState;
         KeyboardState previousKbState;
         MouseState mState;
+        MouseState prevMState;
         float rotationAngle;
 
         // Ints for round and score
@@ -80,6 +84,12 @@ namespace GroupGame
         int globalY;
         //const int MAX_X = 1500;
         //const int MAX_Y = 1000;
+
+        // Values used for the options menu
+        bool closing = false;
+        bool fullscreen = false;
+        Rectangle rOKButton;
+        Rectangle rCancelButton;
 
         // Method for advancing the round of our Horde Mode
         public void AdvanceRound()
@@ -227,6 +237,15 @@ namespace GroupGame
             AdvanceRound();
         }
 
+        // Override the game exiting to create a config file upon exiting that will save user settings
+        protected override void OnExiting(object sender, EventArgs args)
+        {
+            StreamWriter sw = new StreamWriter((File.OpenWrite(@"../../../Config.txt")));
+            sw.WriteLine("fullscreen = " + fullscreen);
+            sw.Close();
+            base.OnExiting(sender, args);
+        }
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -250,9 +269,28 @@ namespace GroupGame
             // TODO: Add your initialization logic here
 
             // Create a character1 in the center of the screen
-            graphics.IsFullScreen = true;
             c = new Character1(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
 
+            // Read the config file
+            try
+            {
+                StreamReader sr = new StreamReader(File.OpenRead(@"../../../Config.txt"));
+                string line;
+                while((line = sr.ReadLine()) != null)
+                {
+                    if (line == "fullscreen = False")
+                        fullscreen = false;
+
+                    if (line == "fullscreen = True")
+                        fullscreen = true;
+                }
+                sr.Close();
+            }
+            catch(Exception ex)
+            {
+            }
+
+            graphics.IsFullScreen = fullscreen;
             gState = GameState.Menu;
             base.Initialize();
         }
@@ -263,15 +301,19 @@ namespace GroupGame
         /// </summary>
         protected override void LoadContent()
         {
+
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
 
             // TODO: use this.Content to load your game content here
 
-            // Load images for start screen
+            // Load images for start and options screens
             startButton = this.Content.Load<Texture2D>("Start");
             optionsButton = this.Content.Load<Texture2D>("Options");
+            fullscreenButton = this.Content.Load<Texture2D>("Fullscreen");
+            okButton = this.Content.Load<Texture2D>("Ok");
+            cancelButton = this.Content.Load<Texture2D>("Cancel");
 
             // Load images for the game
             enemyImage = this.Content.Load<Texture2D>("EnemyThing");
@@ -312,6 +354,7 @@ namespace GroupGame
 
             previousKbState = kbState; // Set previous keyboard state
             kbState = Keyboard.GetState(); // Get the keyboard state
+            prevMState = mState; // Set previous mouse state
             mState = Mouse.GetState(); // Get the mouse state
 
             // switch for states
@@ -357,12 +400,12 @@ namespace GroupGame
                     rSButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rSButton.Width/2), (GraphicsDevice.Viewport.Height / 2) - (rSButton.Height/2), startButton.Width/4, startButton.Height/4);
                     rOButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rOButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (rOButton.Height), startButton.Width / 4, startButton.Height / 4);
                     Rectangle mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
-                    if (mState.LeftButton == ButtonState.Pressed && mRectangle.Intersects(rSButton))
+                    if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rSButton))
                     {
                         ResetGame();
                         gState = GameState.HordeMode;
                     }
-                    if (mState.LeftButton == ButtonState.Pressed && mRectangle.Intersects(rOButton))
+                    if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rOButton))
                     {
                         gState = GameState.Options;
                     }
@@ -478,19 +521,61 @@ namespace GroupGame
                 // Game is in Menu
                 case GameState.Options:
 
-                    // Checks to see if the start button has been pressed
-                    rSButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rSButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) - (rSButton.Height / 2), startButton.Width / 4, startButton.Height / 4);
-                    rOButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rOButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (rOButton.Height), startButton.Width / 4, startButton.Height / 4);
+                    // Mouse rectangle
                     mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
-                    if (mState.LeftButton == ButtonState.Pressed && mRectangle.Intersects(rSButton))
+
+                    // Menu and options menu setting buttons
+                    rMButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + rMButton.Height, menu.Width / 4, menu.Height / 4);
+                    rFButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rFButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) - (rFButton.Height / 2), fullscreenButton.Width / 4, fullscreenButton.Height / 4);
+                    
+                    // Confirmation dialog buttons
+                    rOKButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - ((int)(1.35 * rOKButton.Width)), (GraphicsDevice.Viewport.Height / 2) - (rOKButton.Height / 2), okButton.Width / 4, okButton.Height / 4);
+                    rCancelButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) + (cancelButton.Width / 10), (GraphicsDevice.Viewport.Height / 2) - (rCancelButton.Height / 2), cancelButton.Width / 4, cancelButton.Height / 4);
+
+                    // If the game is about to close, give a confirmation dialog
+                    if (closing == true)
                     {
+                        if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rOKButton))
+                        {
+                            fullscreen = true;
+                            Exit();
+                        }
+                        if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rCancelButton))
+                        {
+                            closing = false;
+                        }
                     }
-                    if (mState.LeftButton == ButtonState.Pressed && mRectangle.Intersects(rOButton))
+
+                    // Otherwise have the normal options menu
+                    else
                     {
-                        gState = GameState.Options;
+                        // If the menu button is pressed, go back to the menu
+                        if(mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rMButton))
+                        {
+                            gState = GameState.Menu;
+                        }
+
+                        // If the fullscreen button is pressed
+                        if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rFButton))
+                        {
+                            // Game is not fullscreen
+                            if (fullscreen == false)
+                            {
+                                // Set closing to true to create the dialog popup
+                                closing = true;
+                            }
+
+                            // Game is fullscreen
+                            if (fullscreen == true)
+                            {
+                                // Go back to windowed mode
+                                fullscreen = false;
+                                graphics.IsFullScreen = false;
+                                graphics.ApplyChanges();
+                            }
+                        }
                     }
                     break;
-
             }
 
             base.Update(gameTime);
@@ -582,7 +667,6 @@ namespace GroupGame
 
                 case GameState.Paused:
                     c.Draw(spriteBatch, rotationAngle, framePlayer); // Draw the character
-                    spriteBatch.DrawString(sFont, aState.ToString(), new Vector2(30, 30), Color.Black);
                     // Draw all alive enemies
                     foreach (Enemy e in enemies)
                     {
@@ -606,6 +690,60 @@ namespace GroupGame
                     else
                     {
                         spriteBatch.Draw(menu, rMButton, Color.White);
+                    }
+                    break;
+
+                // Game is in Options
+                case GameState.Options:
+                    
+                    // Mouse rectangle
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+
+                    // If the game is not in the process of closing
+                    if (closing == false)
+                    {
+                        // Draw buttons and change button color based on mouse over or settings currently selected
+                        if (fullscreen == false)
+                        {
+                            spriteBatch.Draw(fullscreenButton, rFButton, Color.White);
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(fullscreenButton, rFButton, Color.Red);
+                        }
+
+                        if (rMButton.Intersects(mRectangle))
+                        {
+                            spriteBatch.Draw(menu, rMButton, Color.Red);
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(menu, rMButton, Color.White);
+                        }
+                    }
+
+                    // Otherwise, the game is about to close, ask user for confirmation
+                    else
+                    {
+                        spriteBatch.DrawString(sFont, "The game must be closed to apply these changes", new Vector2(GraphicsDevice.Viewport.Width/2 - 200, 50), Color.Black);
+
+                        // Draw buttons and change colors on mouse over
+                        if (rOKButton.Intersects(mRectangle))
+                        {
+                            spriteBatch.Draw(okButton, rOKButton, Color.Red);
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(okButton, rOKButton, Color.White);
+                        }
+                        if (rCancelButton.Intersects(mRectangle))
+                        {
+                            spriteBatch.Draw(cancelButton, rCancelButton, Color.Red);
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(cancelButton, rCancelButton, Color.White);
+                        }
                     }
                     break;
             }
