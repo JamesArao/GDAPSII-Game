@@ -1,1 +1,5 @@
-fullscreen = True
+fullscreen = False
+reen = True
+=======
+fullscreen = False
+>>>>>>> f04e1610896f8b213d0029d203f1abebfe44c32c
