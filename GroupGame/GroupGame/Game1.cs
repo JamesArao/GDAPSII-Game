@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework.Input;
 enum GameState { Menu, HordeMode, Paused, Options}; // GameState enum for keeping track of what state our game is in
 enum AbilityState { a1, a2, a3, a4 }; // AbilityState enum for keeping track of the ability the player is using
 enum HeroState { Still, Walking }; // HeroState enum for keeping track of the state of the player
+enum SwitchHero { Fire, Earth, Water, Electric};
 
 namespace GroupGame
 {
@@ -82,8 +83,8 @@ namespace GroupGame
         // Values used for screen movement 
         int globalX;
         int globalY;
-        //const int MAX_X = 1500;
-        //const int MAX_Y = 1000;
+        int maxX;
+        int maxY;
 
         // Values used for the options menu
         bool closing = false;
@@ -131,25 +132,89 @@ namespace GroupGame
             round++; // Increase the round number
         }
 
+        // Method for moving the screen
+        public void ScreenMove(string s)
+        {
+            if(s == "up")
+            {
+                globalY--;
+                foreach (Enemy e in enemies)
+                {
+                    e.Position = new Rectangle(e.Position.X, e.Position.Y + c.Speed, e.Position.Width, e.Position.Height);
+                }
+                foreach (Projectile p in projectiles)
+                {
+                    p.FPosY += c.Speed;
+                }
+            }
+
+            if (s == "down")
+            {
+                globalY++;
+                foreach (Enemy e in enemies)
+                {
+                    e.Position = new Rectangle(e.Position.X, e.Position.Y - c.Speed, e.Position.Width, e.Position.Height);
+                }
+                foreach (Projectile p in projectiles)
+                {
+                    p.FPosY -= c.Speed;
+                }
+            }
+
+            if (s == "left")
+            {
+                globalX--;
+                foreach (Enemy e in enemies)
+                {
+                    e.Position = new Rectangle(e.Position.X + c.Speed, e.Position.Y, e.Position.Width, e.Position.Height);
+                }
+                foreach (Projectile p in projectiles)
+                {
+                    p.FPosX += c.Speed;
+                }
+            }
+
+            if (s == "right")
+            {
+                globalX++;
+                foreach (Enemy e in enemies)
+                {
+                    e.Position = new Rectangle(e.Position.X - c.Speed, e.Position.Y, e.Position.Width, e.Position.Height);
+                }
+                foreach (Projectile p in projectiles)
+                {
+                    p.FPosX -= c.Speed;
+                }
+            }
+        }
+
         // Method for the player moving
         public void PlayerMove()
         {
             // Move the character based on user input
             if (kbState.IsKeyDown(Keys.W))
             {
-                c.Position = new Rectangle(c.Position.X, c.Position.Y - c.Speed, c.Position.Width, c.Position.Height);
+                if ((c.Position.Y > 100 && globalY != 0) || (globalY == 0 && c.Position.Y > 0))
+                        c.Position = new Rectangle(c.Position.X, c.Position.Y - c.Speed, c.Position.Width, c.Position.Height);
+                else if (c.Position.Y > 0) ScreenMove("up");
             }
             if (kbState.IsKeyDown(Keys.A))
             {
-                c.Position = new Rectangle(c.Position.X - c.Speed, c.Position.Y, c.Position.Width, c.Position.Height);
+                if ((c.Position.X > 100 && globalX != 0) || (globalX == 0 && c.Position.X > 0))
+                    c.Position = new Rectangle(c.Position.X - c.Speed, c.Position.Y, c.Position.Width, c.Position.Height);
+                else if (c.Position.X > 0) ScreenMove("left");
             }
             if (kbState.IsKeyDown(Keys.S))
             {
-                c.Position = new Rectangle(c.Position.X, c.Position.Y + c.Speed, c.Position.Width, c.Position.Height);
+                if ((c.Position.Y < GraphicsDevice.Viewport.Height - (100 + c.Position.Height) && globalY != maxY) || (globalY == maxY && c.Position.Y < GraphicsDevice.Viewport.Height - c.Position.Height))
+                    c.Position = new Rectangle(c.Position.X, c.Position.Y + c.Speed, c.Position.Width, c.Position.Height);
+                else if (c.Position.Y < GraphicsDevice.Viewport.Height - c.Position.Height) ScreenMove("down");
             }
             if (kbState.IsKeyDown(Keys.D))
             {
-                c.Position = new Rectangle(c.Position.X + c.Speed, c.Position.Y, c.Position.Width, c.Position.Height);
+                if ((c.Position.X < GraphicsDevice.Viewport.Width - (100 + c.Position.Width) && globalX != maxX) || (globalX == maxX && c.Position.X < GraphicsDevice.Viewport.Width - c.Position.Width))
+                    c.Position = new Rectangle(c.Position.X + c.Speed, c.Position.Y, c.Position.Width, c.Position.Height);
+                else if (c.Position.X < GraphicsDevice.Viewport.Width - c.Position.Width) ScreenMove("right");
             }
         }
 
@@ -230,6 +295,12 @@ namespace GroupGame
             enemies.Clear();
             projectiles.Clear();
             c.Position = new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2, c.Position.Width, c.Position.Height);
+            maxX = 1500 - GraphicsDevice.Viewport.Width;
+            if (maxX < 0) maxX = 0;
+            maxY = 1000 - GraphicsDevice.Viewport.Height;
+            if (maxY < 0) maxY = 0;
+            globalX = maxX/2;
+            globalY = maxY/2;
             c.Health = 100;
             round = 0;
             score = 0;
@@ -253,9 +324,9 @@ namespace GroupGame
             IsMouseVisible = true;
 
             // Adjust window size
-            /*graphics.PreferredBackBufferWidth = 900;
-            graphics.PreferredBackBufferHeight = 30;
-            graphics.ApplyChanges();*/
+            graphics.PreferredBackBufferWidth = 1200;
+            graphics.PreferredBackBufferHeight = 700;
+            graphics.ApplyChanges();
         }
 
         /// <summary>
@@ -620,6 +691,8 @@ namespace GroupGame
                 // Game is in Horde Mode
                 case GameState.HordeMode:
                     c.Draw(spriteBatch,rotationAngle, framePlayer); // Draw the character
+                    spriteBatch.DrawString(sFont, "X: " + globalX, new Vector2(40, 275), Color.Black);
+                    spriteBatch.DrawString(sFont, "Y: " + globalY, new Vector2(40, 300), Color.Black);
 
                     // Draw all alive enemies
                     foreach (Enemy e in enemies)

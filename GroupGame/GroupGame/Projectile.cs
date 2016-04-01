@@ -66,6 +66,20 @@ namespace GroupGame
             set { moving = value; }
         }
 
+        // FPosX property
+        public float FPosX
+        {
+            get { return fPosX; }
+            set { fPosX = value; }
+        }
+
+        // FPosY property
+        public float FPosY
+        {
+            get { return fPosY; }
+            set { fPosY = value; }
+        }
+
         // CheckCollision method
         // Returns true if the projectile's position intersects the enemy's cRect
         public bool CheckCollision(Enemy e)
