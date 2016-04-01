@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework.Input;
 enum GameState { Menu, HordeMode, Paused, Options}; // GameState enum for keeping track of what state our game is in
 enum AbilityState { a1, a2, a3, a4 }; // AbilityState enum for keeping track of the ability the player is using
 enum HeroState { Still, Walking }; // HeroState enum for keeping track of the state of the player
+enum SwitchHero { Fire, Earth, Water, Electric};
 
 namespace GroupGame
 {

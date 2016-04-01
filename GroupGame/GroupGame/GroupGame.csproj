@@ -65,6 +65,7 @@
     <Content Include="Content\Cancel.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Enemy.png" />
     <Content Include="Content\EnemyThing.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -95,6 +96,17 @@
     <Content Include="Content\Pause.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Player 2 Bullet.png" />
+    <Content Include="Content\Player 2 Move .png" />
+    <Content Include="Content\Player 2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Player 3 Bullet.png" />
+    <Content Include="Content\Player 3 Move.png" />
+    <Content Include="Content\Player 3.png" />
+    <Content Include="Content\Player 4 Bullet .png" />
+    <Content Include="Content\Player 4 Move.png" />
+    <Content Include="Content\Player 4.png" />
     <Content Include="Content\Start.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
