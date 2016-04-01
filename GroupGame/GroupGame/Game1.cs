@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Input;
 enum GameState { Menu, HordeMode, Paused, Options}; // GameState enum for keeping track of what state our game is in
 enum AbilityState { a1, a2, a3, a4 }; // AbilityState enum for keeping track of the ability the player is using
 enum HeroState { Still, Walking }; // HeroState enum for keeping track of the state of the player
-enum SwitchHero { Fire, Earth, Water, Electric};
+enum SwitchHero { Fire, Earth, Water, Electric}; // switch heroes
 
 namespace GroupGame
 {
@@ -28,6 +28,7 @@ namespace GroupGame
         SpriteFont sFont;
         GameState gState;
         AbilityState aState;
+        SwitchHero switchHero = SwitchHero.Fire;
         HeroState heroState = HeroState.Still;
         Random rgen = new Random();
 
@@ -36,6 +37,18 @@ namespace GroupGame
         Texture2D playerImage;
         Texture2D playerWalking;
         Texture2D bulletImage;
+        Texture2D player1Image;
+        Texture2D player1Walking;
+        Texture2D bullet1Image;
+        Texture2D player2Image;
+        Texture2D player2Walking;
+        Texture2D bullet2Image;
+        Texture2D player3Image;
+        Texture2D player3Walking;
+        Texture2D bullet3Image;
+        Texture2D player4Image;
+        Texture2D player4Walking;
+        Texture2D bullet4Image;
         Texture2D meleeImage;
         Texture2D startButton;
         Texture2D optionsButton;
@@ -388,9 +401,18 @@ namespace GroupGame
 
             // Load images for the game
             enemyImage = this.Content.Load<Texture2D>("EnemyThing");
-            playerImage = this.Content.Load<Texture2D>("Fire Still");
-            playerWalking = this.Content.Load<Texture2D>("Fire Move");
-            bulletImage = this.Content.Load<Texture2D>("Fire Bullet");
+            player1Image = this.Content.Load<Texture2D>("Fire Still");
+            player1Walking = this.Content.Load<Texture2D>("Fire Move");
+            bullet1Image = this.Content.Load<Texture2D>("Fire Bullet");
+            player2Image = this.Content.Load<Texture2D>("Earth Still");
+            player2Walking = this.Content.Load<Texture2D>("Earth Move");
+            bullet2Image = this.Content.Load<Texture2D>("Earth Bullet");
+            player3Image = this.Content.Load<Texture2D>("Electric Still");
+            player3Walking = this.Content.Load<Texture2D>("Electric Move");
+            bullet3Image = this.Content.Load<Texture2D>("Electric Bullet");
+            player4Image = this.Content.Load<Texture2D>("Water Still");
+            player4Walking = this.Content.Load<Texture2D>("Water Move");
+            bullet4Image = this.Content.Load<Texture2D>("Water Bullet");
             meleeImage = this.Content.Load<Texture2D>("Melee");
             whiteBox = this.Content.Load<Texture2D>("whiteSquare");
             paused = this.Content.Load<Texture2D>("Pause");
@@ -466,6 +488,51 @@ namespace GroupGame
             {
                 // Game is in Menu
                 case GameState.Menu:
+
+                    // CHOOSING BETWEEN CHARACTERS
+                    if (kbState.IsKeyDown(Keys.U) == true)
+                    {
+                        switchHero = SwitchHero.Fire;     
+                    }
+                    else if (kbState.IsKeyDown(Keys.I) == true)
+                    {
+                        switchHero = SwitchHero.Earth;
+                    }
+                    else if (kbState.IsKeyDown(Keys.O) == true)
+                    {
+                        switchHero = SwitchHero.Electric;
+                    }
+                    else if (kbState.IsKeyDown(Keys.P) == true)
+                    {
+                        switchHero = SwitchHero.Water;
+                    }
+
+                    switch(switchHero)
+                    {
+                        case SwitchHero.Fire:
+                            playerImage = player1Image;
+                            playerWalking = player1Walking;
+                            bulletImage = bullet1Image;
+                            break;
+
+                        case SwitchHero.Earth:
+                            playerImage = player2Image;
+                            playerWalking = player2Walking;
+                            bulletImage = bullet2Image;
+                            break;
+
+                        case SwitchHero.Electric:
+                            playerImage = player3Image;
+                            playerWalking = player3Walking;
+                            bulletImage = bullet3Image;
+                            break;
+
+                        case SwitchHero.Water:
+                            playerImage = player4Image;
+                            playerWalking = player4Walking;
+                            bulletImage = bullet4Image;
+                            break;
+                    }
 
                     // Checks to see if the start button has been pressed
                     rSButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rSButton.Width/2), (GraphicsDevice.Viewport.Height / 2) - (rSButton.Height/2), startButton.Width/4, startButton.Height/4);
