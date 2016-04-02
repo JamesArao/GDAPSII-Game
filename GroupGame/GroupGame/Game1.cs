@@ -770,7 +770,10 @@ namespace GroupGame
                     // Draw all alive enemies
                     foreach (Enemy e in enemies)
                     {
-                        if (e.Alive == true) e.Draw(spriteBatch, rotationAngle, frameEnemy);
+                        int aX = e.Position.X - c.Position.X;
+                        int aY = e.Position.Y - c.Position.Y;
+                        float enemyAngle = -(float)(Math.Atan2(aX, aY) + Math.PI / 2);
+                        if (e.Alive == true) e.Draw(spriteBatch, enemyAngle, frameEnemy);
                     }
 
                     foreach (Projectile p in projectiles)
