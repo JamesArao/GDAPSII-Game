@@ -86,11 +86,14 @@ namespace GroupGame
 
         // Variables for animating
         int framePlayer;
+        int frameEnemy;
         int frameProjectile;
         double timePerFrame = 100;
         int numFramesPlayer;
+        int numFramesEnemy = 8;
         int numFramesProjectile = 4;
         int framesElapsedPlayer;
+        int framesElapsedEnemy;
         int framesElapsedProjectile;
 
         // Values used for screen movement 
@@ -400,7 +403,7 @@ namespace GroupGame
             cancelButton = this.Content.Load<Texture2D>("Cancel");
 
             // Load images for the game
-            enemyImage = this.Content.Load<Texture2D>("EnemyThing");
+            enemyImage = this.Content.Load<Texture2D>("Enemy");
             player1Image = this.Content.Load<Texture2D>("Fire Still");
             player1Walking = this.Content.Load<Texture2D>("Fire Move");
             bullet1Image = this.Content.Load<Texture2D>("Fire Bullet");
@@ -482,6 +485,9 @@ namespace GroupGame
 
             framesElapsedProjectile = (int)(gameTime.TotalGameTime.TotalMilliseconds / timePerFrame);
             frameProjectile = framesElapsedProjectile % numFramesProjectile;
+
+            framesElapsedEnemy = (int)(gameTime.TotalGameTime.TotalMilliseconds / timePerFrame);
+            frameEnemy = framesElapsedEnemy % numFramesEnemy;
 
             // Switch statement based on gState
             switch (gState)
@@ -764,7 +770,7 @@ namespace GroupGame
                     // Draw all alive enemies
                     foreach (Enemy e in enemies)
                     {
-                        if (e.Alive == true) e.Draw(spriteBatch);
+                        if (e.Alive == true) e.Draw(spriteBatch, rotationAngle, frameEnemy);
                     }
 
                     foreach (Projectile p in projectiles)

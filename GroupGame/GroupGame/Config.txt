@@ -1,5 +1,5 @@
-<<<<<<< HEAD
-fullscreen = True
+fullscreen = False
+reen = True
 =======
 fullscreen = False
 reen = True
