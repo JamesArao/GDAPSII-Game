@@ -506,52 +506,7 @@ namespace GroupGame
             {
                 // Game is in Menu
                 case GameState.Menu:
-                    /*
-                    // CHOOSING BETWEEN CHARACTERS
-                    if (kbState.IsKeyDown(Keys.U) == true)
-                    {
-                        switchHero = SwitchHero.Fire;     
-                    }
-                    else if (kbState.IsKeyDown(Keys.I) == true)
-                    {
-                        switchHero = SwitchHero.Earth;
-                    }
-                    else if (kbState.IsKeyDown(Keys.O) == true)
-                    {
-                        switchHero = SwitchHero.Electric;
-                    }
-                    else if (kbState.IsKeyDown(Keys.P) == true)
-                    {
-                        switchHero = SwitchHero.Water;
-                    }
                     
-                    switch(switchHero)
-                    {
-                        case SwitchHero.Fire:
-                            playerImage = player1Image;
-                            playerWalking = player1Walking;
-                            bulletImage = bullet1Image;
-                            break;
-
-                        case SwitchHero.Earth:
-                            playerImage = player2Image;
-                            playerWalking = player2Walking;
-                            bulletImage = bullet2Image;
-                            break;
-
-                        case SwitchHero.Electric:
-                            playerImage = player3Image;
-                            playerWalking = player3Walking;
-                            bulletImage = bullet3Image;
-                            break;
-
-                        case SwitchHero.Water:
-                            playerImage = player4Image;
-                            playerWalking = player4Walking;
-                            bulletImage = bullet4Image;
-                            break;
-                    }
-                    */
                     // Checks to see if the start button has been pressed
                     rSButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rSButton.Width/2), (GraphicsDevice.Viewport.Height / 2) - (rSButton.Height/2), startButton.Width/4, startButton.Height/4);
                     rOButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rOButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (rOButton.Height), startButton.Width / 4, startButton.Height / 4);
@@ -570,10 +525,11 @@ namespace GroupGame
                 // Game is in Character selection mode
                 case GameState.CharacterSelection:
 
-                    char1 = new Rectangle((GraphicsDevice.Viewport.Width / 4) - (rSButton.Width), (GraphicsDevice.Viewport.Height) - (rSButton.Height)*3, startButton.Width / 4, startButton.Height / 4);
-                    char2 = new Rectangle((GraphicsDevice.Viewport.Width / 4)*2 - (rSButton.Width), (GraphicsDevice.Viewport.Height) - (rSButton.Height)*3, startButton.Width / 4, startButton.Height / 4);
-                    char3 = new Rectangle((GraphicsDevice.Viewport.Width / 4)*3 - (rSButton.Width), (GraphicsDevice.Viewport.Height) - (rSButton.Height)*3, startButton.Width / 4, startButton.Height / 4);
-                    char4 = new Rectangle((GraphicsDevice.Viewport.Width / 4)*4 - (rSButton.Width), (GraphicsDevice.Viewport.Height) - (rSButton.Height)*3, startButton.Width / 4, startButton.Height / 4);
+                    // Checks to see which of the character buttons had been pressed
+                    char1 = new Rectangle((GraphicsDevice.Viewport.Width / 5) - (rSButton.Width/2), (GraphicsDevice.Viewport.Height) - (rSButton.Height) * 3, startButton.Width / 4, startButton.Height / 4);
+                    char2 = new Rectangle((GraphicsDevice.Viewport.Width / 5)*2 - (rSButton.Width/2), (GraphicsDevice.Viewport.Height) - (rSButton.Height) * 3, startButton.Width / 4, startButton.Height / 4);
+                    char3 = new Rectangle((GraphicsDevice.Viewport.Width / 5)*3 - (rSButton.Width/2), (GraphicsDevice.Viewport.Height) - (rSButton.Height) * 3, startButton.Width / 4, startButton.Height / 4);
+                    char4 = new Rectangle((GraphicsDevice.Viewport.Width / 5)*4 - (rSButton.Width/2), (GraphicsDevice.Viewport.Height) - (rSButton.Height) * 3, startButton.Width / 4, startButton.Height / 4);
 
                     mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
 
@@ -845,6 +801,15 @@ namespace GroupGame
                     {
                         spriteBatch.Draw(fireButton, char1, Color.Red);
 
+                        switchHero = SwitchHero.Fire;
+                        playerImage = player1Image;
+                        playerWalking = player1Walking;
+                        bulletImage = bullet1Image;
+                        c.Image = playerWalking;
+                        numFramesPlayer = 8;
+                        c.Position = new Rectangle((char1.X + char1.Width / 2) - c.Position.Width / 2, (char1.Y - char1.Height) - c.Position.Height, c.Position.Width, c.Position.Height);
+                        c.Draw(spriteBatch, rotationAngle, framePlayer);
+
                     }
                     else
                     {
@@ -854,6 +819,15 @@ namespace GroupGame
                     if (char2.Intersects(mRectangle))
                     {
                         spriteBatch.Draw(earthButton, char2, Color.Red);
+
+                        switchHero = SwitchHero.Earth;
+                        playerImage = player2Image;
+                        playerWalking = player2Walking;
+                        bulletImage = bullet2Image;
+                        c.Image = playerWalking;
+                        numFramesPlayer = 8;
+                        c.Position = new Rectangle((char2.X + char2.Width / 2) - c.Position.Width / 2, (char2.Y - char2.Height) - c.Position.Height, c.Position.Width, c.Position.Height);
+                        c.Draw(spriteBatch, rotationAngle, framePlayer);
                     }
                     else
                     {
@@ -863,6 +837,15 @@ namespace GroupGame
                     if (char3.Intersects(mRectangle))
                     {
                         spriteBatch.Draw(waterButton, char3, Color.Red);
+
+                        switchHero = SwitchHero.Water;
+                        playerImage = player4Image;
+                        playerWalking = player4Walking;
+                        bulletImage = bullet4Image;
+                        c.Image = playerWalking;
+                        numFramesPlayer = 8;
+                        c.Position = new Rectangle((char3.X + char3.Width / 2) - c.Position.Width / 2, (char3.Y - char3.Height) - c.Position.Height, c.Position.Width, c.Position.Height);
+                        c.Draw(spriteBatch, rotationAngle, framePlayer);
                     }
                     else
                     {
@@ -872,6 +855,15 @@ namespace GroupGame
                     if (char4.Intersects(mRectangle))
                     {
                         spriteBatch.Draw(electricButton, char4, Color.Red);
+
+                        switchHero = SwitchHero.Electric;
+                        playerImage = player3Image;
+                        playerWalking = player3Walking;
+                        bulletImage = bullet3Image;
+                        c.Image = playerWalking;
+                        numFramesPlayer = 8;
+                        c.Position = new Rectangle((char4.X + char4.Width / 2) - c.Position.Width / 2, (char4.Y - char1.Height) - c.Position.Height, c.Position.Width, c.Position.Height);
+                        c.Draw(spriteBatch, rotationAngle, framePlayer);
                     }
                     else
                     {
