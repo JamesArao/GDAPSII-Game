@@ -104,6 +104,15 @@ namespace GroupGame
             }
         }
 
+        /*
+        public Vector2 Rotate(Vector2 source, Vector2 target, float rad)
+        {
+            Vector2 around = source - target;
+            float newX = (float)(around.X * Math.Cos(rad) - around.Y * Math.Sin(rad));
+            float newY = (float)(around.X * Math.Sin(rad) - around.Y * Math.Cos(rad));
+            return target + new Vector2(newX, newY);
+        }*/
+
         // Constructor
         public Enemy1(int posX, int posY):base(posX, posY)
         {

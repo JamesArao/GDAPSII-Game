@@ -57,6 +57,14 @@ namespace GroupGame
         // Method to move the enemy
         public abstract void Move(Character c, List<Enemy> enemies);
 
+        /*
+        public void RotateTest(float rAngle)
+        {
+            Vector2 points = new Vector2(CRect.X, CRect.Y);
+            points = Vector2.Transform(points, Matrix.CreateRotationZ(rAngle));
+            CRect = new Rectangle(new Point((int)points.X, (int)points.Y), new Point(CRect.Width, CRect.Height));
+        }*/
+
         public void Draw(SpriteBatch sprite, float rAngle, int f)
         {
             // Create a Vector2 origin which equals the center of one frame of the player image

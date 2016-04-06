@@ -318,7 +318,7 @@ namespace GroupGame
         {
             enemies.Clear();
             projectiles.Clear();
-            c.Position = new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2, c.Position.Width, c.Position.Height);
+            c.Position = new Rectangle(GraphicsDevice.Viewport.Width / 2 - c.Position.Width / 2, GraphicsDevice.Viewport.Height / 2 - c.Position.Height / 2, c.Position.Width, c.Position.Height);
             maxX = 1500 - GraphicsDevice.Viewport.Width;
             if (maxX < 0) maxX = 0;
             maxY = 1000 - GraphicsDevice.Viewport.Height;
@@ -883,18 +883,8 @@ namespace GroupGame
 
                 // Game is in Horde Mode
                 case GameState.HordeMode:
-                    c.Draw(spriteBatch,rotationAngle, framePlayer); // Draw the character
                     spriteBatch.DrawString(sFont, "X: " + globalX, new Vector2(40, 275), Color.Black);
                     spriteBatch.DrawString(sFont, "Y: " + globalY, new Vector2(40, 300), Color.Black);
-
-                    // Draw all alive enemies
-                    foreach (Enemy e in enemies)
-                    {
-                        int aX = e.Position.X - c.Position.X;
-                        int aY = e.Position.Y - c.Position.Y;
-                        float enemyAngle = -(float)(Math.Atan2(aX, aY) + Math.PI / 2);
-                        if (e.Alive == true) e.Draw(spriteBatch, enemyAngle, frameEnemy);
-                    }
 
                     foreach (Projectile p in projectiles)
                     {
@@ -903,6 +893,17 @@ namespace GroupGame
                             p.Draw(spriteBatch, frameProjectile);
                         }
                         else p.DrawStationary(spriteBatch, frameProjectile, rotationAngle);
+                    }
+
+                    c.Draw(spriteBatch, rotationAngle, framePlayer); // Draw the character
+
+                    // Draw all alive enemies
+                    foreach (Enemy e in enemies)
+                    {
+                        int aX = e.Position.X - c.Position.X;
+                        int aY = e.Position.Y - c.Position.Y;
+                        float enemyAngle = -(float)(Math.Atan2(aX, aY) + Math.PI / 2);
+                        if (e.Alive == true) e.Draw(spriteBatch, enemyAngle, frameEnemy);
                     }
 
                     // Code for drawing interface
@@ -935,11 +936,21 @@ namespace GroupGame
                     break;
 
                 case GameState.Paused:
-                    c.Draw(spriteBatch, rotationAngle, framePlayer); // Draw the character
+                    // Draw the player
+                    spriteBatch.Draw(playerImage, new Rectangle(c.Position.X + c.Position.Width / 2, c.Position.Y + c.Position.Height / 2, c.Position.Width, c.Position.Height), new Rectangle(0, 0, 32, 32), Color.White, rotationAngle - (float)Math.PI / 2, new Vector2(16,16), SpriteEffects.None, 0);
+                   
                     // Draw all alive enemies
                     foreach (Enemy e in enemies)
                     {
-                        if (e.Alive == true) e.Draw(spriteBatch);
+                        if (e.Alive == true)
+                        {
+                            // Draw the enemy at it's position plus half its size, and rotate it based on enemyAngle
+                            int aX = e.Position.X - c.Position.X;
+                            int aY = e.Position.Y - c.Position.Y;
+                            float enemyAngle = -(float)(Math.Atan2(aX, aY) + Math.PI / 2);
+                            spriteBatch.Draw(e.Image, new Rectangle(e.Position.X + e.Position.Width / 2, e.Position.Y + e.Position.Height / 2, e.Position.Width, e.Position.Height), new Rectangle(0, 0, 32, 32), Color.White, enemyAngle - (float)Math.PI / 2, new Vector2(16, 16), SpriteEffects.None, 0);
+                        }
+                        
                     }
 
                     foreach (Projectile p in projectiles)
