@@ -99,7 +99,7 @@ namespace GroupGame
                         }
                     }
                     Position = new Rectangle(newX, newY, Position.Width, Position.Height);
-                    CRect = new Rectangle(newX + 7, newY + 7, CRect.Width, CRect.Height);
+                    CRect = new Rectangle(newX + 15, newY + 15, CRect.Width, CRect.Height);
                     break;
             }
         }
@@ -117,7 +117,7 @@ namespace GroupGame
         public Enemy1(int posX, int posY):base(posX, posY)
         {
             Position = new Rectangle(posX, posY, 50, 50); // Set position
-            CRect = new Rectangle(posX + 7, posY + 7, 36, 36); // Set the cRect based on the position
+            CRect = new Rectangle(posX + 15, posY + 15, 20, 20); // Set the cRect based on the position
             Health = 100; // Set health
             EState = EnemyState.Chase; // Set EState to chase, for testing
         }
