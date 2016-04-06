@@ -886,8 +886,8 @@ namespace GroupGame
                 case GameState.HordeMode:
                     spriteBatch.Draw(background, new Rectangle(backgroundPoint, new Point(1800, 1300)), Color.White);
                     c.Draw(spriteBatch,rotationAngle, framePlayer); // Draw the character
-                    spriteBatch.DrawString(sFont, "X: " + globalX, new Vector2(40, 275), Color.Black);
-                    spriteBatch.DrawString(sFont, "Y: " + globalY, new Vector2(40, 300), Color.Black);
+                    //spriteBatch.DrawString(sFont, "X: " + globalX, new Vector2(40, 275), Color.Black);
+                    //spriteBatch.DrawString(sFont, "Y: " + globalY, new Vector2(40, 300), Color.Black);
 
                     foreach (Projectile p in projectiles)
                     {
@@ -950,9 +950,19 @@ namespace GroupGame
                     break;
 
                 case GameState.Paused:
+                    // Draw background
+                    spriteBatch.Draw(background, new Rectangle(backgroundPoint, new Point(1800, 1300)), Color.White);
+
+                    // Draw projectiles
+                    foreach (Projectile p in projectiles)
+                    {
+                        if (p.Moving == true) p.Draw(spriteBatch, frameProjectile);
+                        else p.DrawStationary(spriteBatch, frameProjectile, rotationAngle);
+                    }
+
                     // Draw the player
-                    spriteBatch.Draw(playerImage, new Rectangle(c.Position.X + c.Position.Width / 2, c.Position.Y + c.Position.Height / 2, c.Position.Width, c.Position.Height), new Rectangle(0, 0, 32, 32), Color.White, rotationAngle - (float)Math.PI / 2, new Vector2(16,16), SpriteEffects.None, 0);
-                   
+                    spriteBatch.Draw(playerImage, new Rectangle(c.Position.X + c.Position.Width / 2, c.Position.Y + c.Position.Height / 2, c.Position.Width, c.Position.Height), new Rectangle(0, 0, 32, 32), Color.White, rotationAngle - (float)Math.PI / 2, new Vector2(16, 16), SpriteEffects.None, 0);
+
                     // Draw all alive enemies
                     foreach (Enemy e in enemies)
                     {
@@ -967,11 +977,6 @@ namespace GroupGame
                         
                     }
 
-                    foreach (Projectile p in projectiles)
-                    {
-                        if (p.Moving == true) p.Draw(spriteBatch, frameProjectile);
-                        else p.DrawStationary(spriteBatch, frameProjectile, rotationAngle);
-                    }
                     // Draw pause
                     spriteBatch.Draw(whiteBox, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.Gray * .5f);
                     spriteBatch.Draw(paused, new Rectangle((GraphicsDevice.Viewport.Width / 2) - (paused.Width / 8), (GraphicsDevice.Viewport.Height / 2) - (paused.Height / 2), paused.Width / 4, paused.Height / 4), Color.White);
