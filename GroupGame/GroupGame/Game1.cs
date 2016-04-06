@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-enum GameState { Menu, HordeMode, Paused, Options}; // GameState enum for keeping track of what state our game is in
+enum GameState { Menu, HordeMode, Paused, Options, CharacterSelection}; // GameState enum for keeping track of what state our game is in
 enum AbilityState { a1, a2, a3, a4 }; // AbilityState enum for keeping track of the ability the player is using
 enum HeroState { Still, Walking }; // HeroState enum for keeping track of the state of the player
 enum SwitchHero { Fire, Earth, Water, Electric}; // switch heroes
@@ -60,6 +60,10 @@ namespace GroupGame
         Texture2D menu;
         Texture2D rectangle;
         Texture2D circle;
+        Texture2D fireButton;
+        Texture2D earthButton;
+        Texture2D electricButton;
+        Texture2D waterButton;
 
         // Rectangles for buttons and mouse
         Rectangle rSButton;
@@ -67,6 +71,10 @@ namespace GroupGame
         Rectangle mRectangle;
         Rectangle rMButton;
         Rectangle rFButton;
+        Rectangle char1;
+        Rectangle char2;
+        Rectangle char3;
+        Rectangle char4;
         
         // Characters, enemies, and projectiles
         Character c;
@@ -422,6 +430,10 @@ namespace GroupGame
             menu = this.Content.Load<Texture2D>("menuButton");
             rectangle = this.Content.Load<Texture2D>("WhiteRectangle");
             circle = this.Content.Load<Texture2D>("WhiteCircle");
+            fireButton = this.Content.Load<Texture2D>("fireButton");
+            earthButton = this.Content.Load<Texture2D>("earthButton");
+            electricButton = this.Content.Load<Texture2D>("lightningButton");
+            waterButton = this.Content.Load<Texture2D>("waterButton");
 
             // Load fonts
             sFont = this.Content.Load<SpriteFont>("SpriteFont1");
@@ -494,7 +506,7 @@ namespace GroupGame
             {
                 // Game is in Menu
                 case GameState.Menu:
-
+                    /*
                     // CHOOSING BETWEEN CHARACTERS
                     if (kbState.IsKeyDown(Keys.U) == true)
                     {
@@ -512,7 +524,7 @@ namespace GroupGame
                     {
                         switchHero = SwitchHero.Water;
                     }
-
+                    
                     switch(switchHero)
                     {
                         case SwitchHero.Fire:
@@ -539,7 +551,7 @@ namespace GroupGame
                             bulletImage = bullet4Image;
                             break;
                     }
-
+                    */
                     // Checks to see if the start button has been pressed
                     rSButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rSButton.Width/2), (GraphicsDevice.Viewport.Height / 2) - (rSButton.Height/2), startButton.Width/4, startButton.Height/4);
                     rOButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rOButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (rOButton.Height), startButton.Width / 4, startButton.Height / 4);
@@ -547,12 +559,77 @@ namespace GroupGame
                     if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rSButton))
                     {
                         ResetGame();
-                        gState = GameState.HordeMode;
+                        gState = GameState.CharacterSelection;
                     }
                     if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rOButton))
                     {
                         gState = GameState.Options;
                     }
+                    break;
+
+                // Game is in Character selection mode
+                case GameState.CharacterSelection:
+
+                    char1 = new Rectangle((GraphicsDevice.Viewport.Width / 4) - (rSButton.Width), (GraphicsDevice.Viewport.Height) - (rSButton.Height)*3, startButton.Width / 4, startButton.Height / 4);
+                    char2 = new Rectangle((GraphicsDevice.Viewport.Width / 4)*2 - (rSButton.Width), (GraphicsDevice.Viewport.Height) - (rSButton.Height)*3, startButton.Width / 4, startButton.Height / 4);
+                    char3 = new Rectangle((GraphicsDevice.Viewport.Width / 4)*3 - (rSButton.Width), (GraphicsDevice.Viewport.Height) - (rSButton.Height)*3, startButton.Width / 4, startButton.Height / 4);
+                    char4 = new Rectangle((GraphicsDevice.Viewport.Width / 4)*4 - (rSButton.Width), (GraphicsDevice.Viewport.Height) - (rSButton.Height)*3, startButton.Width / 4, startButton.Height / 4);
+
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+
+                    if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(char1))
+                    {
+                        switchHero = SwitchHero.Fire;
+                        playerImage = player1Image;
+                        playerWalking = player1Walking;
+                        bulletImage = bullet1Image;
+                        ResetGame();
+                        gState = GameState.HordeMode;
+                    }
+
+                    if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(char2))
+                    {
+                        switchHero = SwitchHero.Earth;
+                        playerImage = player2Image;
+                        playerWalking = player2Walking;
+                        bulletImage = bullet2Image;
+                        ResetGame();
+                        gState = GameState.HordeMode;
+                    }
+
+                    if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(char3))
+                    {
+                        switchHero = SwitchHero.Water;
+                        playerImage = player4Image;
+                        playerWalking = player4Walking;
+                        bulletImage = bullet4Image;
+                        ResetGame();
+                        gState = GameState.HordeMode;
+                    }
+
+                    if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(char4))
+                    {
+                        switchHero = SwitchHero.Electric;
+                        playerImage = player3Image;
+                        playerWalking = player3Walking;
+                        bulletImage = bullet3Image;
+                        ResetGame();
+                        gState = GameState.HordeMode;
+                    }
+
+                    heroState = HeroState.Walking;
+
+                    if (heroState == HeroState.Walking)
+                    {
+                        c.Image = playerWalking;
+                        numFramesPlayer = 8;
+                    }
+                    else if (heroState == HeroState.Still)
+                    {
+                        c.Image = playerImage;
+                        numFramesPlayer = 3;
+                    }
+
                     break;
 
                 // Game is in Horde Mode
@@ -759,6 +836,49 @@ namespace GroupGame
                     {
                         spriteBatch.Draw(optionsButton, rOButton, Color.White);
                     }
+                    break;
+
+                // Game is in character selection screen
+                case GameState.CharacterSelection:
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+                    if (char1.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(fireButton, char1, Color.Red);
+
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(fireButton, char1, Color.White);
+                    }
+
+                    if (char2.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(earthButton, char2, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(earthButton, char2, Color.White);
+                    }
+
+                    if (char3.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(waterButton, char3, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(waterButton, char3, Color.White);
+                    }
+
+                    if (char4.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(electricButton, char4, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(electricButton, char4, Color.White);
+                    }
+
+
                     break;
 
                 // Game is in Horde Mode
