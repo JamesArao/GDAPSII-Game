@@ -64,6 +64,7 @@ namespace GroupGame
         Texture2D earthButton;
         Texture2D electricButton;
         Texture2D waterButton;
+        Texture2D background;
 
         // Rectangles for buttons and mouse
         Rectangle rSButton;
@@ -437,6 +438,8 @@ namespace GroupGame
 
             // Load fonts
             sFont = this.Content.Load<SpriteFont>("SpriteFont1");
+
+            background = this.Content.Load<Texture2D>("background");
         }
 
         /// <summary>
@@ -506,52 +509,7 @@ namespace GroupGame
             {
                 // Game is in Menu
                 case GameState.Menu:
-                    /*
-                    // CHOOSING BETWEEN CHARACTERS
-                    if (kbState.IsKeyDown(Keys.U) == true)
-                    {
-                        switchHero = SwitchHero.Fire;     
-                    }
-                    else if (kbState.IsKeyDown(Keys.I) == true)
-                    {
-                        switchHero = SwitchHero.Earth;
-                    }
-                    else if (kbState.IsKeyDown(Keys.O) == true)
-                    {
-                        switchHero = SwitchHero.Electric;
-                    }
-                    else if (kbState.IsKeyDown(Keys.P) == true)
-                    {
-                        switchHero = SwitchHero.Water;
-                    }
                     
-                    switch(switchHero)
-                    {
-                        case SwitchHero.Fire:
-                            playerImage = player1Image;
-                            playerWalking = player1Walking;
-                            bulletImage = bullet1Image;
-                            break;
-
-                        case SwitchHero.Earth:
-                            playerImage = player2Image;
-                            playerWalking = player2Walking;
-                            bulletImage = bullet2Image;
-                            break;
-
-                        case SwitchHero.Electric:
-                            playerImage = player3Image;
-                            playerWalking = player3Walking;
-                            bulletImage = bullet3Image;
-                            break;
-
-                        case SwitchHero.Water:
-                            playerImage = player4Image;
-                            playerWalking = player4Walking;
-                            bulletImage = bullet4Image;
-                            break;
-                    }
-                    */
                     // Checks to see if the start button has been pressed
                     rSButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rSButton.Width/2), (GraphicsDevice.Viewport.Height / 2) - (rSButton.Height/2), startButton.Width/4, startButton.Height/4);
                     rOButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rOButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (rOButton.Height), startButton.Width / 4, startButton.Height / 4);
@@ -883,6 +841,7 @@ namespace GroupGame
 
                 // Game is in Horde Mode
                 case GameState.HordeMode:
+                    spriteBatch.Draw(background, new Rectangle(0, 0, 1500, 1000), Color.White);
                     c.Draw(spriteBatch,rotationAngle, framePlayer); // Draw the character
                     spriteBatch.DrawString(sFont, "X: " + globalX, new Vector2(40, 275), Color.Black);
                     spriteBatch.DrawString(sFont, "Y: " + globalY, new Vector2(40, 300), Color.Black);
