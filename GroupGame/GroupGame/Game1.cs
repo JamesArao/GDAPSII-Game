@@ -64,6 +64,7 @@ namespace GroupGame
         Texture2D earthButton;
         Texture2D electricButton;
         Texture2D waterButton;
+        Texture2D background;
 
         // Rectangles for buttons and mouse
         Rectangle rSButton;
@@ -318,7 +319,7 @@ namespace GroupGame
         {
             enemies.Clear();
             projectiles.Clear();
-            c.Position = new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2, c.Position.Width, c.Position.Height);
+            c.Position = new Rectangle(GraphicsDevice.Viewport.Width / 2 - c.Position.Width / 2, GraphicsDevice.Viewport.Height / 2 - c.Position.Height / 2, c.Position.Width, c.Position.Height);
             maxX = 1500 - GraphicsDevice.Viewport.Width;
             if (maxX < 0) maxX = 0;
             maxY = 1000 - GraphicsDevice.Viewport.Height;
@@ -437,6 +438,8 @@ namespace GroupGame
 
             // Load fonts
             sFont = this.Content.Load<SpriteFont>("SpriteFont1");
+
+            background = this.Content.Load<Texture2D>("background");
         }
 
         /// <summary>
@@ -875,18 +878,10 @@ namespace GroupGame
 
                 // Game is in Horde Mode
                 case GameState.HordeMode:
+                    spriteBatch.Draw(background, new Rectangle(0, 0, 1500, 1000), Color.White);
                     c.Draw(spriteBatch,rotationAngle, framePlayer); // Draw the character
                     spriteBatch.DrawString(sFont, "X: " + globalX, new Vector2(40, 275), Color.Black);
                     spriteBatch.DrawString(sFont, "Y: " + globalY, new Vector2(40, 300), Color.Black);
-
-                    // Draw all alive enemies
-                    foreach (Enemy e in enemies)
-                    {
-                        int aX = e.Position.X - c.Position.X;
-                        int aY = e.Position.Y - c.Position.Y;
-                        float enemyAngle = -(float)(Math.Atan2(aX, aY) + Math.PI / 2);
-                        if (e.Alive == true) e.Draw(spriteBatch, enemyAngle, frameEnemy);
-                    }
 
                     foreach (Projectile p in projectiles)
                     {
@@ -897,41 +892,73 @@ namespace GroupGame
                         else p.DrawStationary(spriteBatch, frameProjectile, rotationAngle);
                     }
 
+                    c.Draw(spriteBatch, rotationAngle, framePlayer); // Draw the character
+
+                    // Draw all alive enemies
+                    foreach (Enemy e in enemies)
+                    {
+                        int aX = e.Position.X - c.Position.X;
+                        int aY = e.Position.Y - c.Position.Y;
+                        float enemyAngle = -(float)(Math.Atan2(aX, aY) + Math.PI / 2);
+                        if (e.Alive == true) e.Draw(spriteBatch, enemyAngle, frameEnemy);
+                    }
+
                     // Code for drawing interface
                     spriteBatch.DrawString(sFont, "Round " + round, new Vector2(GraphicsDevice.Viewport.Width - 100, GraphicsDevice.Viewport.Height - 40), Color.Black);
                     spriteBatch.DrawString(sFont, "Score", new Vector2(30, GraphicsDevice.Viewport.Height - 60), Color.Black);
                     spriteBatch.DrawString(sFont, "" + score, new Vector2(30, GraphicsDevice.Viewport.Height - 40), Color.Black);
-                    spriteBatch.Draw(rectangle, new Rectangle(25, 20, 42, 50), Color.DodgerBlue);
-                    spriteBatch.Draw(rectangle, new Rectangle(25, 40, 300, 35), Color.DodgerBlue);
-                    spriteBatch.Draw(circle, new Rectangle(300, 10, 100, 100), Color.DodgerBlue);
-                    spriteBatch.DrawString(sFont, "Life", new Vector2(30, 25), Color.Black);
-                    spriteBatch.Draw(rectangle, new Rectangle(30, 45, 200, 20), Color.Red);
-                    spriteBatch.Draw(rectangle, new Rectangle(30, 45, c.Health * 2, 20), Color.LawnGreen);
+                    spriteBatch.Draw(rectangle, new Rectangle(295, 20, 42, 50), Color.DodgerBlue);
+                    spriteBatch.Draw(rectangle, new Rectangle(295, 40, 300, 35), Color.DodgerBlue);
+                    spriteBatch.Draw(rectangle, new Rectangle(640, 40, 300, 35), Color.DodgerBlue);
+                    spriteBatch.Draw(circle, new Rectangle(900, 10, 100, 100), Color.DodgerBlue);
+                    spriteBatch.Draw(circle, new Rectangle(570, 10, 100, 100), Color.DodgerBlue);
+                    spriteBatch.Draw(circle, new Rectangle(580, 20, 80, 80), Color.DarkBlue);
+                    spriteBatch.DrawString(sFont, "Life", new Vector2(300, 25), Color.Black);
+                    spriteBatch.Draw(rectangle, new Rectangle(300, 45, 260, 20), Color.Red);
+                    spriteBatch.Draw(rectangle, new Rectangle(300, 45, c.Health * 13/5, 20), Color.LawnGreen);
 
                     // Switch statement that draws the image for the ability the player is using for the interface
                     switch (aState)
                     {
                         case AbilityState.a1:
-                            spriteBatch.Draw(meleeImage, new Rectangle(330, 40, 40, 40), Color.White);
+                            spriteBatch.Draw(meleeImage, new Rectangle(600, 40, 40, 40), Color.White);
+                            spriteBatch.Draw(bulletImage, new Rectangle(550, 10, 20, 20), new Rectangle(32, 0, 32, 32), Color.White); //prev wpn
+                            spriteBatch.Draw(bulletImage, new Rectangle(660, 0, 30, 30), new Rectangle(32, 0, 32, 32), Color.White); //next wpn
                             break;
                         case AbilityState.a2:
-                            spriteBatch.Draw(bulletImage, new Rectangle(330, 40, 40, 40), new Rectangle(32, 0, 32, 32), Color.White);
+                            spriteBatch.Draw(bulletImage, new Rectangle(600, 40, 40, 40), new Rectangle(32, 0, 32, 32), Color.White);
+                            spriteBatch.Draw(meleeImage, new Rectangle(540, 5, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                            spriteBatch.Draw(bulletImage, new Rectangle(654, -10, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
                             break;
                         case AbilityState.a3:
-                            spriteBatch.Draw(bulletImage, new Rectangle(323, 30, 55, 55), new Rectangle(32, 0, 32, 32), Color.White);
+                            spriteBatch.Draw(bulletImage, new Rectangle(593, 30, 55, 55), new Rectangle(32, 0, 32, 32), Color.White);
+                            spriteBatch.Draw(bulletImage, new Rectangle(540, 0, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                            spriteBatch.Draw(bulletImage, new Rectangle(660, 10, 20, 20), new Rectangle(32, 0, 32, 32), Color.White);
                             break;
                         case AbilityState.a4:
-                            spriteBatch.Draw(bulletImage, new Rectangle(336, 45, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                            spriteBatch.Draw(bulletImage, new Rectangle(606, 45, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                            spriteBatch.Draw(bulletImage, new Rectangle(541, -10, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
+                            spriteBatch.Draw(meleeImage, new Rectangle(670, 5, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
                             break;
                     }
                     break;
 
                 case GameState.Paused:
-                    c.Draw(spriteBatch, rotationAngle, framePlayer); // Draw the character
+                    // Draw the player
+                    spriteBatch.Draw(playerImage, new Rectangle(c.Position.X + c.Position.Width / 2, c.Position.Y + c.Position.Height / 2, c.Position.Width, c.Position.Height), new Rectangle(0, 0, 32, 32), Color.White, rotationAngle - (float)Math.PI / 2, new Vector2(16,16), SpriteEffects.None, 0);
+                   
                     // Draw all alive enemies
                     foreach (Enemy e in enemies)
                     {
-                        if (e.Alive == true) e.Draw(spriteBatch);
+                        if (e.Alive == true)
+                        {
+                            // Draw the enemy at it's position plus half its size, and rotate it based on enemyAngle
+                            int aX = e.Position.X - c.Position.X;
+                            int aY = e.Position.Y - c.Position.Y;
+                            float enemyAngle = -(float)(Math.Atan2(aX, aY) + Math.PI / 2);
+                            spriteBatch.Draw(e.Image, new Rectangle(e.Position.X + e.Position.Width / 2, e.Position.Y + e.Position.Height / 2, e.Position.Width, e.Position.Height), new Rectangle(0, 0, 32, 32), Color.White, enemyAngle - (float)Math.PI / 2, new Vector2(16, 16), SpriteEffects.None, 0);
+                        }
+                        
                     }
 
                     foreach (Projectile p in projectiles)
