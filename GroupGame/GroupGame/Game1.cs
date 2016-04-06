@@ -534,10 +534,11 @@ namespace GroupGame
                 // Game is in Character selection mode
                 case GameState.CharacterSelection:
 
-                    char1 = new Rectangle((GraphicsDevice.Viewport.Width / 4) - (rSButton.Width), (GraphicsDevice.Viewport.Height) - (rSButton.Height)*3, startButton.Width / 4, startButton.Height / 4);
-                    char2 = new Rectangle((GraphicsDevice.Viewport.Width / 4)*2 - (rSButton.Width), (GraphicsDevice.Viewport.Height) - (rSButton.Height)*3, startButton.Width / 4, startButton.Height / 4);
-                    char3 = new Rectangle((GraphicsDevice.Viewport.Width / 4)*3 - (rSButton.Width), (GraphicsDevice.Viewport.Height) - (rSButton.Height)*3, startButton.Width / 4, startButton.Height / 4);
-                    char4 = new Rectangle((GraphicsDevice.Viewport.Width / 4)*4 - (rSButton.Width), (GraphicsDevice.Viewport.Height) - (rSButton.Height)*3, startButton.Width / 4, startButton.Height / 4);
+                    // Checks to see which of the character buttons had been pressed
+                    char1 = new Rectangle((GraphicsDevice.Viewport.Width / 5) - (rSButton.Width/2), (GraphicsDevice.Viewport.Height) - (rSButton.Height) * 3, startButton.Width / 4, startButton.Height / 4);
+                    char2 = new Rectangle((GraphicsDevice.Viewport.Width / 5)*2 - (rSButton.Width/2), (GraphicsDevice.Viewport.Height) - (rSButton.Height) * 3, startButton.Width / 4, startButton.Height / 4);
+                    char3 = new Rectangle((GraphicsDevice.Viewport.Width / 5)*3 - (rSButton.Width/2), (GraphicsDevice.Viewport.Height) - (rSButton.Height) * 3, startButton.Width / 4, startButton.Height / 4);
+                    char4 = new Rectangle((GraphicsDevice.Viewport.Width / 5)*4 - (rSButton.Width/2), (GraphicsDevice.Viewport.Height) - (rSButton.Height) * 3, startButton.Width / 4, startButton.Height / 4);
 
                     mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
 
@@ -809,6 +810,15 @@ namespace GroupGame
                     {
                         spriteBatch.Draw(fireButton, char1, Color.Red);
 
+                        switchHero = SwitchHero.Fire;
+                        playerImage = player1Image;
+                        playerWalking = player1Walking;
+                        bulletImage = bullet1Image;
+                        c.Image = playerWalking;
+                        numFramesPlayer = 8;
+                        c.Position = new Rectangle((char1.X + char1.Width / 2) - c.Position.Width / 2, (char1.Y - char1.Height) - c.Position.Height, c.Position.Width, c.Position.Height);
+                        c.Draw(spriteBatch, rotationAngle, framePlayer);
+
                     }
                     else
                     {
@@ -818,6 +828,15 @@ namespace GroupGame
                     if (char2.Intersects(mRectangle))
                     {
                         spriteBatch.Draw(earthButton, char2, Color.Red);
+
+                        switchHero = SwitchHero.Earth;
+                        playerImage = player2Image;
+                        playerWalking = player2Walking;
+                        bulletImage = bullet2Image;
+                        c.Image = playerWalking;
+                        numFramesPlayer = 8;
+                        c.Position = new Rectangle((char2.X + char2.Width / 2) - c.Position.Width / 2, (char2.Y - char2.Height) - c.Position.Height, c.Position.Width, c.Position.Height);
+                        c.Draw(spriteBatch, rotationAngle, framePlayer);
                     }
                     else
                     {
@@ -827,6 +846,15 @@ namespace GroupGame
                     if (char3.Intersects(mRectangle))
                     {
                         spriteBatch.Draw(waterButton, char3, Color.Red);
+
+                        switchHero = SwitchHero.Water;
+                        playerImage = player4Image;
+                        playerWalking = player4Walking;
+                        bulletImage = bullet4Image;
+                        c.Image = playerWalking;
+                        numFramesPlayer = 8;
+                        c.Position = new Rectangle((char3.X + char3.Width / 2) - c.Position.Width / 2, (char3.Y - char3.Height) - c.Position.Height, c.Position.Width, c.Position.Height);
+                        c.Draw(spriteBatch, rotationAngle, framePlayer);
                     }
                     else
                     {
@@ -836,6 +864,15 @@ namespace GroupGame
                     if (char4.Intersects(mRectangle))
                     {
                         spriteBatch.Draw(electricButton, char4, Color.Red);
+
+                        switchHero = SwitchHero.Electric;
+                        playerImage = player3Image;
+                        playerWalking = player3Walking;
+                        bulletImage = bullet3Image;
+                        c.Image = playerWalking;
+                        numFramesPlayer = 8;
+                        c.Position = new Rectangle((char4.X + char4.Width / 2) - c.Position.Width / 2, (char4.Y - char1.Height) - c.Position.Height, c.Position.Width, c.Position.Height);
+                        c.Draw(spriteBatch, rotationAngle, framePlayer);
                     }
                     else
                     {
@@ -876,27 +913,38 @@ namespace GroupGame
                     spriteBatch.DrawString(sFont, "Round " + round, new Vector2(GraphicsDevice.Viewport.Width - 100, GraphicsDevice.Viewport.Height - 40), Color.Black);
                     spriteBatch.DrawString(sFont, "Score", new Vector2(30, GraphicsDevice.Viewport.Height - 60), Color.Black);
                     spriteBatch.DrawString(sFont, "" + score, new Vector2(30, GraphicsDevice.Viewport.Height - 40), Color.Black);
-                    spriteBatch.Draw(rectangle, new Rectangle(25, 20, 42, 50), Color.DodgerBlue);
-                    spriteBatch.Draw(rectangle, new Rectangle(25, 40, 300, 35), Color.DodgerBlue);
-                    spriteBatch.Draw(circle, new Rectangle(300, 10, 100, 100), Color.DodgerBlue);
-                    spriteBatch.DrawString(sFont, "Life", new Vector2(30, 25), Color.Black);
-                    spriteBatch.Draw(rectangle, new Rectangle(30, 45, 200, 20), Color.Red);
-                    spriteBatch.Draw(rectangle, new Rectangle(30, 45, c.Health * 2, 20), Color.LawnGreen);
+                    spriteBatch.Draw(rectangle, new Rectangle(295, 20, 42, 50), Color.DodgerBlue);
+                    spriteBatch.Draw(rectangle, new Rectangle(295, 40, 300, 35), Color.DodgerBlue);
+                    spriteBatch.Draw(rectangle, new Rectangle(640, 40, 300, 35), Color.DodgerBlue);
+                    spriteBatch.Draw(circle, new Rectangle(900, 10, 100, 100), Color.DodgerBlue);
+                    spriteBatch.Draw(circle, new Rectangle(570, 10, 100, 100), Color.DodgerBlue);
+                    spriteBatch.Draw(circle, new Rectangle(580, 20, 80, 80), Color.DarkBlue);
+                    spriteBatch.DrawString(sFont, "Life", new Vector2(300, 25), Color.Black);
+                    spriteBatch.Draw(rectangle, new Rectangle(300, 45, 260, 20), Color.Red);
+                    spriteBatch.Draw(rectangle, new Rectangle(300, 45, c.Health * 13/5, 20), Color.LawnGreen);
 
                     // Switch statement that draws the image for the ability the player is using for the interface
                     switch (aState)
                     {
                         case AbilityState.a1:
-                            spriteBatch.Draw(meleeImage, new Rectangle(330, 40, 40, 40), Color.White);
+                            spriteBatch.Draw(meleeImage, new Rectangle(600, 40, 40, 40), Color.White);
+                            spriteBatch.Draw(bulletImage, new Rectangle(550, 10, 20, 20), new Rectangle(32, 0, 32, 32), Color.White); //prev wpn
+                            spriteBatch.Draw(bulletImage, new Rectangle(660, 0, 30, 30), new Rectangle(32, 0, 32, 32), Color.White); //next wpn
                             break;
                         case AbilityState.a2:
-                            spriteBatch.Draw(bulletImage, new Rectangle(330, 40, 40, 40), new Rectangle(32, 0, 32, 32), Color.White);
+                            spriteBatch.Draw(bulletImage, new Rectangle(600, 40, 40, 40), new Rectangle(32, 0, 32, 32), Color.White);
+                            spriteBatch.Draw(meleeImage, new Rectangle(540, 5, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                            spriteBatch.Draw(bulletImage, new Rectangle(654, -10, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
                             break;
                         case AbilityState.a3:
-                            spriteBatch.Draw(bulletImage, new Rectangle(323, 30, 55, 55), new Rectangle(32, 0, 32, 32), Color.White);
+                            spriteBatch.Draw(bulletImage, new Rectangle(593, 30, 55, 55), new Rectangle(32, 0, 32, 32), Color.White);
+                            spriteBatch.Draw(bulletImage, new Rectangle(540, 0, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                            spriteBatch.Draw(bulletImage, new Rectangle(660, 10, 20, 20), new Rectangle(32, 0, 32, 32), Color.White);
                             break;
                         case AbilityState.a4:
-                            spriteBatch.Draw(bulletImage, new Rectangle(336, 45, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                            spriteBatch.Draw(bulletImage, new Rectangle(606, 45, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                            spriteBatch.Draw(bulletImage, new Rectangle(541, -10, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
+                            spriteBatch.Draw(meleeImage, new Rectangle(670, 5, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
                             break;
                     }
                     break;
