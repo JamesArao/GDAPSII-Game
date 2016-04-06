@@ -110,6 +110,7 @@ namespace GroupGame
         int globalY;
         int maxX;
         int maxY;
+        Point backgroundPoint;
 
         // Values used for the options menu
         bool closing = false;
@@ -171,6 +172,7 @@ namespace GroupGame
                 {
                     p.FPosY += c.Speed;
                 }
+                backgroundPoint = new Point(backgroundPoint.X, backgroundPoint.Y + c.Speed);
             }
 
             if (s == "down")
@@ -184,6 +186,7 @@ namespace GroupGame
                 {
                     p.FPosY -= c.Speed;
                 }
+                backgroundPoint = new Point(backgroundPoint.X, backgroundPoint.Y - c.Speed);
             }
 
             if (s == "left")
@@ -197,6 +200,7 @@ namespace GroupGame
                 {
                     p.FPosX += c.Speed;
                 }
+                backgroundPoint = new Point(backgroundPoint.X + c.Speed, backgroundPoint.Y);
             }
 
             if (s == "right")
@@ -210,6 +214,7 @@ namespace GroupGame
                 {
                     p.FPosX -= c.Speed;
                 }
+                backgroundPoint = new Point(backgroundPoint.X - c.Speed, backgroundPoint.Y);
             }
         }
 
@@ -324,6 +329,7 @@ namespace GroupGame
             if (maxX < 0) maxX = 0;
             maxY = 1000 - GraphicsDevice.Viewport.Height;
             if (maxY < 0) maxY = 0;
+            backgroundPoint = new Point(0 - maxX, 0 - maxY);
             globalX = maxX/2;
             globalY = maxY/2;
             c.Health = 100;
@@ -841,7 +847,7 @@ namespace GroupGame
 
                 // Game is in Horde Mode
                 case GameState.HordeMode:
-                    spriteBatch.Draw(background, new Rectangle(0, 0, 1500, 1000), Color.White);
+                    spriteBatch.Draw(background, new Rectangle(backgroundPoint, new Point(1800, 1300)), Color.White);
                     c.Draw(spriteBatch,rotationAngle, framePlayer); // Draw the character
                     spriteBatch.DrawString(sFont, "X: " + globalX, new Vector2(40, 275), Color.Black);
                     spriteBatch.DrawString(sFont, "Y: " + globalY, new Vector2(40, 300), Color.Black);
