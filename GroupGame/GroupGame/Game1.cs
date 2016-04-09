@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-enum GameState { Menu, HordeMode, Paused, Options, CharacterSelection}; // GameState enum for keeping track of what state our game is in
+enum GameState { Menu, HordeMode, Paused, Options, CharacterSelection, GameOver}; // GameState enum for keeping track of what state our game is in
 enum AbilityState { a1, a2, a3, a4 }; // AbilityState enum for keeping track of the ability the player is using
 enum HeroState { Still, Walking }; // HeroState enum for keeping track of the state of the player
 enum SwitchHero { Fire, Earth, Water, Electric}; // switch heroes
@@ -852,7 +852,7 @@ namespace GroupGame
 
                     // Menu and options menu setting buttons
                     rMButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + rMButton.Height, menu.Width / 4, menu.Height / 4);
-                    rFButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rFButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) - (rFButton.Height / 2), fullscreenButton.Width / 4, fullscreenButton.Height / 4);
+                    rFButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rFButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) - (rFButton.Height / 2), menu.Width / 4, menu.Height / 4);
                     
                     // Confirmation dialog buttons
                     rOKButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - ((int)(1.35 * rOKButton.Width)), (GraphicsDevice.Viewport.Height / 2) - (rOKButton.Height / 2), okButton.Width / 4, okButton.Height / 4);
