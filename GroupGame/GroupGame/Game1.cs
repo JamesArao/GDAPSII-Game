@@ -66,6 +66,7 @@ namespace GroupGame
         Texture2D waterButton;
         Texture2D background;
         Texture2D dot;
+        Texture2D boxes;
 
         // Rectangles for buttons and mouse
         Rectangle rSButton;
@@ -120,6 +121,9 @@ namespace GroupGame
         Rectangle rOKButton;
         Rectangle rCancelButton;
 
+        // Randomly generated objects list
+        List<Rectangle> objects;
+
         // Method for advancing the round of our Horde Mode
         public void AdvanceRound()
         {
@@ -162,7 +166,7 @@ namespace GroupGame
             // Silently catch EndOfStreamExceptions
             catch(EndOfStreamException){}
 
-            
+
             reader.Close(); // Close the file
             round++; // Increase the round number
         }
@@ -187,6 +191,11 @@ namespace GroupGame
                     eP.FPosY += c.Speed;
                 }
                 backgroundPoint = new Point(backgroundPoint.X, backgroundPoint.Y + c.Speed);
+
+                for (int i = 0; i < objects.Count; i++)
+                {
+                    objects[i] = new Rectangle(objects[i].X, objects[i].Y + c.Speed, objects[i].Width, objects[i].Height);
+                }
             }
 
             if (s == "down")
@@ -205,6 +214,11 @@ namespace GroupGame
                     eP.FPosY -= c.Speed;
                 }
                 backgroundPoint = new Point(backgroundPoint.X, backgroundPoint.Y - c.Speed);
+
+                for (int i = 0; i < objects.Count; i++)
+                {
+                    objects[i] = new Rectangle(objects[i].X, objects[i].Y - c.Speed, objects[i].Width, objects[i].Height);
+                }
             }
 
             if (s == "left")
@@ -223,6 +237,11 @@ namespace GroupGame
                     eP.FPosX += c.Speed;
                 }
                 backgroundPoint = new Point(backgroundPoint.X + c.Speed, backgroundPoint.Y);
+
+                for (int i = 0; i < objects.Count; i++)
+                {
+                    objects[i] = new Rectangle(objects[i].X + c.Speed, objects[i].Y, objects[i].Width, objects[i].Height);
+                }
             }
 
             if (s == "right")
@@ -241,6 +260,11 @@ namespace GroupGame
                     eP.FPosX -= c.Speed;
                 }
                 backgroundPoint = new Point(backgroundPoint.X - c.Speed, backgroundPoint.Y);
+
+                for (int i = 0; i < objects.Count; i++)
+                {
+                    objects[i] = new Rectangle(objects[i].X - c.Speed, objects[i].Y, objects[i].Width, objects[i].Height);
+                }
             }
         }
 
@@ -433,6 +457,22 @@ namespace GroupGame
 
             graphics.IsFullScreen = fullscreen;
             gState = GameState.Menu;
+
+            objects = new List<Rectangle>();
+
+            // random generator
+            Random rgen = new Random();
+
+            // creates 5 combinations of x and y coordinates and adds that box to the list
+            for (int i = 0; i < 5; i++)
+            {
+                int x = rgen.Next(80, 1220);
+                int y = rgen.Next(80, 1020);
+
+                Rectangle randObj = new Rectangle(x, y, 150, 150);
+                objects.Add(randObj);
+            }
+
             base.Initialize();
         }
 
@@ -485,7 +525,11 @@ namespace GroupGame
             // Load fonts
             sFont = this.Content.Load<SpriteFont>("SpriteFont1");
 
+            // loads background
             background = this.Content.Load<Texture2D>("background");
+
+            // loads boxes
+            boxes = this.Content.Load<Texture2D>("boxes");
         }
 
         /// <summary>
@@ -646,6 +690,28 @@ namespace GroupGame
                     {
                         gState = GameState.Paused;
                         previousKbState = kbState;
+                    }
+
+
+
+                    // checks to see if the boxes collide with the charcater or enemies
+                    foreach(Rectangle o in objects)
+                    {
+                        if(o.Intersects(c.Position))
+                        {
+                            c.Position = new Rectangle(c.Position.X, c.Position.Y, c.Position.Width, c.Position.Height);
+                        }
+                    }
+
+                    foreach (Rectangle o in objects)
+                    {
+                        foreach (Enemy e in enemies)
+                        {
+                            if (o.Intersects(e.Position))
+                            {
+                                e.Position = new Rectangle(e.Position.X, e.Position.Y, e.Position.Width, e.Position.Height);
+                            }
+                        }
                     }
 
                     // Find the angle between the player and the mouse, use this to rotate the player when drawing
@@ -959,6 +1025,13 @@ namespace GroupGame
                 // Game is in Horde Mode
                 case GameState.HordeMode:
                     spriteBatch.Draw(background, new Rectangle(backgroundPoint, new Point(1800, 1300)), Color.White);
+
+                    foreach (Rectangle o in objects)
+                    {
+                        spriteBatch.Draw(boxes, o, Color.White);
+                        
+                    }
+
                     c.Draw(spriteBatch,rotationAngle, framePlayer); // Draw the character
 
                     foreach (Projectile p in projectiles)
