@@ -118,7 +118,7 @@
     <Content Include="Content\Ok.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Options.png">
+    <Content Include="Content\options.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Pause.png">
