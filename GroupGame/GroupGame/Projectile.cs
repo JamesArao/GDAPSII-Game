@@ -45,7 +45,7 @@ namespace GroupGame
             set { count = value; }
         }
 
-        // MovementCount Property
+        // CountMax Property
         public int CountMax
         {
             get { return countMax; }

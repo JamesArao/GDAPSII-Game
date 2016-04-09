@@ -1,8 +1,4 @@
-﻿// Enemy1
-// Class for the first enemy, inherits from Enemy
-// Coders: Kiernan Brown, James Arao
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,10 +8,31 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GroupGame
 {
-    class Enemy1:Enemy
+    class Enemy2 : Enemy
     {
 
-        // Override the Move method
+        private Rectangle range;
+        private int shotCount;
+        bool shooting;
+
+        public Rectangle Range
+        {
+            get { return range; }
+            set { range = value; }
+        }
+
+        public int ShotCount
+        {
+            get { return shotCount; }
+            set { shotCount = value; }
+        }
+
+        public bool Shooting
+        {
+            get { return shooting; }
+            set { shooting = value; }
+        }
+
         public override void Move(Character c, List<Enemy> enemies)
         {
             // Switch statement based on EState
@@ -24,7 +41,7 @@ namespace GroupGame
                 // Enemy is wandering
                 case EnemyState.Wander:
                     break;
-                
+
                 // Enemy is chasing the player
                 case EnemyState.Chase:
                     float newX = FPosX;
@@ -49,23 +66,23 @@ namespace GroupGame
                             newX += Speed;
                         }
                     }
-                    if (Position.X > c.Position.X) 
+                    if (Position.X > c.Position.X)
                     {
                         bool collides = false;
                         foreach (Enemy others in enemies)
                         {
-                            if(new Rectangle((int)(newX - Speed), (int)newY, 50, 50).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
+                            if (new Rectangle((int)(newX - Speed), (int)newY, 50, 50).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
                             {
                                 collides = true;
                             }
-                            
+
                         }
-                        if(collides != true)
+                        if (collides != true)
                         {
                             newX -= Speed;
                         }
                     }
-                    if (Position.Y < c.Position.Y) 
+                    if (Position.Y < c.Position.Y)
                     {
                         bool collides = false;
                         foreach (Enemy others in enemies)
@@ -81,7 +98,7 @@ namespace GroupGame
                             newY += Speed;
                         }
                     }
-                    if (Position.Y > c.Position.Y) 
+                    if (Position.Y > c.Position.Y)
                     {
                         bool collides = false;
                         foreach (Enemy others in enemies)
@@ -101,29 +118,38 @@ namespace GroupGame
                     FPosY = newY;
                     Position = new Rectangle((int)newX, (int)newY, Position.Width, Position.Height);
                     CRect = new Rectangle((int)newX + 15, (int)newY + 15, CRect.Width, CRect.Height);
+                    range = new Rectangle(Position.X - 250, Position.Y - 250, range.Width, range.Height);
                     break;
             }
         }
 
-        /*
-        public Vector2 Rotate(Vector2 source, Vector2 target, float rad)
+        public void Shoot(Character c)
         {
-            Vector2 around = source - target;
-            float newX = (float)(around.X * Math.Cos(rad) - around.Y * Math.Sin(rad));
-            float newY = (float)(around.X * Math.Sin(rad) - around.Y * Math.Cos(rad));
-            return target + new Vector2(newX, newY);
-        }*/
+            if (c.Position.Intersects(range))
+            {
+                shotCount++;
+                Speed = 0.15f;
+                shooting = true;
+            }
+            else
+            {
+                shotCount = 0;
+                Speed = 0.6f;
+                shooting = false;
+            }
+        }
 
         // Constructor
-        public Enemy1(int posX, int posY):base(posX, posY)
+        public Enemy2(int posX, int posY):base(posX, posY)
         {
             Position = new Rectangle(posX, posY, 50, 50); // Set position
             FPosX = posX;
             FPosY = posY;
             CRect = new Rectangle(posX + 15, posY + 15, 20, 20); // Set the cRect based on the position
-            Health = 100; // Set health
-            Speed = 1.2f; // Set speed
+            Health = 80; // Set health
+            Speed = 0.6f; // Set speed
             EState = EnemyState.Chase; // Set EState to chase, for testing
+            range = new Rectangle(posX - 250, posY - 250, 500, 500);
         }
     }
 }

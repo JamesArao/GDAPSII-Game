@@ -19,6 +19,7 @@ namespace GroupGame
         public Character1(int x, int y):base(x,y)
         {
             Position = new Rectangle(x, y, 50, 50);
+            CRect = new Rectangle(x - 10, y - 10, Position.Width - 20, Position.Height - 20);
             Speed = 2;
         }
     }

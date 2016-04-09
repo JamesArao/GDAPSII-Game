@@ -17,6 +17,7 @@ namespace GroupGame
         private int speed; // Speed the character moves at
         private int shotDelay; // Int that acts as a way of delaying player shooting, decreases by one every frame
         private int health; // Health of the player
+        private Rectangle cRect; // Rectangle for character collision
 
         // Values for animation
         const int heroY = 0;
@@ -45,6 +46,13 @@ namespace GroupGame
             set { health = value; }
         }
 
+        // CRect poroperty
+        public Rectangle CRect
+        {
+            get { return cRect; }
+            set { cRect = value; }
+        }
+
         // Draw method, with the player rotating based on where the mouse is
         public void Draw(SpriteBatch sprite, float rAngle, int f)
         {
@@ -59,6 +67,7 @@ namespace GroupGame
         public Character(int x, int y)
         {
             Position = new Rectangle(x, y, Position.Width, Position.Height);
+            cRect = new Rectangle(Position.X + 10, Position.Y + 10, Position.Width - 20, Position.Height - 20);
             Health = 100;
         }
     }

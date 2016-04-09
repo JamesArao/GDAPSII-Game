@@ -42,6 +42,8 @@
     <Compile Include="Character1.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="Enemy1.cs" />
+    <Compile Include="Enemy2.cs" />
+    <Compile Include="EnemyProjectile.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="Program.cs" />
@@ -60,6 +62,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Cancel.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Dot.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Earth Bullet.png">

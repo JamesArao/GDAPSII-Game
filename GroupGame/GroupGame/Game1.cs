@@ -65,6 +65,7 @@ namespace GroupGame
         Texture2D electricButton;
         Texture2D waterButton;
         Texture2D background;
+        Texture2D dot;
 
         // Rectangles for buttons and mouse
         Rectangle rSButton;
@@ -81,6 +82,7 @@ namespace GroupGame
         Character c;
         List<Enemy> enemies = new List<Enemy>();
         List<Projectile> projectiles = new List<Projectile>();
+        List<EnemyProjectile> eProjectiles = new List<EnemyProjectile>();
 
         // Keyboard states
         KeyboardState kbState;
@@ -126,7 +128,9 @@ namespace GroupGame
 
             // Select a random round to use
             //int num = rgen.Next(1,round+1);
-            BinaryReader reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round1.dat"));
+            BinaryReader reader;
+            if (round < 5) reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round" + (round+1) + ".dat"));
+            else reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round5.dat"));
 
             // Try block
             try
@@ -143,9 +147,14 @@ namespace GroupGame
                     switch(type)
                     {
                         case "1":
-                            Enemy e = new Enemy1(c.Position.X-500+x, c.Position.Y-300+y);
-                            e.Image = enemyImage;
-                            enemies.Add(e);
+                            Enemy e1 = new Enemy1(c.Position.X-500+x, c.Position.Y-300+y);
+                            e1.Image = enemyImage;
+                            enemies.Add(e1);
+                            break;
+                        case "2":
+                            Enemy e2 = new Enemy2(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                            e2.Image = enemyImage;
+                            enemies.Add(e2);
                             break;
                     }
                 }
@@ -166,11 +175,16 @@ namespace GroupGame
                 globalY--;
                 foreach (Enemy e in enemies)
                 {
-                    e.Position = new Rectangle(e.Position.X, e.Position.Y + c.Speed, e.Position.Width, e.Position.Height);
+                    //e.Position = new Rectangle(e.Position.X, e.Position.Y + c.Speed, e.Position.Width, e.Position.Height);
+                    e.FPosY += c.Speed;
                 }
                 foreach (Projectile p in projectiles)
                 {
                     p.FPosY += c.Speed;
+                }
+                foreach (EnemyProjectile eP in eProjectiles)
+                {
+                    eP.FPosY += c.Speed;
                 }
                 backgroundPoint = new Point(backgroundPoint.X, backgroundPoint.Y + c.Speed);
             }
@@ -180,11 +194,15 @@ namespace GroupGame
                 globalY++;
                 foreach (Enemy e in enemies)
                 {
-                    e.Position = new Rectangle(e.Position.X, e.Position.Y - c.Speed, e.Position.Width, e.Position.Height);
+                    e.FPosY -= c.Speed;
                 }
                 foreach (Projectile p in projectiles)
                 {
                     p.FPosY -= c.Speed;
+                }
+                foreach (EnemyProjectile eP in eProjectiles)
+                {
+                    eP.FPosY -= c.Speed;
                 }
                 backgroundPoint = new Point(backgroundPoint.X, backgroundPoint.Y - c.Speed);
             }
@@ -194,11 +212,15 @@ namespace GroupGame
                 globalX--;
                 foreach (Enemy e in enemies)
                 {
-                    e.Position = new Rectangle(e.Position.X + c.Speed, e.Position.Y, e.Position.Width, e.Position.Height);
+                    e.FPosX += c.Speed;
                 }
                 foreach (Projectile p in projectiles)
                 {
                     p.FPosX += c.Speed;
+                }
+                foreach (EnemyProjectile eP in eProjectiles)
+                {
+                    eP.FPosX += c.Speed;
                 }
                 backgroundPoint = new Point(backgroundPoint.X + c.Speed, backgroundPoint.Y);
             }
@@ -208,11 +230,15 @@ namespace GroupGame
                 globalX++;
                 foreach (Enemy e in enemies)
                 {
-                    e.Position = new Rectangle(e.Position.X - c.Speed, e.Position.Y, e.Position.Width, e.Position.Height);
+                    e.FPosX -= c.Speed;
                 }
                 foreach (Projectile p in projectiles)
                 {
                     p.FPosX -= c.Speed;
+                }
+                foreach (EnemyProjectile eP in eProjectiles)
+                {
+                    eP.FPosX -= c.Speed;
                 }
                 backgroundPoint = new Point(backgroundPoint.X - c.Speed, backgroundPoint.Y);
             }
@@ -225,25 +251,38 @@ namespace GroupGame
             if (kbState.IsKeyDown(Keys.W))
             {
                 if ((c.Position.Y > 100 && globalY != 0) || (globalY == 0 && c.Position.Y > 0))
-                        c.Position = new Rectangle(c.Position.X, c.Position.Y - c.Speed, c.Position.Width, c.Position.Height);
+                {
+                    c.Position = new Rectangle(c.Position.X, c.Position.Y - c.Speed, c.Position.Width, c.Position.Height);
+                    c.CRect = new Rectangle(c.Position.X + 10, c.Position.Y + 10, c.CRect.Width, c.CRect.Height);
+                }
+
                 else if (c.Position.Y > 0) ScreenMove("up");
             }
             if (kbState.IsKeyDown(Keys.A))
             {
                 if ((c.Position.X > 100 && globalX != 0) || (globalX == 0 && c.Position.X > 0))
+                {
                     c.Position = new Rectangle(c.Position.X - c.Speed, c.Position.Y, c.Position.Width, c.Position.Height);
+                    c.CRect = new Rectangle(c.Position.X + 10, c.Position.Y + 10, c.CRect.Width, c.CRect.Height);
+                }
                 else if (c.Position.X > 0) ScreenMove("left");
             }
             if (kbState.IsKeyDown(Keys.S))
             {
                 if ((c.Position.Y < GraphicsDevice.Viewport.Height - (100 + c.Position.Height) && globalY != maxY) || (globalY == maxY && c.Position.Y < GraphicsDevice.Viewport.Height - c.Position.Height))
+                {
                     c.Position = new Rectangle(c.Position.X, c.Position.Y + c.Speed, c.Position.Width, c.Position.Height);
+                    c.CRect = new Rectangle(c.Position.X + 10, c.Position.Y + 10, c.CRect.Width, c.CRect.Height);
+                }
                 else if (c.Position.Y < GraphicsDevice.Viewport.Height - c.Position.Height) ScreenMove("down");
             }
             if (kbState.IsKeyDown(Keys.D))
             {
                 if ((c.Position.X < GraphicsDevice.Viewport.Width - (100 + c.Position.Width) && globalX != maxX) || (globalX == maxX && c.Position.X < GraphicsDevice.Viewport.Width - c.Position.Width))
+                {
                     c.Position = new Rectangle(c.Position.X + c.Speed, c.Position.Y, c.Position.Width, c.Position.Height);
+                    c.CRect = new Rectangle(c.Position.X + 10, c.Position.Y + 10, c.CRect.Width, c.CRect.Height);
+                }
                 else if (c.Position.X < GraphicsDevice.Viewport.Width - c.Position.Width) ScreenMove("right");
             }
         }
@@ -441,6 +480,7 @@ namespace GroupGame
             earthButton = this.Content.Load<Texture2D>("earthButton");
             electricButton = this.Content.Load<Texture2D>("lightningButton");
             waterButton = this.Content.Load<Texture2D>("waterButton");
+            dot = this.Content.Load<Texture2D>("Dot");
 
             // Load fonts
             sFont = this.Content.Load<SpriteFont>("SpriteFont1");
@@ -635,6 +675,40 @@ namespace GroupGame
                         }
                     }
 
+                    // Move Enemy projectiles and do damage
+                    for(int i = eProjectiles.Count; i > 0; i--)
+                    {
+                        if(eProjectiles[i - 1].Position.Intersects(c.CRect))
+                        {
+                            c.Health -= eProjectiles[i - 1].Damage;
+                            eProjectiles.RemoveAt(i - 1);
+                        }
+                        else eProjectiles[i-1].Move();
+                    }
+
+                    // Enemy2 Shooting
+                    foreach (Enemy e in enemies)
+                    {
+                        if (e is Enemy2)
+                        {
+                            Enemy2 e2 = (Enemy2)e;
+                            if (e.Alive == true)
+                            {
+                                e2.Shoot(c);
+                                if (e2.ShotCount == 150)
+                                {
+                                    int shotX = (c.Position.X + c.Position.Width / 2) - (e.Position.X + e.Position.Width / 2);
+                                    int shotY = (c.Position.Y + c.Position.Height / 2) - (e.Position.Y + e.Position.Height / 2);
+                                    float shotAngle = (float)Math.Atan2(shotY, shotX);
+                                    EnemyProjectile eP = new EnemyProjectile(10, 15, 15, e, shotAngle, 15);
+                                    eP.Image = dot;
+                                    eProjectiles.Add(eP);
+                                    e2.ShotCount = 0;
+                                }
+                            }
+                            else e2.Shooting = false;
+                        }
+                    }
 
                     // Foreach loop that goes through all enemy objects in the enemies list
                     bool enemyAlive = false;
@@ -886,8 +960,6 @@ namespace GroupGame
                 case GameState.HordeMode:
                     spriteBatch.Draw(background, new Rectangle(backgroundPoint, new Point(1800, 1300)), Color.White);
                     c.Draw(spriteBatch,rotationAngle, framePlayer); // Draw the character
-                    //spriteBatch.DrawString(sFont, "X: " + globalX, new Vector2(40, 275), Color.Black);
-                    //spriteBatch.DrawString(sFont, "Y: " + globalY, new Vector2(40, 300), Color.Black);
 
                     foreach (Projectile p in projectiles)
                     {
@@ -898,7 +970,34 @@ namespace GroupGame
                         else p.DrawStationary(spriteBatch, frameProjectile, rotationAngle);
                     }
 
+                    foreach (EnemyProjectile eP in eProjectiles)
+                    {
+                        eP.Draw(spriteBatch);
+                    }
+
                     c.Draw(spriteBatch, rotationAngle, framePlayer); // Draw the character
+
+                    // Draw lines for the Enemy2s that are shooting
+                    foreach(Enemy e in enemies)
+                    {
+                        if (e is Enemy2)
+                        {
+                            Enemy2 e2 = (Enemy2)e;
+                            if (e2.Shooting == true)
+                            {
+                                int distance = (int)Math.Sqrt(Math.Pow((c.Position.X - e2.Position.X), 2) + Math.Pow((c.Position.Y - e2.Position.Y), 2));
+                                Rectangle lineRect = new Rectangle(e2.Position.X + e2.Position.Width / 2, e2.Position.Y + e2.Position.Height / 2, distance, 1);
+                                int lineX = (c.Position.X + c.Position.Width / 2) - (e2.Position.X + e2.Position.Width / 2);
+                                int lineY = (c.Position.Y + c.Position.Height / 2) - (e2.Position.Y + e2.Position.Height / 2);
+                                float lineAngle = (float)Math.Atan2(lineY, lineX);
+                                if (lineRect.Width < 0)
+                                {
+                                    lineRect.Width = -lineRect.Width;
+                                }
+                                spriteBatch.Draw(dot, lineRect, null, Color.Red, lineAngle, Vector2.Zero, SpriteEffects.None, 0);
+                            }
+                        }
+                    }
 
                     // Draw all alive enemies
                     foreach (Enemy e in enemies)
@@ -906,7 +1005,8 @@ namespace GroupGame
                         int aX = e.Position.X - c.Position.X;
                         int aY = e.Position.Y - c.Position.Y;
                         float enemyAngle = -(float)(Math.Atan2(aX, aY) + Math.PI / 2);
-                        if (e.Alive == true) e.Draw(spriteBatch, enemyAngle, frameEnemy);
+                        if (e.Alive == true && e is Enemy1) e.Draw(spriteBatch, enemyAngle, frameEnemy,Color.White);
+                        if (e.Alive == true && e is Enemy2) e.Draw(spriteBatch, enemyAngle, frameEnemy, Color.Blue);
                     }
 
                     // Code for drawing interface
@@ -922,6 +1022,7 @@ namespace GroupGame
                     spriteBatch.DrawString(sFont, "Life", new Vector2(300, 25), Color.Black);
                     spriteBatch.Draw(rectangle, new Rectangle(300, 45, 260, 20), Color.Red);
                     spriteBatch.Draw(rectangle, new Rectangle(300, 45, c.Health * 13/5, 20), Color.LawnGreen);
+
 
                     // Switch statement that draws the image for the ability the player is using for the interface
                     switch (aState)
