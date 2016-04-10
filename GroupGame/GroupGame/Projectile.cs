@@ -111,7 +111,7 @@ namespace GroupGame
             Vector2 origin = new Vector2(16, 16);
 
             // Draw the projectile at its position plus half its size, and rotate it based on the rAngle passed in
-            sprite.Draw(Image, new Rectangle(Position.X + Position.Width/2, Position.Y + Position.Height/2, Position.Width, Position.Height), new Rectangle(projX + f * projWidth, projY, projWidth, projHeight), Color.White, angle - (float)Math.PI / 2, origin, SpriteEffects.None, 0);
+            sprite.Draw(Image, new Rectangle(Position.X + Position.Width / 2, Position.Y + Position.Height / 2, Position.Width, Position.Height), new Rectangle(projX + f * projWidth, projY, projWidth, projHeight), Color.White, angle - (float)Math.PI / 2, origin, SpriteEffects.None, 0);
         }
 
         // Draw method for stationary projectile
@@ -121,7 +121,7 @@ namespace GroupGame
             Vector2 origin = new Vector2(16, 16);
 
             // Draw the projectile at its position , and rotate it based on the rAngle passed in
-            sprite.Draw(Image, new Rectangle(Position.X + Position.Width/2, Position.Y + Position.Height/2, Position.Width, Position.Height), new Rectangle(projX + f * projWidth, projY, projWidth, projHeight), Color.White, rAngle - (float)Math.PI / 2, origin, SpriteEffects.None, 0);
+            sprite.Draw(Image, new Rectangle(Position.X + Position.Width / 2, Position.Y + Position.Height / 2, Position.Width, Position.Height), new Rectangle(projX + f * projWidth, projY, projWidth, projHeight), Color.White, rAngle - (float)Math.PI / 2, origin, SpriteEffects.None, 0);
         }
 
         // Constructor for moving projectile with default size
@@ -138,9 +138,9 @@ namespace GroupGame
             fPosX = c.Position.X + 5;
             fPosY = c.Position.Y + 5;
 
-            // moveX and moveY values are set by taking the sin or cosine of the angle and multiplying it by four
-            moveX = -(float)Math.Sin(ang - Math.PI / 2) * 4;
-            moveY = (float)Math.Cos(ang - Math.PI / 2) * 4;
+            // moveX and moveY values are set by taking the sin or cosine of the angle and multiplying it by six
+            moveX = -(float)Math.Sin(ang - Math.PI / 2) * 6;
+            moveY = (float)Math.Cos(ang - Math.PI / 2) * 6;
         }
 
         // Constructor for moving projectile with different size
@@ -157,9 +157,9 @@ namespace GroupGame
             fPosX = c.Position.X + ((c.Position.Width - Position.Width) / 2);
             fPosY = c.Position.Y + ((c.Position.Height - Position.Height) / 2);
 
-            // moveX and moveY values are set by taking the sin or cosine of the angle and multiplying it by four
-            moveX = -(float)Math.Sin(ang - Math.PI / 2) * 4;
-            moveY = (float)Math.Cos(ang - Math.PI / 2) * 4;
+            // moveX and moveY values are set by taking the sin or cosine of the angle and multiplying it by six
+            moveX = -(float)Math.Sin(ang - Math.PI / 2) * 6;
+            moveY = (float)Math.Cos(ang - Math.PI / 2) * 6;
         }
 
         // Constructor for stationary projetile with default size
@@ -174,10 +174,10 @@ namespace GroupGame
             // Position and size are set
             Position = new Rectangle(c.Position.X, c.Position.Y, 50, 50);
 
-            // moveX and moveY values are set by taking the sin or cosine of the angle and multiplying it by four
+            // moveX and moveY values are set by taking the sin or cosine of the angle and multiplying it by six
             // In this case, moveX and moveY are used to move the projectile in front of the character instead of across the screen
-            moveX = -(float)Math.Sin(ang - Math.PI / 2) * 4;
-            moveY = (float)Math.Cos(ang - Math.PI / 2) * 4;
+            moveX = -(float)Math.Sin(ang - Math.PI / 2) * 6;
+            moveY = (float)Math.Cos(ang - Math.PI / 2) * 6;
 
             // moving is false because the projectile is stationary
             moving = false;

@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GroupGame
 {
-    class Enemy1:Enemy
+    class Enemy1 : Enemy
     {
 
         // Override the Move method
@@ -24,7 +24,7 @@ namespace GroupGame
                 // Enemy is wandering
                 case EnemyState.Wander:
                     break;
-                
+
                 // Enemy is chasing the player
                 case EnemyState.Chase:
                     float newX = FPosX;
@@ -49,23 +49,23 @@ namespace GroupGame
                             newX += Speed;
                         }
                     }
-                    if (Position.X > c.Position.X) 
+                    if (Position.X > c.Position.X)
                     {
                         bool collides = false;
                         foreach (Enemy others in enemies)
                         {
-                            if(new Rectangle((int)(newX - Speed), (int)newY, 50, 50).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
+                            if (new Rectangle((int)(newX - Speed), (int)newY, 50, 50).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
                             {
                                 collides = true;
                             }
-                            
+
                         }
-                        if(collides != true)
+                        if (collides != true)
                         {
                             newX -= Speed;
                         }
                     }
-                    if (Position.Y < c.Position.Y) 
+                    if (Position.Y < c.Position.Y)
                     {
                         bool collides = false;
                         foreach (Enemy others in enemies)
@@ -81,7 +81,7 @@ namespace GroupGame
                             newY += Speed;
                         }
                     }
-                    if (Position.Y > c.Position.Y) 
+                    if (Position.Y > c.Position.Y)
                     {
                         bool collides = false;
                         foreach (Enemy others in enemies)
@@ -115,7 +115,7 @@ namespace GroupGame
         }*/
 
         // Constructor
-        public Enemy1(int posX, int posY):base(posX, posY)
+        public Enemy1(int posX, int posY) : base(posX, posY)
         {
             Position = new Rectangle(posX, posY, 50, 50); // Set position
             FPosX = posX;

@@ -113,7 +113,7 @@ namespace GroupGame
             //countMax = cMax;
 
             // Position and movement
-            Position = new Rectangle(e.Position.X, e.Position.Y, w, h);
+            Position = new Rectangle(e.Position.X + e.Position.Width / 2, e.Position.Y + e.Position.Height / 2, w, h);
             fPosX = e.Position.X + ((e.Position.Width - Position.Width) / 2);
             fPosY = e.Position.Y + ((e.Position.Height - Position.Height) / 2);
 
@@ -121,6 +121,5 @@ namespace GroupGame
             moveX = -(float)Math.Sin(ang - Math.PI / 2) * speed;
             moveY = (float)Math.Cos(ang - Math.PI / 2) * speed;
         }
-
     }
 }

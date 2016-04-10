@@ -43,6 +43,7 @@
     <Compile Include="Enemy.cs" />
     <Compile Include="Enemy1.cs" />
     <Compile Include="Enemy2.cs" />
+    <Compile Include="Enemy3.cs" />
     <Compile Include="EnemyProjectile.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameObject.cs" />

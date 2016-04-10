@@ -133,8 +133,8 @@ namespace GroupGame
             // Select a random round to use
             //int num = rgen.Next(1,round+1);
             BinaryReader reader;
-            if (round < 5) reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round" + (round+1) + ".dat"));
-            else reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round5.dat"));
+            if (round < 7) reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round" + (round + 1) + ".dat"));
+            else reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round7.dat"));
 
             // Try block
             try
@@ -155,10 +155,17 @@ namespace GroupGame
                             e1.Image = enemyImage;
                             enemies.Add(e1);
                             break;
+
                         case "2":
                             Enemy e2 = new Enemy2(c.Position.X - 500 + x, c.Position.Y - 300 + y);
                             e2.Image = enemyImage;
                             enemies.Add(e2);
+                            break;
+
+                        case "3":
+                            Enemy e3 = new Enemy3(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                            e3.Image = enemyImage;
+                            enemies.Add(e3);
                             break;
                     }
                 }
@@ -172,100 +179,99 @@ namespace GroupGame
         }
 
         // Method for moving the screen
-        public void ScreenMove(string s)
+        public void ScreenMove(string s, int amount)
         {
-            if(s == "up")
+            if (s == "up")
             {
-                globalY--;
+                globalY -= amount;
                 foreach (Enemy e in enemies)
                 {
-                    //e.Position = new Rectangle(e.Position.X, e.Position.Y + c.Speed, e.Position.Width, e.Position.Height);
-                    e.FPosY += c.Speed;
+                    e.FPosY += amount;
                 }
                 foreach (Projectile p in projectiles)
                 {
-                    p.FPosY += c.Speed;
+                    p.FPosY += amount;
                 }
                 foreach (EnemyProjectile eP in eProjectiles)
                 {
-                    eP.FPosY += c.Speed;
+                    eP.FPosY += amount;
                 }
-                backgroundPoint = new Point(backgroundPoint.X, backgroundPoint.Y + c.Speed);
-
                 for (int i = 0; i < objects.Count; i++)
                 {
-                    objects[i] = new Rectangle(objects[i].X, objects[i].Y + c.Speed, objects[i].Width, objects[i].Height);
+                    objects[i] = new Rectangle(objects[i].X, objects[i].Y + amount, objects[i].Width, objects[i].Height);
                 }
+                backgroundPoint = new Point(backgroundPoint.X, backgroundPoint.Y + amount);
             }
 
             if (s == "down")
             {
-                globalY++;
+                globalY += amount;
                 foreach (Enemy e in enemies)
                 {
-                    e.FPosY -= c.Speed;
+                    e.FPosY -= amount;
                 }
                 foreach (Projectile p in projectiles)
                 {
-                    p.FPosY -= c.Speed;
+                    p.FPosY -= amount;
                 }
                 foreach (EnemyProjectile eP in eProjectiles)
                 {
-                    eP.FPosY -= c.Speed;
+                    eP.FPosY -= amount;
                 }
-                backgroundPoint = new Point(backgroundPoint.X, backgroundPoint.Y - c.Speed);
-
                 for (int i = 0; i < objects.Count; i++)
                 {
-                    objects[i] = new Rectangle(objects[i].X, objects[i].Y - c.Speed, objects[i].Width, objects[i].Height);
+                    objects[i] = new Rectangle(objects[i].X, objects[i].Y - amount, objects[i].Width, objects[i].Height);
                 }
+                backgroundPoint = new Point(backgroundPoint.X, backgroundPoint.Y - amount);
             }
 
             if (s == "left")
             {
-                globalX--;
+                globalX -= amount;
                 foreach (Enemy e in enemies)
                 {
-                    e.FPosX += c.Speed;
+                    e.FPosX += amount;
                 }
                 foreach (Projectile p in projectiles)
                 {
-                    p.FPosX += c.Speed;
+                    p.FPosX += amount;
                 }
                 foreach (EnemyProjectile eP in eProjectiles)
                 {
-                    eP.FPosX += c.Speed;
+                    eP.FPosX += amount;
                 }
-                backgroundPoint = new Point(backgroundPoint.X + c.Speed, backgroundPoint.Y);
-
                 for (int i = 0; i < objects.Count; i++)
                 {
-                    objects[i] = new Rectangle(objects[i].X + c.Speed, objects[i].Y, objects[i].Width, objects[i].Height);
+                    objects[i] = new Rectangle(objects[i].X + amount, objects[i].Y, objects[i].Width, objects[i].Height);
                 }
+                backgroundPoint = new Point(backgroundPoint.X + amount, backgroundPoint.Y);
             }
 
             if (s == "right")
             {
-                globalX++;
+                globalX += amount;
                 foreach (Enemy e in enemies)
                 {
-                    e.FPosX -= c.Speed;
+                    e.FPosX -= amount;
                 }
                 foreach (Projectile p in projectiles)
                 {
-                    p.FPosX -= c.Speed;
+                    p.FPosX -= amount;
                 }
                 foreach (EnemyProjectile eP in eProjectiles)
                 {
-                    eP.FPosX -= c.Speed;
+                    eP.FPosX -= amount;
                 }
-                backgroundPoint = new Point(backgroundPoint.X - c.Speed, backgroundPoint.Y);
-
                 for (int i = 0; i < objects.Count; i++)
                 {
-                    objects[i] = new Rectangle(objects[i].X - c.Speed, objects[i].Y, objects[i].Width, objects[i].Height);
+                    objects[i] = new Rectangle(objects[i].X - amount, objects[i].Y, objects[i].Width, objects[i].Height);
                 }
+                backgroundPoint = new Point(backgroundPoint.X - amount, backgroundPoint.Y);
             }
+            if (globalX > maxX) globalX = maxX;
+            if (globalX < 0) globalX = 0;
+            if (globalY > maxY) globalY = maxY;
+            if (globalY < 0) globalY = 0;
         }
 
         // Method for the player moving
@@ -274,40 +280,39 @@ namespace GroupGame
             // Move the character based on user input
             if (kbState.IsKeyDown(Keys.W))
             {
-                if ((c.Position.Y > 100 && globalY != 0) || (globalY == 0 && c.Position.Y > 0))
+                if ((c.Position.Y > 100 && globalY >= 0) || (globalY <= 0 && c.Position.Y > 0))
                 {
                     c.Position = new Rectangle(c.Position.X, c.Position.Y - c.Speed, c.Position.Width, c.Position.Height);
                     c.CRect = new Rectangle(c.Position.X + 10, c.Position.Y + 10, c.CRect.Width, c.CRect.Height);
                 }
-
-                else if (c.Position.Y > 0) ScreenMove("up");
+                else if (c.Position.Y > 0) ScreenMove("up", c.Speed);
             }
             if (kbState.IsKeyDown(Keys.A))
             {
-                if ((c.Position.X > 100 && globalX != 0) || (globalX == 0 && c.Position.X > 0))
+                if ((c.Position.X > 100 && globalX >= 0) || (globalX <= 0 && c.Position.X > 0))
                 {
                     c.Position = new Rectangle(c.Position.X - c.Speed, c.Position.Y, c.Position.Width, c.Position.Height);
                     c.CRect = new Rectangle(c.Position.X + 10, c.Position.Y + 10, c.CRect.Width, c.CRect.Height);
                 }
-                else if (c.Position.X > 0) ScreenMove("left");
+                else if (c.Position.X > 0) ScreenMove("left", c.Speed);
             }
             if (kbState.IsKeyDown(Keys.S))
             {
-                if ((c.Position.Y < GraphicsDevice.Viewport.Height - (100 + c.Position.Height) && globalY != maxY) || (globalY == maxY && c.Position.Y < GraphicsDevice.Viewport.Height - c.Position.Height))
+                if ((c.Position.Y < GraphicsDevice.Viewport.Height - (100 + c.Position.Height) && globalY <= maxY) || (globalY == maxY && c.Position.Y < GraphicsDevice.Viewport.Height - c.Position.Height))
                 {
                     c.Position = new Rectangle(c.Position.X, c.Position.Y + c.Speed, c.Position.Width, c.Position.Height);
                     c.CRect = new Rectangle(c.Position.X + 10, c.Position.Y + 10, c.CRect.Width, c.CRect.Height);
                 }
-                else if (c.Position.Y < GraphicsDevice.Viewport.Height - c.Position.Height) ScreenMove("down");
+                else if (c.Position.Y < GraphicsDevice.Viewport.Height - c.Position.Height) ScreenMove("down", c.Speed);
             }
             if (kbState.IsKeyDown(Keys.D))
             {
-                if ((c.Position.X < GraphicsDevice.Viewport.Width - (100 + c.Position.Width) && globalX != maxX) || (globalX == maxX && c.Position.X < GraphicsDevice.Viewport.Width - c.Position.Width))
+                if ((c.Position.X < GraphicsDevice.Viewport.Width - (100 + c.Position.Width) && globalX <= maxX) || (globalX == maxX && c.Position.X < GraphicsDevice.Viewport.Width - c.Position.Width))
                 {
                     c.Position = new Rectangle(c.Position.X + c.Speed, c.Position.Y, c.Position.Width, c.Position.Height);
                     c.CRect = new Rectangle(c.Position.X + 10, c.Position.Y + 10, c.CRect.Width, c.CRect.Height);
                 }
-                else if (c.Position.X < GraphicsDevice.Viewport.Width - c.Position.Width) ScreenMove("right");
+                else if (c.Position.X < GraphicsDevice.Viewport.Width - c.Position.Width) ScreenMove("right", c.Speed);
             }
         }
 
@@ -380,6 +385,22 @@ namespace GroupGame
                         c.ShotDelay = 2;
                         break;
                 }
+            }
+        }
+
+        // Method for player dashing
+        public void PlayerDash()
+        {
+            if (mState.RightButton == ButtonState.Pressed && c.Dashing == 0)
+            {
+                if (kbState.IsKeyDown(Keys.W) && kbState.IsKeyDown(Keys.D)) c.Dashing = 2;
+                else if (kbState.IsKeyDown(Keys.W) && kbState.IsKeyDown(Keys.A)) c.Dashing = 8;
+                else if (kbState.IsKeyDown(Keys.S) && kbState.IsKeyDown(Keys.D)) c.Dashing = 4;
+                else if (kbState.IsKeyDown(Keys.S) && kbState.IsKeyDown(Keys.A)) c.Dashing = 6;
+                else if (kbState.IsKeyDown(Keys.W)) c.Dashing = 1;
+                else if (kbState.IsKeyDown(Keys.D)) c.Dashing = 3;
+                else if (kbState.IsKeyDown(Keys.S)) c.Dashing = 5;
+                else if (kbState.IsKeyDown(Keys.A)) c.Dashing = 7;
             }
         }
 
@@ -692,8 +713,6 @@ namespace GroupGame
                         previousKbState = kbState;
                     }
 
-
-
                     // checks to see if the boxes collide with the charcater or enemies
                     foreach(Rectangle o in objects)
                     {
@@ -719,12 +738,87 @@ namespace GroupGame
                     int rotY = mState.Y - (c.Position.Y + c.Position.Height/2);
                     rotationAngle = (float)Math.Atan2(rotY, rotX);
 
-                    PlayerMove();
-                    PlayerChangeAbility();
-                    PlayerShoot();
+                    PlayerDash();
+                    if (c.Dashing == 0)
+                    {
+                        PlayerMove();
+                        PlayerChangeAbility();
+                        PlayerShoot();
+                    }
+                    if (c.DashCount == 30)
+                    {
+                        c.Dashing = 0;
+                        c.DashCount = 0;
+                    }
+                    else
+                    {
+                        switch (c.Dashing)
+                        {
+                            case 1:
+                                c.DashCount++;
+                                if ((c.Position.Y > 100 && globalY >= 0) || (globalY <= 0 && c.Position.Y > 0))
+                                    c.Position = new Rectangle(c.Position.X, (int)(c.Position.Y - c.Speed * 2.5), c.Position.Width, c.Position.Height);
+                                else if (c.Position.Y > 0) ScreenMove("up", (int)(c.Speed * 2.5));
+                                break;
+                            case 2:
+                                c.DashCount++;
+                                if ((c.Position.X < GraphicsDevice.Viewport.Width - (100 + c.Position.Width) && globalX <= maxX) || (globalX == maxX && c.Position.X < GraphicsDevice.Viewport.Width - c.Position.Width))
+                                    c.Position = new Rectangle((int)(c.Position.X + c.Speed * 1.77), c.Position.Y, c.Position.Width, c.Position.Height);
+                                else if (c.Position.X < GraphicsDevice.Viewport.Width - c.Position.Width) ScreenMove("right", (int)(c.Speed * 1.77));
+                                if ((c.Position.Y > 100 && globalY >= 0) || (globalY <= 0 && c.Position.Y > 0))
+                                    c.Position = new Rectangle(c.Position.X, (int)(c.Position.Y - c.Speed * 1.77), c.Position.Width, c.Position.Height);
+                                else if (c.Position.Y > 0) ScreenMove("up", (int)(c.Speed * 1.77));
+                                break;
+                            case 3:
+                                c.DashCount++;
+                                if ((c.Position.X < GraphicsDevice.Viewport.Width - (100 + c.Position.Width) && globalX <= maxX) || (globalX == maxX && c.Position.X < GraphicsDevice.Viewport.Width - c.Position.Width))
+                                    c.Position = new Rectangle((int)(c.Position.X + c.Speed * 2.5), c.Position.Y, c.Position.Width, c.Position.Height);
+                                else if (c.Position.X < GraphicsDevice.Viewport.Width - c.Position.Width) ScreenMove("right", (int)(c.Speed * 2.5));
+                                break;
+                            case 4:
+                                c.DashCount++;
+                                if ((c.Position.X < GraphicsDevice.Viewport.Width - (100 + c.Position.Width) && globalX <= maxX) || (globalX == maxX && c.Position.X < GraphicsDevice.Viewport.Width - c.Position.Width))
+                                    c.Position = new Rectangle((int)(c.Position.X + c.Speed * 1.77), c.Position.Y, c.Position.Width, c.Position.Height);
+                                else if (c.Position.X < GraphicsDevice.Viewport.Width - c.Position.Width) ScreenMove("right", (int)(c.Speed * 1.77));
+                                if ((c.Position.Y < GraphicsDevice.Viewport.Height - (100 + c.Position.Height) && globalY <= maxY) || (globalY == maxY && c.Position.Y < GraphicsDevice.Viewport.Height - c.Position.Height))
+                                    c.Position = new Rectangle(c.Position.X, (int)(c.Position.Y + c.Speed * 1.77), c.Position.Width, c.Position.Height);
+                                else if (c.Position.Y < GraphicsDevice.Viewport.Height - c.Position.Height) ScreenMove("down", (int)(c.Speed * 1.77));
+                                break;
+                            case 5:
+                                c.DashCount++;
+                                if ((c.Position.Y < GraphicsDevice.Viewport.Height - (100 + c.Position.Height) && globalY <= maxY) || (globalY == maxY && c.Position.Y < GraphicsDevice.Viewport.Height - c.Position.Height))
+                                    c.Position = new Rectangle(c.Position.X, (int)(c.Position.Y + c.Speed * 2.5), c.Position.Width, c.Position.Height);
+                                else if (c.Position.Y < GraphicsDevice.Viewport.Height - c.Position.Height) ScreenMove("down", (int)(c.Speed * 2.5));
+                                break;
+                            case 6:
+                                c.DashCount++;
+                                if ((c.Position.X > 100 && globalX >= 0) || (globalX <= 0 && c.Position.X > 0))
+                                    c.Position = new Rectangle((int)(c.Position.X - c.Speed * 1.77), c.Position.Y, c.Position.Width, c.Position.Height);
+                                else if (c.Position.X > 0) ScreenMove("left", (int)(c.Speed * 1.77));
+                                if ((c.Position.Y < GraphicsDevice.Viewport.Height - (100 + c.Position.Height) && globalY <= maxY) || (globalY == maxY && c.Position.Y < GraphicsDevice.Viewport.Height - c.Position.Height))
+                                    c.Position = new Rectangle(c.Position.X, (int)(c.Position.Y + c.Speed * 1.77), c.Position.Width, c.Position.Height);
+                                else if (c.Position.Y < GraphicsDevice.Viewport.Height - c.Position.Height) ScreenMove("down", (int)(c.Speed * 1.77));
+                                break;
+                            case 7:
+                                c.DashCount++;
+                                if ((c.Position.X > 100 && globalX >= 0) || (globalX <= 0 && c.Position.X > 0))
+                                    c.Position = new Rectangle((int)(c.Position.X - c.Speed * 2.5), c.Position.Y, c.Position.Width, c.Position.Height);
+                                else if (c.Position.X > 0) ScreenMove("left", (int)(c.Speed * 2.5));
+                                break;
+                            case 8:
+                                c.DashCount++;
+                                if ((c.Position.X > 100 && globalX >= 0) || (globalX <= 0 && c.Position.X > 0))
+                                    c.Position = new Rectangle((int)(c.Position.X - c.Speed * 1.77), c.Position.Y, c.Position.Width, c.Position.Height);
+                                else if (c.Position.X > 0) ScreenMove("left", (int)(c.Speed * 1.77));
+                                if ((c.Position.Y > 100 && globalY >= 0) || (globalY <= 0 && c.Position.Y > 0))
+                                    c.Position = new Rectangle(c.Position.X, (int)(c.Position.Y - c.Speed * 1.77), c.Position.Width, c.Position.Height);
+                                else if (c.Position.Y > 0) ScreenMove("up", (int)(c.Speed * 1.77));
+                                break;
+                        }
+                    }
 
                     // Removing shot delay
-                    if(c.ShotDelay > 0)
+                    if (c.ShotDelay > 0)
                     {
                         c.ShotDelay--;
                     }
@@ -733,7 +827,7 @@ namespace GroupGame
                     for (int i = projectiles.Count; i > 0; i--)
                     {
                         if (projectiles[i - 1].Moving == true) projectiles[i - 1].Move();
-                        else projectiles[i - 1].MoveStationary(c,rotationAngle);
+                        else projectiles[i - 1].MoveStationary(c, rotationAngle);
                         projectiles[i - 1].Count++;
                         if (projectiles[i - 1].Count == projectiles[i - 1].CountMax)
                         {
@@ -742,24 +836,29 @@ namespace GroupGame
                     }
 
                     // Move Enemy projectiles and do damage
-                    for(int i = eProjectiles.Count; i > 0; i--)
+                    for (int i = eProjectiles.Count; i > 0; i--)
                     {
-                        if(eProjectiles[i - 1].Position.Intersects(c.CRect))
+                        if (eProjectiles[i - 1].Position.Intersects(c.CRect) && (c.DashCount > 20 || c.DashCount == 0))
                         {
                             c.Health -= eProjectiles[i - 1].Damage;
                             eProjectiles.RemoveAt(i - 1);
                         }
-                        else eProjectiles[i-1].Move();
+                        else eProjectiles[i - 1].Move();
                     }
 
-                    // Enemy2 Shooting
+
+                    // Foreach loop that goes through all enemy objects in the enemies list
+                    bool enemyAlive = false;
                     foreach (Enemy e in enemies)
                     {
-                        if (e is Enemy2)
+                        // If the enemy is alive, it moves, and the enemyAlive boolean is set to true
+                        if (e.Alive == true)
                         {
-                            Enemy2 e2 = (Enemy2)e;
-                            if (e.Alive == true)
+                            enemyAlive = true;
+                            e.Move(c, enemies);
+                            if (e is Enemy2)
                             {
+                                Enemy2 e2 = (Enemy2)e;
                                 e2.Shoot(c);
                                 if (e2.ShotCount == 150)
                                 {
@@ -772,30 +871,49 @@ namespace GroupGame
                                     e2.ShotCount = 0;
                                 }
                             }
-                            else e2.Shooting = false;
+                            if (e is Enemy3)
+                            {
+                                Enemy3 e3 = (Enemy3)e;
+                                e3.ShotCount++;
+                                if (e3.ShotCount == 120)
+                                {
+                                    int shotX = (c.Position.X + c.Position.Width / 2) - (e.Position.X + e.Position.Width / 2);
+                                    int shotY = (c.Position.Y + c.Position.Height / 2) - (e.Position.Y + e.Position.Height / 2);
+                                    float shotAngle = (float)Math.Atan2(shotY, shotX);
+                                    EnemyProjectile eP = new EnemyProjectile(5, 25, 25, e, shotAngle, 6);
+                                    EnemyProjectile eP2 = new EnemyProjectile(5, 25, 25, e, shotAngle + .3f, 6);
+                                    EnemyProjectile eP3 = new EnemyProjectile(5, 25, 25, e, shotAngle + .6f, 6);
+                                    EnemyProjectile eP4 = new EnemyProjectile(5, 25, 25, e, shotAngle - .3f, 6);
+                                    EnemyProjectile eP5 = new EnemyProjectile(5, 25, 25, e, shotAngle - .6f, 6);
+                                    eP.Image = dot;
+                                    eP2.Image = dot;
+                                    eP3.Image = dot;
+                                    eP4.Image = dot;
+                                    eP5.Image = dot;
+                                    eProjectiles.Add(eP);
+                                    eProjectiles.Add(eP2);
+                                    eProjectiles.Add(eP3);
+                                    eProjectiles.Add(eP4);
+                                    eProjectiles.Add(eP5);
+                                    e3.ShotCount = 0;
+                                }
+                            }
                         }
-                    }
-
-                    // Foreach loop that goes through all enemy objects in the enemies list
-                    bool enemyAlive = false;
-                    foreach (Enemy e in enemies)
-                    {
-                        // If the enemy is alive, it moves, and the enemyAlive boolean is set to true
-                        if (e.Alive == true)
+                        else if (e is Enemy2)
                         {
-                            e.Move(c, enemies);
-                            enemyAlive = true;
+                            Enemy2 e2 = (Enemy2)e;
+                            e2.Shooting = false;
                         }
 
                         // For loop that goes through all projectile objects in the projectiles list
-                        for(int i = projectiles.Count; i > 0; i--)
+                        for (int i = projectiles.Count; i > 0; i--)
                         {
-                            if (projectiles[i-1].CheckCollision(e) == true && e.Alive == true)
+                            if (projectiles[i - 1].CheckCollision(e) == true && e.Alive == true)
                             {
-                                e.Health -= projectiles[i-1].Damage;
-                                if (projectiles[i-1].Pierce == false)
+                                e.Health -= projectiles[i - 1].Damage;
+                                if (projectiles[i - 1].Pierce == false)
                                 {
-                                    projectiles.RemoveAt(i-1);
+                                    projectiles.RemoveAt(i - 1);
                                 }
                             }
                         }
@@ -814,7 +932,7 @@ namespace GroupGame
                         }
 
                         // If the enemy's health is 0 or less, it dies
-                        if(e.Health <= 0)
+                        if (e.Health <= 0)
                         {
                             if (e is Enemy1 && e.Alive == true) score += 100;
                             e.Alive = false;
@@ -822,7 +940,7 @@ namespace GroupGame
                     }
 
                     // If enemyAlive is false, no enemies are alive, and the round advances
-                    if(enemyAlive == false)
+                    if (enemyAlive == false)
                     {
                         AdvanceRound();
                     }
@@ -957,7 +1075,7 @@ namespace GroupGame
                         c.Image = playerWalking;
                         numFramesPlayer = 8;
                         c.Position = new Rectangle((char1.X + char1.Width / 2) - c.Position.Width / 2, (char1.Y - char1.Height) - c.Position.Height, c.Position.Width, c.Position.Height);
-                        c.Draw(spriteBatch, rotationAngle, framePlayer);
+                        c.Draw(spriteBatch, rotationAngle, framePlayer, 3);
 
                     }
                     else
@@ -976,7 +1094,7 @@ namespace GroupGame
                         c.Image = playerWalking;
                         numFramesPlayer = 8;
                         c.Position = new Rectangle((char2.X + char2.Width / 2) - c.Position.Width / 2, (char2.Y - char2.Height) - c.Position.Height, c.Position.Width, c.Position.Height);
-                        c.Draw(spriteBatch, rotationAngle, framePlayer);
+                        c.Draw(spriteBatch, rotationAngle, framePlayer, 3);
                     }
                     else
                     {
@@ -994,7 +1112,7 @@ namespace GroupGame
                         c.Image = playerWalking;
                         numFramesPlayer = 8;
                         c.Position = new Rectangle((char3.X + char3.Width / 2) - c.Position.Width / 2, (char3.Y - char3.Height) - c.Position.Height, c.Position.Width, c.Position.Height);
-                        c.Draw(spriteBatch, rotationAngle, framePlayer);
+                        c.Draw(spriteBatch, rotationAngle, framePlayer, 3);
                     }
                     else
                     {
@@ -1012,14 +1130,12 @@ namespace GroupGame
                         c.Image = playerWalking;
                         numFramesPlayer = 8;
                         c.Position = new Rectangle((char4.X + char4.Width / 2) - c.Position.Width / 2, (char4.Y - char1.Height) - c.Position.Height, c.Position.Width, c.Position.Height);
-                        c.Draw(spriteBatch, rotationAngle, framePlayer);
+                        c.Draw(spriteBatch, rotationAngle, framePlayer, 3);
                     }
                     else
                     {
                         spriteBatch.Draw(electricButton, char4, Color.White);
                     }
-
-
                     break;
 
                 // Game is in Horde Mode
@@ -1031,8 +1147,6 @@ namespace GroupGame
                         spriteBatch.Draw(boxes, o, Color.White);
                         
                     }
-
-                    c.Draw(spriteBatch,rotationAngle, framePlayer); // Draw the character
 
                     foreach (Projectile p in projectiles)
                     {
@@ -1048,10 +1162,12 @@ namespace GroupGame
                         eP.Draw(spriteBatch);
                     }
 
-                    c.Draw(spriteBatch, rotationAngle, framePlayer); // Draw the character
+                    if (c.DashCount == 0) c.Draw(spriteBatch, rotationAngle, framePlayer, Color.White); // Draw the character
+                    else if (c.DashCount < 20) c.Draw(spriteBatch, rotationAngle, framePlayer, Color.CadetBlue); // Draw the character
+                    else c.Draw(spriteBatch, rotationAngle, framePlayer, Color.IndianRed); // Draw the character
 
                     // Draw lines for the Enemy2s that are shooting
-                    foreach(Enemy e in enemies)
+                    foreach (Enemy e in enemies)
                     {
                         if (e is Enemy2)
                         {
@@ -1059,7 +1175,7 @@ namespace GroupGame
                             if (e2.Shooting == true)
                             {
                                 int distance = (int)Math.Sqrt(Math.Pow((c.Position.X - e2.Position.X), 2) + Math.Pow((c.Position.Y - e2.Position.Y), 2));
-                                Rectangle lineRect = new Rectangle(e2.Position.X + e2.Position.Width / 2, e2.Position.Y + e2.Position.Height / 2, distance, 1);
+                                Rectangle lineRect = new Rectangle(e2.Position.X + e2.Position.Width / 2, e2.Position.Y + e2.Position.Height / 2, distance, 2);
                                 int lineX = (c.Position.X + c.Position.Width / 2) - (e2.Position.X + e2.Position.Width / 2);
                                 int lineY = (c.Position.Y + c.Position.Height / 2) - (e2.Position.Y + e2.Position.Height / 2);
                                 float lineAngle = (float)Math.Atan2(lineY, lineX);
@@ -1080,6 +1196,7 @@ namespace GroupGame
                         float enemyAngle = -(float)(Math.Atan2(aX, aY) + Math.PI / 2);
                         if (e.Alive == true && e is Enemy1) e.Draw(spriteBatch, enemyAngle, frameEnemy,Color.White);
                         if (e.Alive == true && e is Enemy2) e.Draw(spriteBatch, enemyAngle, frameEnemy, Color.Blue);
+                        if (e.Alive == true && e is Enemy3) e.Draw(spriteBatch, enemyAngle, frameEnemy, Color.Orange);
                     }
 
                     // Code for drawing interface
