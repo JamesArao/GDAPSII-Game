@@ -33,7 +33,7 @@ namespace GroupGame
             set { shooting = value; }
         }
 
-        public override void Move(Character c, List<Enemy> enemies)
+        public override void Move(Character c, List<Enemy> enemies, List<Rectangle> boxes)
         {
             // Switch statement based on EState
             switch (EState)
