@@ -816,6 +816,7 @@ namespace GroupGame
                                 break;
                         }
                     }
+                    c.CRect = new Rectangle(c.Position.X + 10, c.Position.Y + 10, c.Position.Width - 20, c.Position.Height - 20);
 
                     // Removing shot delay
                     if (c.ShotDelay > 0)
