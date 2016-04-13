@@ -16,7 +16,7 @@ namespace GroupGame
     {
 
         // Override the Move method
-        public override void Move(Character c, List<Enemy> enemies)
+        public override void Move(Character c, List<Enemy> enemies, List<Rectangle> objects)
         {
             // Switch statement based on EState
             switch (EState)
@@ -43,6 +43,14 @@ namespace GroupGame
                             }
 
                         }
+                        foreach (Rectangle otherR in objects)
+                        {
+                            if (new Rectangle((int)(newX + Speed), (int)newY, 50, 50).Intersects(otherR) == true && otherR != this.Position)
+                            {
+                                collides = true;
+                            }
+
+                        }
                         // If the enemy is not colliding with another enemy (collides is not true), it moves
                         if (collides != true)
                         {
@@ -55,6 +63,14 @@ namespace GroupGame
                         foreach (Enemy others in enemies)
                         {
                             if (new Rectangle((int)(newX - Speed), (int)newY, 50, 50).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
+                            {
+                                collides = true;
+                            }
+
+                        }
+                        foreach (Rectangle otherR in objects)
+                        {
+                            if (new Rectangle((int)(newX - Speed), (int)newY, 50, 50).Intersects(otherR) == true && otherR != this.Position)
                             {
                                 collides = true;
                             }
@@ -76,6 +92,14 @@ namespace GroupGame
                             }
 
                         }
+                        foreach (Rectangle otherR in objects)
+                        {
+                            if (new Rectangle((int)newX, (int)(newY + Speed), 50, 50).Intersects(otherR) == true && otherR != this.Position)
+                            {
+                                collides = true;
+                            }
+
+                        }
                         if (collides != true)
                         {
                             newY += Speed;
@@ -87,6 +111,14 @@ namespace GroupGame
                         foreach (Enemy others in enemies)
                         {
                             if (new Rectangle((int)newX, (int)(newY - Speed), 50, 50).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
+                            {
+                                collides = true;
+                            }
+
+                        }
+                        foreach (Rectangle otherR in objects)
+                        {
+                            if (new Rectangle((int)newX, (int)(newY - Speed), 50, 50).Intersects(otherR) == true && otherR != this.Position)
                             {
                                 collides = true;
                             }

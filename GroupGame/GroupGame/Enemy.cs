@@ -76,7 +76,7 @@ namespace GroupGame
         }
 
         // Method to move the enemy
-        public abstract void Move(Character c, List<Enemy> enemies);
+        public abstract void Move(Character c, List<Enemy> enemies, List<Rectangle> boxes);
 
         /*
         public void RotateTest(float rAngle)

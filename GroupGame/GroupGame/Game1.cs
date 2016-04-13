@@ -173,6 +173,47 @@ namespace GroupGame
             // Silently catch EndOfStreamExceptions
             catch(EndOfStreamException){}
 
+            objects.Clear();
+
+            for (int i = 0; i < 5; i++)
+            {
+                int x = rgen.Next(80, 1220);
+                int y = rgen.Next(80, 1020);
+
+                Rectangle randObj = new Rectangle(x, y, 150, 150);
+
+                bool collision = false;
+                foreach(Enemy e in enemies)
+                {
+                    if(randObj.Intersects(e.Position) == true)
+                    {
+                        collision = true;
+                    }
+                }
+                if (collision == true && randObj.Intersects(c.Position) == false)
+                {
+                    i--;
+                }
+                else
+                {
+                    bool boxCollision = false;
+                    foreach(Rectangle box in objects)
+                    {
+                        if(randObj.Intersects(box))
+                        {
+                            boxCollision = true;
+                        }
+                    }
+                    if(boxCollision == false)
+                    {
+                        objects.Add(randObj);
+                    }
+                    else
+                    {
+                        i--;
+                    }
+                }
+            }
 
             reader.Close(); // Close the file
             round++; // Increase the round number
@@ -855,7 +896,7 @@ namespace GroupGame
                         if (e.Alive == true)
                         {
                             enemyAlive = true;
-                            e.Move(c, enemies);
+                            e.Move(c, enemies, objects);
                             if (e is Enemy2)
                             {
                                 Enemy2 e2 = (Enemy2)e;
