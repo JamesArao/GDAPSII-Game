@@ -880,12 +880,29 @@ namespace GroupGame
                     // Move Enemy projectiles and do damage
                     for (int i = eProjectiles.Count; i > 0; i--)
                     {
+                        if(eProjectiles[i-1] is EnemyProjectile1)
+                        {
+                            eProjectiles[i - 1].Move();
+                        }
+                        else if(eProjectiles[i-1] is EnemyProjectile2)
+                        {
+                            EnemyProjectile2 ep = (EnemyProjectile2)eProjectiles[i - 1];
+                            if (ep.Count == 0 && ep.Moving == false)
+                            {
+                                int angleX = (c.Position.X + c.Position.Width / 2) - (ep.Position.X + ep.Position.Width / 2);
+                                int angleY = (c.Position.Y + c.Position.Height / 2) - (ep.Position.Y + ep.Position.Height / 2);
+                                float angle = (float)Math.Atan2(angleY, angleX);
+                                ep.MoveX = -(float)Math.Sin(angle - Math.PI / 2) * ep.Speed;
+                                ep.MoveY = (float)Math.Cos(angle - Math.PI / 2) * ep.Speed;
+                                ep.Moving = true;
+                            }
+                            ep.Move();
+                        }
                         if (eProjectiles[i - 1].Position.Intersects(c.CRect) && (c.DashCount > 20 || c.DashCount == 0))
                         {
                             c.Health -= eProjectiles[i - 1].Damage;
                             eProjectiles.RemoveAt(i - 1);
                         }
-                        else eProjectiles[i - 1].Move();
                     }
 
 
@@ -907,7 +924,7 @@ namespace GroupGame
                                     int shotX = (c.Position.X + c.Position.Width / 2) - (e.Position.X + e.Position.Width / 2);
                                     int shotY = (c.Position.Y + c.Position.Height / 2) - (e.Position.Y + e.Position.Height / 2);
                                     float shotAngle = (float)Math.Atan2(shotY, shotX);
-                                    EnemyProjectile eP = new EnemyProjectile(10, 15, 15, e, shotAngle, 15);
+                                    EnemyProjectile eP = new EnemyProjectile1(10, 15, 15, e, shotAngle, 15);
                                     eP.Image = dot;
                                     eProjectiles.Add(eP);
                                     e2.ShotCount = 0;
@@ -922,11 +939,11 @@ namespace GroupGame
                                     int shotX = (c.Position.X + c.Position.Width / 2) - (e.Position.X + e.Position.Width / 2);
                                     int shotY = (c.Position.Y + c.Position.Height / 2) - (e.Position.Y + e.Position.Height / 2);
                                     float shotAngle = (float)Math.Atan2(shotY, shotX);
-                                    EnemyProjectile eP = new EnemyProjectile(5, 25, 25, e, shotAngle, 6);
-                                    EnemyProjectile eP2 = new EnemyProjectile(5, 25, 25, e, shotAngle + .3f, 6);
-                                    EnemyProjectile eP3 = new EnemyProjectile(5, 25, 25, e, shotAngle + .6f, 6);
-                                    EnemyProjectile eP4 = new EnemyProjectile(5, 25, 25, e, shotAngle - .3f, 6);
-                                    EnemyProjectile eP5 = new EnemyProjectile(5, 25, 25, e, shotAngle - .6f, 6);
+                                    EnemyProjectile eP = new EnemyProjectile1(5, 25, 25, e, shotAngle, 6);
+                                    EnemyProjectile eP2 = new EnemyProjectile1(5, 25, 25, e, shotAngle + .3f, 6);
+                                    EnemyProjectile eP3 = new EnemyProjectile1(5, 25, 25, e, shotAngle + .6f, 6);
+                                    EnemyProjectile eP4 = new EnemyProjectile1(5, 25, 25, e, shotAngle - .3f, 6);
+                                    EnemyProjectile eP5 = new EnemyProjectile1(5, 25, 25, e, shotAngle - .6f, 6);
                                     eP.Image = dot;
                                     eP2.Image = dot;
                                     eP3.Image = dot;

@@ -17,7 +17,7 @@ using System.Text;
 
 namespace GroupGame
 {
-    class EnemyProjectile : GameObject
+    abstract class EnemyProjectile : GameObject
     {
         private int damage; // Damage the projectile does
         private float fPosX; // Float value of the x component of the projectile's position
@@ -69,6 +69,20 @@ namespace GroupGame
             set { fPosY = value; }
         }
 
+        // MoveX property
+        public float MoveX
+        {
+            get { return moveX; }
+            set { moveX = value; }
+        }
+
+        // MoveY property
+        public float MoveY
+        {
+            get { return moveY; }
+            set { moveY = value; }
+        }
+
         // CheckCollision method
         // Returns true if the projectile's position intersects the enemy's cRect
         public bool CheckCollision(Character c)
@@ -78,23 +92,15 @@ namespace GroupGame
         }
 
         // Move method
-        public void Move()
+        virtual public void Move()
         {
             fPosX += moveX;
             fPosY += moveY;
             Position = new Rectangle((int)fPosX, (int)fPosY, Position.Width, Position.Height);
         }
 
-        // Method to move the stationary projectile in front of the player
-        public void MoveStationary(Character c, float ang)
-        {
-            moveX = -(float)Math.Sin(ang - Math.PI / 2) * 4;
-            moveY = (float)Math.Cos(ang - Math.PI / 2) * 4;
-            Position = new Rectangle(c.Position.X + (int)moveX * 10, c.Position.Y + (int)moveY * 10, Position.Width, Position.Height);
-        }
-
         // Draw method
-        public void Draw(SpriteBatch sprite, int f)
+        virtual public void Draw(SpriteBatch sprite, int f)
         {
             // Create a Vector2 origin which equals the center of the projectile
             Vector2 origin = new Vector2(16, 16);
