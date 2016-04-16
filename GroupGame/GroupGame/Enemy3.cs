@@ -14,15 +14,15 @@ namespace GroupGame
 {
     class Enemy3 : Enemy
     {
+        // Attributes
         private int shotCount;
 
-
+        // ShotCount property
         public int ShotCount
         {
             get { return shotCount; }
             set { shotCount = value; }
         }
-
 
         // Constructor
         public Enemy3(int posX, int posY) : base(posX, posY)

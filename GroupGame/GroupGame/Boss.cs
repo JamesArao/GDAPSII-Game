@@ -10,19 +10,33 @@ namespace GroupGame
 {
     class Boss : Enemy
     {
-        private Rectangle range;
+        // Attributes
         private int shotCount;
+        private int attackNum;
+        private int attackCount;
+        Random attackGen = new Random();
 
-        public Rectangle Range
-        {
-            get { return range; }
-            set { range = value; }
-        }
-
+        // ShotCount property
         public int ShotCount
         {
             get { return shotCount; }
             set { shotCount = value; }
+        }
+
+        public int AttackNum
+        {
+            get { return attackNum; }
+        }
+
+        public int AttackCount
+        {
+            get { return attackCount; }
+            set { attackCount = value; }
+        }
+
+        public void Attack(Character c)
+        {
+            attackNum = 1;
         }
 
         // Constructor
@@ -35,6 +49,8 @@ namespace GroupGame
             Health = 6000; // Set health
             Speed = 0.3f; // Set speed
             EState = EnemyState.Chase; // Set EState to chase, for testing
+            attackNum = 1;
+            attackCount = 100;
         }
     }
 }

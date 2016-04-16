@@ -10,35 +10,33 @@ namespace GroupGame
 {
     class Enemy2 : Enemy
     {
-
+        // Attributes
         private Rectangle range;
         private int shotCount;
         bool shooting;
 
-        public Rectangle Range
-        {
-            get { return range; }
-            set { range = value; }
-        }
-
+        // ShotCount property
         public int ShotCount
         {
             get { return shotCount; }
             set { shotCount = value; }
         }
 
+        // Shooting property
         public bool Shooting
         {
             get { return shooting; }
             set { shooting = value; }
         }
-
+        
+        // Override Move method to move range as well
         public override void Move(Character c, List<Enemy> enemies, List<Rectangle> boxes)
         {
             base.Move(c, enemies, boxes);
             range = new Rectangle(Position.X - 250, Position.Y - 250, range.Width, range.Height);
         }
 
+        // Shoot method
         public void Shoot(Character c)
         {
             if (c.Position.Intersects(range))

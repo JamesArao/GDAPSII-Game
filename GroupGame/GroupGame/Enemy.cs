@@ -16,6 +16,7 @@ namespace GroupGame
 {
     abstract class Enemy:GameObject
     {
+        // Attributes
         private int health; // Health of the enemy
         private EnemyState eState; // State the enemy is in
         private bool alive = true; // Is the enemy alive
@@ -24,6 +25,7 @@ namespace GroupGame
         private float fPosY;
         private float speed;
 
+        // Values for animation
         const int enemyY = 0;
         const int enemyHeight = 32;
         const int enemyWidth = 32;
@@ -57,25 +59,28 @@ namespace GroupGame
             set { cRect = value; }
         }
 
+        // FPosX property
         public float FPosX
         {
             get { return fPosX; }
             set { fPosX = value; }
         }
 
+        // FPosY property
         public float FPosY
         {
             get { return fPosY; }
             set { fPosY = value; }
         }
 
+        // Speed property
         public float Speed
         {
             get { return speed; }
             set { speed = value; }
         }
 
-        // Method to move the enemy
+        // Move method
         public virtual void Move(Character c, List<Enemy> enemies, List<Rectangle> boxes)
         {
             // Switch statement based on EState
@@ -197,14 +202,7 @@ namespace GroupGame
             }
         }
 
-        /*
-        public void RotateTest(float rAngle)
-        {
-            Vector2 points = new Vector2(CRect.X, CRect.Y);
-            points = Vector2.Transform(points, Matrix.CreateRotationZ(rAngle));
-            CRect = new Rectangle(new Point((int)points.X, (int)points.Y), new Point(CRect.Width, CRect.Height));
-        }*/
-
+        // Draw method
         public void Draw(SpriteBatch sprite, float rAngle, int f , Color color)
         {
             // Create a Vector2 origin which equals the center of one frame of the player image

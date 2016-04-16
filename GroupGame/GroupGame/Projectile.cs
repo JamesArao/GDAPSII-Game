@@ -14,6 +14,7 @@ namespace GroupGame
 {
     class Projectile : GameObject
     {
+        // Attributes
         private int damage; // Damage the projectile does
         private float fPosX; // Float value of the x component of the projectile's position
         private float fPosY; // Float value of the y component of the projectile's position
@@ -38,7 +39,7 @@ namespace GroupGame
             set { damage = value; }
         }
 
-        // MovementCount Property
+        // Count Property
         public int Count
         {
             get { return count; }

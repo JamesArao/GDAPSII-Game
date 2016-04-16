@@ -14,7 +14,6 @@ namespace GroupGame
 {
     class Enemy1 : Enemy
     {
-
         // Constructor
         public Enemy1(int posX, int posY) : base(posX, posY)
         {

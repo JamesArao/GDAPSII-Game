@@ -14,7 +14,6 @@ namespace GroupGame
 {
     class Character1:Character
     {
-
         // Constructor
         public Character1(int x, int y):base(x,y)
         {

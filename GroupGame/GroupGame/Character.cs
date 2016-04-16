@@ -14,6 +14,7 @@ namespace GroupGame
 {
     abstract class Character : GameObject
     {
+        // Attributes
         private int speed; // Speed the character moves at
         private int shotDelay; // Int that acts as a way of delaying player shooting, decreases by one every frame
         private int health; // Health of the player
@@ -34,7 +35,7 @@ namespace GroupGame
             set { speed = value; }
         }
 
-        // Speed property
+        // ShotDelay property
         public int ShotDelay
         {
             get { return shotDelay; }

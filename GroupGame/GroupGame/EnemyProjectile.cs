@@ -29,10 +29,10 @@ namespace GroupGame
         private int countMax; // Maxmimum count the projectile can be out
 
         // Values for animation
-        const int eProjY = 0;
+        /*const int eProjY = 0;
         const int eProjHeight = 32;
         const int eProjWidth = 32;
-        const int eProjX = 0;
+        const int eProjX = 0;*/
 
         // Damage Property
         public int Damage
@@ -100,18 +100,13 @@ namespace GroupGame
         }
 
         // Draw method
-        virtual public void Draw(SpriteBatch sprite, int f)
+        virtual public void Draw(SpriteBatch sprite)
         {
-            // Create a Vector2 origin which equals the center of the projectile
-            Vector2 origin = new Vector2(16, 16);
-
-            // Draw the projectile at its position plus half its size, and rotate it based on the rAngle passed in
-            //sprite.Draw(Image, new Rectangle(Position.X + Position.Width / 2, Position.Y + Position.Height / 2, Position.Width, Position.Height), new Rectangle(eProjX + f * eProjWidth, eProjY, eProjWidth, eProjHeight), Color.White, angle - (float)Math.PI / 2, origin, SpriteEffects.None, 0);
-            sprite.Draw(Image, new Rectangle(Position.X + Position.Width / 2, Position.Y + Position.Height / 2, Position.Width, Position.Height), null, Color.White, angle - (float)Math.PI / 2, origin, SpriteEffects.None, 0);
+            sprite.Draw(Image, Position, Color.White);
         }
 
         // Constructor for moving projectile with different size
-        public EnemyProjectile(int dmg, int w, int h, Enemy e, float ang, int speed)
+        public EnemyProjectile(int dmg, int w, int h, Enemy e, float ang, int speed, Texture2D img)
         {
             // Values for damage, angle, countMax, and pierce
             damage = dmg;
@@ -119,13 +114,20 @@ namespace GroupGame
             //countMax = cMax;
 
             // Position and movement
-            Position = new Rectangle(e.Position.X + e.Position.Width / 2, e.Position.Y + e.Position.Height / 2, w, h);
-            fPosX = e.Position.X + ((e.Position.Width - Position.Width) / 2);
-            fPosY = e.Position.Y + ((e.Position.Height - Position.Height) / 2);
+            if(e != null)
+            {
+                Position = new Rectangle(e.Position.X + e.Position.Width / 2, e.Position.Y + e.Position.Height / 2, w, h);
+                fPosX = e.Position.X + ((e.Position.Width - Position.Width) / 2);
+                fPosY = e.Position.Y + ((e.Position.Height - Position.Height) / 2);
+            }
+
 
             // moveX and moveY values are set by taking the sin or cosine of the angle and multiplying it by speed
             moveX = -(float)Math.Sin(ang - Math.PI / 2) * speed;
             moveY = (float)Math.Cos(ang - Math.PI / 2) * speed;
+
+            // Set image
+            Image = img;
         }
     }
 }
