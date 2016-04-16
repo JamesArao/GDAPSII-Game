@@ -130,14 +130,15 @@ namespace GroupGame
         // Method for advancing the round of our Horde Mode
         public void AdvanceRound()
         {
-            // Clear Enemies list
-            enemies.Clear();
+            enemies.Clear(); // Clear Enemies list
+            projectiles.Clear(); // Clear the projectiles list
+            eProjectiles.Clear(); // Clear the enemy projectiles list
 
             // Select a random round to use
             //int num = rgen.Next(1,round+1);
             BinaryReader reader;
-            if (round < 7) reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round" + (round + 1) + ".dat"));
-            else reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round7.dat"));
+            if (round < 8) reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round" + (round + 1) + ".dat"));
+            else reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round8.dat"));
 
             // Try block
             try
@@ -169,6 +170,11 @@ namespace GroupGame
                             Enemy e3 = new Enemy3(c.Position.X - 500 + x, c.Position.Y - 300 + y);
                             e3.Image = enemyImage;
                             enemies.Add(e3);
+                            break;
+                        case "4":
+                            Enemy b = new Boss(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                            b.Image = enemyImage;
+                            enemies.Add(b);
                             break;
                     }
                 }
@@ -1126,7 +1132,7 @@ namespace GroupGame
                                             {
                                                 case "1": break;
                                                 case "2":
-                                                    eProjectiles.Add(new EPStall(5, b.Position.X - 500 + attackX, b.Position.Y - 300 + attackY, 30, 30, 10, 90, stallImage));
+                                                    eProjectiles.Add(new EPStall(5, b.Position.X - 500 + attackX, b.Position.Y - 300 + attackY, 40, 40, 10, 90, stallImage));
                                                     break;
                                             }
 

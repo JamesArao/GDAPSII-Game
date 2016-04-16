@@ -63,7 +63,7 @@ namespace GroupGame
                         e.Health -= Damage;
                     }
                 }
-                if (c.Position.Intersects(explosion) && c.DashCount > 20)
+                if (c.Position.Intersects(explosion) && (c.DashCount > 20 || c.DashCount == 0))
                 {
                     c.Health -= Damage / 10;
                 }
