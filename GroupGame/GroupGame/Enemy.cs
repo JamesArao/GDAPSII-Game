@@ -24,6 +24,7 @@ namespace GroupGame
         private float fPosX;
         private float fPosY;
         private float speed;
+        private int shotCount;
 
         // Values for animation
         const int enemyY = 0;
@@ -78,6 +79,13 @@ namespace GroupGame
         {
             get { return speed; }
             set { speed = value; }
+        }
+
+        // ShotCount property
+        public int ShotCount
+        {
+            get { return shotCount; }
+            set { shotCount = value; }
         }
 
         // Move method

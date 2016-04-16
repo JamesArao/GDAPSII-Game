@@ -193,7 +193,7 @@ namespace GroupGame
                         collision = true;
                     }
                 }
-                if (collision == true && randObj.Intersects(c.Position) == false)
+                if (collision == true || randObj.Intersects(c.Position) == true)
                 {
                     i--;
                 }
@@ -440,34 +440,27 @@ namespace GroupGame
                 {
                     // Test of a melee attack
                     case AbilityState.a1:
-                        Projectile p1 = new Projectile(5, c, rotationAngle, 15, true); // Create a new projectile that will travel in the direction of the mouse
-                        p1.Image = meleeImage; // Set the image of the projectile
-                        projectiles.Add(p1); // Add the projectile to the list
+                        projectiles.Add(new PStationary(5, 60, 60, c, rotationAngle, 15, true, meleeImage)); // Create a new projectile that will travel in the direction of the mouse
                         c.ShotDelay = 40; // Set the ShotDelay of the player. We can change this value depending on ability, stronger attacks have longer delays
                         break;
 
                     // The original shooting attack
                     case AbilityState.a2:
-                        Projectile p2 = new Projectile(25, mState.X, mState.Y, c, rotationAngle, 100, false);
-                        p2.Image = bulletImage;
-                        projectiles.Add(p2);
+                        projectiles.Add(new PBasic(25, 40,40, c, rotationAngle, 100, false, bulletImage));
                         c.ShotDelay = 20; 
                         break;
 
                     // Test of a piercing attack with a different size
                     case AbilityState.a3:
-                        Projectile p3 = new Projectile(10, mState.X, mState.Y, 100, 100, c, rotationAngle, 120, true);
-                        p3.Image = bulletImage;
-                        projectiles.Add(p3);
+                        projectiles.Add(new PBasic(10, 100, 100, c, rotationAngle, 120, true, bulletImage));
                         c.ShotDelay = 80;
                         break;
 
                     // Test of a rapid fire attack
                     case AbilityState.a4:
-                        Projectile p4 = new Projectile(3, mState.X, mState.Y, c, rotationAngle, 90, false);
-                        p4.Image = bulletImage;
-                        projectiles.Add(p4);
-                        c.ShotDelay = 2;
+                        //projectiles.Add(new PBasic(3, 30, 30, c, rotationAngle, 90, false, bulletImage));
+                        projectiles.Add(new PExplosive(150, 30, 30, c, rotationAngle, 90, dot));
+                        c.ShotDelay = 120;
                         break;
                 }
             }
@@ -518,6 +511,7 @@ namespace GroupGame
             base.OnExiting(sender, args);
         }
 
+        // Game Constructor
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -974,24 +968,46 @@ namespace GroupGame
                     }
 
                     // Move projectiles
-                    for (int i = projectiles.Count; i > 0; i--)
+                    for (int i = projectiles.Count - 1; i >= 0; i--)
                     {
                         int removing = -1;
-                        if (projectiles[i - 1].Moving == true) projectiles[i - 1].Move();
-                        else projectiles[i - 1].MoveStationary(c, rotationAngle);
-                        projectiles[i - 1].Count++;
-                        if (projectiles[i - 1].Count == projectiles[i - 1].CountMax)
+                        if (projectiles[i] is PBasic || projectiles[i] is PExplosive) projectiles[i].Move();
+                        if (projectiles[i] is PStationary)
                         {
-                            removing = i - 1;
+                            PStationary ps = (PStationary)(projectiles[i]);
+                            ps.Move(c, rotationAngle);
                         }
-                        foreach (Rectangle r in objects)
+                        projectiles[i].Count++;
+                        if (projectiles[i].Count == projectiles[i].CountMax && (projectiles[i] is PExplosive) == false)
                         {
-                            if (projectiles[i - 1].Position.Intersects(r))
+                            removing = i;
+                        }
+                        if(projectiles[i].Count >= projectiles[i].CountMax && projectiles[i] is PExplosive)
+                        {
+                            PExplosive ex = (PExplosive)projectiles[i];
+                            ex.Explode(c, enemies, projectiles, eProjectiles);
+                        }
+                        if(projectiles.Count != 0)
+                        {
+                            foreach (Rectangle r in objects)
                             {
-                                removing = i - 1;
-                                break;
+                                if (projectiles[i].Position.Intersects(r))
+                                {
+                                    if(projectiles[i] is PExplosive)
+                                    {
+                                        PExplosive ex = (PExplosive)projectiles[i];
+                                        ex.Collided = true;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        removing = i;
+                                        break;
+                                    }
+                                }
                             }
                         }
+
                         if(removing != -1)
                         {
                             projectiles.RemoveAt(removing);
@@ -1000,16 +1016,16 @@ namespace GroupGame
                     }
 
                     // Move Enemy projectiles and do damage
-                    for (int i = eProjectiles.Count; i > 0; i--)
+                    for (int i = eProjectiles.Count - 1; i >= 0; i--)
                     {
                         int removing = -1;
-                        if(eProjectiles[i-1] is EPBasic || eProjectiles[i-1] is EPAccelerate)
+                        if(eProjectiles[i] is EPBasic || eProjectiles[i] is EPAccelerate)
                         {
-                            eProjectiles[i - 1].Move();
+                            eProjectiles[i].Move();
                         }
-                        else if(eProjectiles[i-1] is EPStall)
+                        else if(eProjectiles[i] is EPStall)
                         {
-                            EPStall ep = (EPStall)eProjectiles[i - 1];
+                            EPStall ep = (EPStall)eProjectiles[i];
                             if (ep.Count == 0 && ep.Moving == false)
                             {
                                 int angleX = (c.Position.X + c.Position.Width / 2) - (ep.Position.X + ep.Position.Width / 2);
@@ -1022,17 +1038,17 @@ namespace GroupGame
                             ep.Move();
                         }
 
-                        if (eProjectiles[i - 1].Position.Intersects(c.CRect) && (c.DashCount > 20 || c.DashCount == 0))
+                        if (eProjectiles[i].Position.Intersects(c.CRect) && (c.DashCount > 20 || c.DashCount == 0))
                         {
-                            c.Health -= eProjectiles[i - 1].Damage;
-                            removing = i - 1;
+                            c.Health -= eProjectiles[i].Damage;
+                            removing = i;
                         }
 
                         foreach (Rectangle r in objects)
                         {
-                            if (eProjectiles[i - 1].Position.Intersects(r))
+                            if (eProjectiles[i].Position.Intersects(r))
                             {
-                                removing = i - 1;
+                                removing = i;
                                 break;
                             }
                         }
@@ -1129,28 +1145,24 @@ namespace GroupGame
                         }
 
                         // For loop that goes through all projectile objects in the projectiles list
-                        for (int i = projectiles.Count; i > 0; i--)
+                        for (int i = projectiles.Count - 1; i >= 0; i--)
                         {
-                            if (projectiles[i - 1].CheckCollision(e) == true && e.Alive == true)
+                            if (projectiles[i].CheckCollision(e) == true && e.Alive == true)
                             {
-                                e.Health -= projectiles[i - 1].Damage;
-                                if (projectiles[i - 1].Pierce == false)
+                                if(projectiles[i] is PExplosive)
                                 {
-                                    projectiles.RemoveAt(i - 1);
+                                    PExplosive ex = (PExplosive)projectiles[i];
+                                    ex.Collided = true;
                                 }
-                            }
-                        }
+                                else
+                                {
+                                    e.Health -= projectiles[i].Damage;
+                                    if (projectiles[i].Pierce == false)
+                                    {
+                                        projectiles.RemoveAt(i);
+                                    }
+                                }
 
-                        foreach (Projectile p in projectiles)
-                        {
-                            // If the projectile is colliding with the enemy, and the enemy is alive, the enemy is damaged
-                            if (p.CheckCollision(e) == true && e.Alive == true)
-                            {
-                                e.Health -= p.Damage;
-                                if (p.Pierce == false)
-                                {
-                                    //projectiles.Remove(p);
-                                }
                             }
                         }
 
@@ -1373,11 +1385,21 @@ namespace GroupGame
 
                     foreach (Projectile p in projectiles)
                     {
-                        if (p.Moving == true)
+                        if (p is PBasic)
                         {
                             p.Draw(spriteBatch, frameProjectile);
                         }
-                        else p.DrawStationary(spriteBatch, frameProjectile, rotationAngle);
+                        if (p is PStationary)
+                        {
+                            PStationary ps = (PStationary)p;
+                            ps.Draw(spriteBatch, frameProjectile, rotationAngle);
+                        }
+                        if(p is PExplosive)
+                        {
+                            PExplosive ex = (PExplosive)p;
+                            if (ex.ExplostionCount == 0) ex.Draw(spriteBatch);
+                            else spriteBatch.Draw(meleeImage, ex.Explosion, Color.White);
+                        }
                     }
 
                     foreach (EnemyProjectile eP in eProjectiles)
@@ -1472,8 +1494,15 @@ namespace GroupGame
                     // Draw projectiles
                     foreach (Projectile p in projectiles)
                     {
-                        if (p.Moving == true) p.Draw(spriteBatch, frameProjectile);
-                        else p.DrawStationary(spriteBatch, frameProjectile, rotationAngle);
+                        if (p is PBasic)
+                        {
+                            p.Draw(spriteBatch, frameProjectile);
+                        }
+                        if (p is PStationary)
+                        {
+                            PStationary ps = (PStationary)p;
+                            ps.Draw(spriteBatch, frameProjectile, rotationAngle);
+                        }
                     }
 
                     // Draw the player

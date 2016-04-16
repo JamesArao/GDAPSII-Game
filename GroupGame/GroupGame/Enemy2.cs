@@ -12,15 +12,7 @@ namespace GroupGame
     {
         // Attributes
         private Rectangle range;
-        private int shotCount;
         bool shooting;
-
-        // ShotCount property
-        public int ShotCount
-        {
-            get { return shotCount; }
-            set { shotCount = value; }
-        }
 
         // Shooting property
         public bool Shooting
@@ -41,13 +33,13 @@ namespace GroupGame
         {
             if (c.Position.Intersects(range))
             {
-                shotCount++;
+                ShotCount++;
                 Speed = 0.15f;
                 shooting = true;
             }
             else
             {
-                shotCount = 0;
+                ShotCount = 0;
                 Speed = 0.6f;
                 shooting = false;
             }

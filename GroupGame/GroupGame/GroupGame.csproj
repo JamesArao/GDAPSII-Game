@@ -41,6 +41,7 @@
     <Compile Include="Boss.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Character1.cs" />
+    <Compile Include="PBasic.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="Enemy1.cs" />
     <Compile Include="Enemy2.cs" />
@@ -51,9 +52,12 @@
     <Compile Include="EPStall.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameObject.cs" />
+    <Compile Include="PExplosive.cs" />
+    <Compile Include="PMine.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Projectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PStationary.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">
