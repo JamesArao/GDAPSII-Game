@@ -15,6 +15,7 @@ namespace GroupGame
 {
     class GameObject
     {
+        // Attributes
         private Texture2D image; // Image of the object
         private Rectangle position; // Position of the object
 

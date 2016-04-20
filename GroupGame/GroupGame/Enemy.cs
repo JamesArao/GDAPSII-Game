@@ -16,14 +16,18 @@ namespace GroupGame
 {
     abstract class Enemy:GameObject
     {
+        // Attributes
+        private int spawnCount = -1;
         private int health; // Health of the enemy
         private EnemyState eState; // State the enemy is in
-        private bool alive = true; // Is the enemy alive
+        private bool alive = false; // Is the enemy alive
         private Rectangle cRect; // Rectangle for enemy collision
         private float fPosX;
         private float fPosY;
         private float speed;
+        private int shotCount;
 
+        // Values for animation
         const int enemyY = 0;
         const int enemyHeight = 32;
         const int enemyWidth = 32;
@@ -57,36 +61,164 @@ namespace GroupGame
             set { cRect = value; }
         }
 
+        // FPosX property
         public float FPosX
         {
             get { return fPosX; }
             set { fPosX = value; }
         }
 
+        // FPosY property
         public float FPosY
         {
             get { return fPosY; }
             set { fPosY = value; }
         }
 
+        // Speed property
         public float Speed
         {
             get { return speed; }
             set { speed = value; }
         }
 
-        // Method to move the enemy
-        public abstract void Move(Character c, List<Enemy> enemies);
-
-        /*
-        public void RotateTest(float rAngle)
+        // ShotCount property
+        public int ShotCount
         {
-            Vector2 points = new Vector2(CRect.X, CRect.Y);
-            points = Vector2.Transform(points, Matrix.CreateRotationZ(rAngle));
-            CRect = new Rectangle(new Point((int)points.X, (int)points.Y), new Point(CRect.Width, CRect.Height));
-        }*/
+            get { return shotCount; }
+            set { shotCount = value; }
+        }
 
-        public void Draw(SpriteBatch sprite, float rAngle, int f , Color color)
+        public int SpawnCount
+        {
+            get { return spawnCount; }
+            set { spawnCount = value; }
+        }
+
+        // Move method
+        public virtual void Move(Character c, List<Enemy> enemies, List<Rectangle> boxes)
+        {
+            // Switch statement based on EState
+            switch (EState)
+            {
+                // Enemy is wandering
+                case EnemyState.Wander:
+                    break;
+
+                // Enemy is chasing the player
+                case EnemyState.Chase:
+                    float newX = FPosX;
+                    float newY = FPosY;
+
+                    // Compare enemy position to player position, change values accordingly
+                    if (Position.X < c.Position.X)
+                    {
+                        bool collides = false;
+                        foreach (Enemy others in enemies)
+                        {
+                            // If the enemy intersects the position of another enemy that is alive, collides is true
+                            if (new Rectangle((int)(newX + Speed), (int)newY, Position.Width, Position.Height).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
+                            {
+                                collides = true;
+                            }
+
+                        }
+                        foreach (Rectangle otherR in boxes)
+                        {
+                            if (new Rectangle((int)(newX + Speed), (int)newY, Position.Width, Position.Height).Intersects(otherR) == true && otherR != this.Position)
+                            {
+                                collides = true;
+                            }
+
+                        }
+                        // If the enemy is not colliding with another enemy (collides is not true), it moves
+                        if (collides != true)
+                        {
+                            newX += Speed;
+                        }
+                    }
+                    if (Position.X > c.Position.X)
+                    {
+                        bool collides = false;
+                        foreach (Enemy others in enemies)
+                        {
+                            if (new Rectangle((int)(newX - Speed), (int)newY, Position.Width, Position.Height).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
+                            {
+                                collides = true;
+                            }
+
+                        }
+                        foreach (Rectangle otherR in boxes)
+                        {
+                            if (new Rectangle((int)(newX - Speed), (int)newY, Position.Width, Position.Height).Intersects(otherR) == true && otherR != this.Position)
+                            {
+                                collides = true;
+                            }
+
+                        }
+                        if (collides != true)
+                        {
+                            newX -= Speed;
+                        }
+                    }
+                    if (Position.Y < c.Position.Y)
+                    {
+                        bool collides = false;
+                        foreach (Enemy others in enemies)
+                        {
+                            if (new Rectangle((int)newX, (int)(newY + Speed), Position.Width, Position.Height).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
+                            {
+                                collides = true;
+                            }
+
+                        }
+                        foreach (Rectangle otherR in boxes)
+                        {
+                            if (new Rectangle((int)newX, (int)(newY + Speed), Position.Width, Position.Height).Intersects(otherR) == true && otherR != this.Position)
+                            {
+                                collides = true;
+                            }
+
+                        }
+                        if (collides != true)
+                        {
+                            newY += Speed;
+                        }
+                    }
+                    if (Position.Y > c.Position.Y)
+                    {
+                        bool collides = false;
+                        foreach (Enemy others in enemies)
+                        {
+                            if (new Rectangle((int)newX, (int)(newY - Speed), Position.Width, Position.Height).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
+                            {
+                                collides = true;
+                            }
+
+                        }
+                        foreach (Rectangle otherR in boxes)
+                        {
+                            if (new Rectangle((int)newX, (int)(newY - Speed), Position.Width, Position.Height).Intersects(otherR) == true && otherR != this.Position)
+                            {
+                                collides = true;
+                            }
+
+                        }
+                        if (collides != true)
+                        {
+                            newY -= Speed;
+                        }
+                    }
+                    FPosX = newX;
+                    FPosY = newY;
+                    Position = new Rectangle((int)newX, (int)newY, Position.Width, Position.Height);
+                    CRect = new Rectangle((int)newX + 15, (int)newY + 15, CRect.Width, CRect.Height);
+                    break;
+            }
+        }
+
+        // Draw method
+        public virtual void Draw(SpriteBatch sprite, float rAngle, int f , Color color)
         {
             // Create a Vector2 origin which equals the center of one frame of the player image
             Vector2 origin = new Vector2(16, 16);

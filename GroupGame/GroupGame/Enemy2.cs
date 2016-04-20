@@ -10,137 +10,47 @@ namespace GroupGame
 {
     class Enemy2 : Enemy
     {
-
+        // Attributes
         private Rectangle range;
-        private int shotCount;
         bool shooting;
 
-        public Rectangle Range
-        {
-            get { return range; }
-            set { range = value; }
-        }
-
-        public int ShotCount
-        {
-            get { return shotCount; }
-            set { shotCount = value; }
-        }
-
+        // Shooting property
         public bool Shooting
         {
             get { return shooting; }
             set { shooting = value; }
         }
-
-        public override void Move(Character c, List<Enemy> enemies)
+        
+        // Override Move method to move range as well
+        public override void Move(Character c, List<Enemy> enemies, List<Rectangle> boxes)
         {
-            // Switch statement based on EState
-            switch (EState)
+            if (Alive == true) base.Move(c, enemies, boxes);
+            else
             {
-                // Enemy is wandering
-                case EnemyState.Wander:
-                    break;
-
-                // Enemy is chasing the player
-                case EnemyState.Chase:
-                    float newX = FPosX;
-                    float newY = FPosY;
-
-                    // Compare enemy position to player position, change values accordingly
-                    if (Position.X < c.Position.X)
-                    {
-                        bool collides = false;
-                        foreach (Enemy others in enemies)
-                        {
-                            // If the enemy intersects the position of another enemy that is alive, collides is true
-                            if (new Rectangle((int)(newX + Speed), (int)newY, 50, 50).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
-                            {
-                                collides = true;
-                            }
-
-                        }
-                        // If the enemy is not colliding with another enemy (collides is not true), it moves
-                        if (collides != true)
-                        {
-                            newX += Speed;
-                        }
-                    }
-                    if (Position.X > c.Position.X)
-                    {
-                        bool collides = false;
-                        foreach (Enemy others in enemies)
-                        {
-                            if (new Rectangle((int)(newX - Speed), (int)newY, 50, 50).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
-                            {
-                                collides = true;
-                            }
-
-                        }
-                        if (collides != true)
-                        {
-                            newX -= Speed;
-                        }
-                    }
-                    if (Position.Y < c.Position.Y)
-                    {
-                        bool collides = false;
-                        foreach (Enemy others in enemies)
-                        {
-                            if (new Rectangle((int)newX, (int)(newY + Speed), 50, 50).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
-                            {
-                                collides = true;
-                            }
-
-                        }
-                        if (collides != true)
-                        {
-                            newY += Speed;
-                        }
-                    }
-                    if (Position.Y > c.Position.Y)
-                    {
-                        bool collides = false;
-                        foreach (Enemy others in enemies)
-                        {
-                            if (new Rectangle((int)newX, (int)(newY - Speed), 50, 50).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
-                            {
-                                collides = true;
-                            }
-
-                        }
-                        if (collides != true)
-                        {
-                            newY -= Speed;
-                        }
-                    }
-                    FPosX = newX;
-                    FPosY = newY;
-                    Position = new Rectangle((int)newX, (int)newY, Position.Width, Position.Height);
-                    CRect = new Rectangle((int)newX + 15, (int)newY + 15, CRect.Width, CRect.Height);
-                    range = new Rectangle(Position.X - 250, Position.Y - 250, range.Width, range.Height);
-                    break;
+                Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
             }
+            range = new Rectangle(Position.X - 250, Position.Y - 250, range.Width, range.Height);
         }
 
+        // Shoot method
         public void Shoot(Character c)
         {
             if (c.Position.Intersects(range))
             {
-                shotCount++;
+                ShotCount++;
                 Speed = 0.15f;
                 shooting = true;
             }
             else
             {
-                shotCount = 0;
+                ShotCount = 0;
                 Speed = 0.6f;
                 shooting = false;
             }
         }
 
         // Constructor
-        public Enemy2(int posX, int posY):base(posX, posY)
+        public Enemy2(int posX, int posY) : base(posX, posY)
         {
             Position = new Rectangle(posX, posY, 50, 50); // Set position
             FPosX = posX;

@@ -37,18 +37,32 @@
   <PropertyGroup>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Boss.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Character1.cs" />
+    <Compile Include="EPWobble.cs" />
+    <Compile Include="LeaderboardHandler.cs" />
+    <Compile Include="PBasic.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="Enemy1.cs" />
     <Compile Include="Enemy2.cs" />
+    <Compile Include="Enemy3.cs" />
     <Compile Include="EnemyProjectile.cs" />
+    <Compile Include="EPAccelerate.cs" />
+    <Compile Include="EPBasic.cs" />
+    <Compile Include="EPStall.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameObject.cs" />
+    <Compile Include="PExplosive.cs" />
+    <Compile Include="PMine.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Projectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PStationary.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">
@@ -61,6 +75,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\AccelerateProjectile.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\BasicProjectile.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\boxes.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Cancel.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -91,6 +114,9 @@
     <Content Include="Content\Enemy.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\EnemyMarker.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Fire Bullet.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -106,6 +132,9 @@
     <Content Include="Content\Fullscreen.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Leaderboard.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\lightningButton.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -118,10 +147,13 @@
     <Content Include="Content\Ok.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Options.png">
+    <Content Include="Content\options.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Pause.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\StallProjectile.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Start.png">
@@ -151,6 +183,9 @@
     <Content Include="Content\whiteSquare.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\WobbleProjectile.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -158,6 +193,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\SpriteFont1.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\8bitoperator32.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
