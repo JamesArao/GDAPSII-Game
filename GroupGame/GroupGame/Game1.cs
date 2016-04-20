@@ -58,8 +58,8 @@ namespace GroupGame
         Texture2D whiteBox;
         Texture2D paused;
         Texture2D menu;
-        Texture2D rectangle;
-        Texture2D circle;
+        Texture2D hudrectangle;
+        Texture2D hudcircle;
         Texture2D fireButton;
         Texture2D earthButton;
         Texture2D electricButton;
@@ -67,7 +67,7 @@ namespace GroupGame
         Texture2D background;
         Texture2D dot;
 
-        // Rectangles for buttons and mouse
+        // Rectangles for buttons, mouse, and HUD
         Rectangle rSButton;
         Rectangle rOButton;
         Rectangle mRectangle;
@@ -77,6 +77,13 @@ namespace GroupGame
         Rectangle char2;
         Rectangle char3;
         Rectangle char4;
+        Rectangle CenterCircle;
+        Rectangle InnerCircle;
+        Rectangle LifeBarBox;
+        Rectangle LifeBar;
+        Rectangle LifeWordBox;
+        Rectangle SpecialMoveBox;
+        Rectangle SpecialMoveCircle;
         
         // Characters, enemies, and projectiles
         Character c;
@@ -474,8 +481,8 @@ namespace GroupGame
             whiteBox = this.Content.Load<Texture2D>("whiteSquare");
             paused = this.Content.Load<Texture2D>("Pause");
             menu = this.Content.Load<Texture2D>("menuButton");
-            rectangle = this.Content.Load<Texture2D>("WhiteRectangle");
-            circle = this.Content.Load<Texture2D>("WhiteCircle");
+            hudrectangle = this.Content.Load<Texture2D>("WhiteRectangle");
+            hudcircle = this.Content.Load<Texture2D>("WhiteCircle");
             fireButton = this.Content.Load<Texture2D>("fireButton");
             earthButton = this.Content.Load<Texture2D>("earthButton");
             electricButton = this.Content.Load<Texture2D>("lightningButton");
@@ -1010,42 +1017,58 @@ namespace GroupGame
                     }
 
                     // Code for drawing interface
-                    spriteBatch.DrawString(sFont, "Round " + round, new Vector2(GraphicsDevice.Viewport.Width - 100, GraphicsDevice.Viewport.Height - 40), Color.Black);
-                    spriteBatch.DrawString(sFont, "Score", new Vector2(30, GraphicsDevice.Viewport.Height - 60), Color.Black);
-                    spriteBatch.DrawString(sFont, "" + score, new Vector2(30, GraphicsDevice.Viewport.Height - 40), Color.Black);
-                    spriteBatch.Draw(rectangle, new Rectangle(295, 20, 42, 50), Color.DodgerBlue);
-                    spriteBatch.Draw(rectangle, new Rectangle(295, 40, 300, 35), Color.DodgerBlue);
-                    spriteBatch.Draw(rectangle, new Rectangle(640, 40, 300, 35), Color.DodgerBlue);
-                    spriteBatch.Draw(circle, new Rectangle(900, 10, 100, 100), Color.DodgerBlue);
-                    spriteBatch.Draw(circle, new Rectangle(570, 10, 100, 100), Color.DodgerBlue);
-                    spriteBatch.Draw(circle, new Rectangle(580, 20, 80, 80), Color.DarkBlue);
-                    spriteBatch.DrawString(sFont, "Life", new Vector2(300, 25), Color.Black);
-                    spriteBatch.Draw(rectangle, new Rectangle(300, 45, 260, 20), Color.Red);
-                    spriteBatch.Draw(rectangle, new Rectangle(300, 45, c.Health * 13/5, 20), Color.LawnGreen);
+                    switch (fullscreen)
+                    {
+                        case true:
+                            spriteBatch.DrawString(sFont, "Round " + round, new Vector2(GraphicsDevice.Viewport.Width - 100, GraphicsDevice.Viewport.Height - 40), Color.Black);
+                            spriteBatch.DrawString(sFont, "Score", new Vector2(30, GraphicsDevice.Viewport.Height - 60), Color.Black);
+                            spriteBatch.DrawString(sFont, "" + score, new Vector2(30, GraphicsDevice.Viewport.Height - 40), Color.Black);
+
+                            break;
+                        case false:
+                            spriteBatch.DrawString(sFont, "Round " + round, new Vector2(GraphicsDevice.Viewport.Width - 100, GraphicsDevice.Viewport.Height - 40), Color.Black);
+                            spriteBatch.DrawString(sFont, "Score", new Vector2(30, GraphicsDevice.Viewport.Height - 60), Color.Black);
+                            spriteBatch.DrawString(sFont, "" + score, new Vector2(30, GraphicsDevice.Viewport.Height - 40), Color.Black);
+                            spriteBatch.Draw(hudrectangle, new Rectangle(295, 20, 42, 50), Color.DodgerBlue); //rectangle around "life"
+                            spriteBatch.Draw(hudrectangle, new Rectangle(295, 40, 300, 35), Color.DodgerBlue); //rectangle around life bar
+                            spriteBatch.Draw(hudrectangle, new Rectangle(640, 40, 300, 35), Color.DodgerBlue); //rectangle around special bar
+                            spriteBatch.Draw(hudcircle, new Rectangle(900, 10, 100, 100), Color.DodgerBlue); //circle around special attack
+                            spriteBatch.Draw(hudcircle, new Rectangle(570, 10, 100, 100), Color.DodgerBlue); //circle around current weapon
+                            spriteBatch.Draw(hudcircle, new Rectangle(580, 20, 80, 80), Color.DarkBlue); //circle around current weapon (inner)
+                            spriteBatch.DrawString(sFont, "Life", new Vector2(300, 25), Color.Black); //"life"
+                            spriteBatch.Draw(hudrectangle, new Rectangle(300, 45, 260, 20), Color.Red); //red life bar
+                            spriteBatch.Draw(hudrectangle, new Rectangle(300, 45, c.Health * 13/5, 20), Color.LawnGreen); //green life bar
+                        break;
+                    }
 
 
                     // Switch statement that draws the image for the ability the player is using for the interface
-                    switch (aState)
+                    switch (fullscreen)
                     {
-                        case AbilityState.a1:
-                            spriteBatch.Draw(meleeImage, new Rectangle(600, 40, 40, 40), Color.White);
-                            spriteBatch.Draw(bulletImage, new Rectangle(550, 10, 20, 20), new Rectangle(32, 0, 32, 32), Color.White); //prev wpn
-                            spriteBatch.Draw(bulletImage, new Rectangle(660, 0, 30, 30), new Rectangle(32, 0, 32, 32), Color.White); //next wpn
-                            break;
-                        case AbilityState.a2:
-                            spriteBatch.Draw(bulletImage, new Rectangle(600, 40, 40, 40), new Rectangle(32, 0, 32, 32), Color.White);
-                            spriteBatch.Draw(meleeImage, new Rectangle(540, 5, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
-                            spriteBatch.Draw(bulletImage, new Rectangle(654, -10, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
-                            break;
-                        case AbilityState.a3:
-                            spriteBatch.Draw(bulletImage, new Rectangle(593, 30, 55, 55), new Rectangle(32, 0, 32, 32), Color.White);
-                            spriteBatch.Draw(bulletImage, new Rectangle(540, 0, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
-                            spriteBatch.Draw(bulletImage, new Rectangle(660, 10, 20, 20), new Rectangle(32, 0, 32, 32), Color.White);
-                            break;
-                        case AbilityState.a4:
-                            spriteBatch.Draw(bulletImage, new Rectangle(606, 45, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
-                            spriteBatch.Draw(bulletImage, new Rectangle(541, -10, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
-                            spriteBatch.Draw(meleeImage, new Rectangle(670, 5, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                        case false:
+                            switch (aState)
+                            {
+                                case AbilityState.a1:
+                                    spriteBatch.Draw(meleeImage, new Rectangle(600, 40, 40, 40), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(550, 10, 20, 20), new Rectangle(32, 0, 32, 32), Color.White); //prev wpn
+                                    spriteBatch.Draw(bulletImage, new Rectangle(660, 0, 30, 30), new Rectangle(32, 0, 32, 32), Color.White); //next wpn
+                                    break;
+                                case AbilityState.a2:
+                                    spriteBatch.Draw(bulletImage, new Rectangle(600, 40, 40, 40), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(meleeImage, new Rectangle(540, 5, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(654, -10, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
+                                    break;
+                                case AbilityState.a3:
+                                    spriteBatch.Draw(bulletImage, new Rectangle(593, 30, 55, 55), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(540, 0, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(660, 10, 20, 20), new Rectangle(32, 0, 32, 32), Color.White);
+                                    break;
+                                case AbilityState.a4:
+                                    spriteBatch.Draw(bulletImage, new Rectangle(606, 45, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(541, -10, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(meleeImage, new Rectangle(670, 5, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                                    break;
+                            }
                             break;
                     }
                     break;
