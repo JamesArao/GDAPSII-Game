@@ -41,7 +41,11 @@ namespace GroupGame
             {
                 base.Move();
             }
-            else count--;
+            else
+            {
+                Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
+                count--;
+            }
         }
 
         // Constructor

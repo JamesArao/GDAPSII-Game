@@ -20,7 +20,7 @@ namespace GroupGame
             set { explosion = value; }
         }
 
-        public int ExplostionCount
+        public int ExplosionCount
         {
             get { return explosionCount; }
             set { explosionCount = value; }
@@ -35,13 +35,14 @@ namespace GroupGame
         public override void Move()
         {
             if (explosionCount == 0 && collided == false) base.Move();
+            else Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
         }
 
         public void Explode(Character c, List<Enemy> enemies, List<Projectile> projectiles, List<EnemyProjectile> eProjectiles) 
         {
             if(explosionCount == 0)
             {
-                explosion = new Rectangle(Position.X - 100, Position.Y - 100, 200, 200);
+                explosion = new Rectangle((int)FPosX - 100, (int)FPosY - 100, 200, 200);
                 for(int i = projectiles.Count - 1; i >= 0; i--)
                 {
                     if (projectiles[i].Position.Intersects(explosion) && projectiles[i] != this)

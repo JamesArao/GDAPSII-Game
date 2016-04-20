@@ -20,8 +20,28 @@ namespace RoundEditor
     public partial class RoundEditor : Form
     {
         // Create a list of Labels, used as a list for holding all the enemies in a round
-        List<Label> enemies = new List<Label>();
-        
+        private List<Label> enemies = new List<Label>();
+        private List<Label> group2Enemies = new List<Label>();
+        private List<Label> group3Enemies = new List<Label>();
+        private RoundSettings settingsForm;
+
+        // Round Settings
+        private int spawnType = 0; // 0 if individual, 1 if groups
+        private int screenEnemies = -1;
+        private int group = 1;
+
+        public int SpawnType
+        {
+            get { return spawnType; }
+            set { spawnType = value; }
+        }
+
+        public int ScreenEnemies
+        {
+            get { return screenEnemies; }
+            set { screenEnemies = value; }
+        }
+
         public RoundEditor()
         {
             InitializeComponent();
@@ -43,6 +63,8 @@ namespace RoundEditor
                 BinaryWriter saver = new BinaryWriter(new FileStream(saveFileDialog1.FileName, FileMode.Create, FileAccess.Write));
 
                 // Foreach loop to go through the array of enemies and save their information
+                saver.Write(screenEnemies);
+
                 foreach (Label enemy in enemies)
                 {
                     saver.Write(enemy.Text);
@@ -97,6 +119,8 @@ namespace RoundEditor
                 foreach (Label enemy in enemies) this.Controls.Remove(enemy);
                 enemies.Clear(); // Clear the enemies list
                 enemies.Capacity = 0; // Reset the enemies list capacity
+
+                screenEnemies = loader.ReadInt32();
 
                 while (true)
                 {
@@ -168,11 +192,6 @@ namespace RoundEditor
             this.Controls.Add(enemyLabel);
         }
 
-        private void enemy1ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
         // Events for letting users move labels around with the mouse
         // Create a point, mLocation, which will hold the point of the mouse when it is down
         Point mLocation;
@@ -227,6 +246,28 @@ namespace RoundEditor
                 enemies.RemoveAt(count); // Remove the enemy with index count from the list of enemy labels
                 this.Controls.Remove(deleteLabel); // Remove the enemy from the screen
             }
+        }
+
+        private void roundSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            settingsForm = new RoundSettings(this);
+            settingsForm.Show();
+            this.Enabled = false;
+        }
+
+        private void group1ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            group = 1;
+        }
+
+        private void group2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            group = 2;
+        }
+
+        private void group3ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            group = 3;
         }
     }
 }

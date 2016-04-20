@@ -14,18 +14,21 @@ namespace GroupGame
         private int shotCount;
         private int attackNum;
         private int attackCount;
+        private int maxHealth;
+        private bool moving = true;
+        Texture2D healthImage;
         Random attackGen = new Random();
 
-        // ShotCount property
-        public int ShotCount
+        public bool Moving
         {
-            get { return shotCount; }
-            set { shotCount = value; }
+            get { return moving; }
+            set { moving = value; }
         }
 
         public int AttackNum
         {
             get { return attackNum; }
+            set { attackNum = value; }
         }
 
         public int AttackCount
@@ -34,23 +37,37 @@ namespace GroupGame
             set { attackCount = value; }
         }
 
-        public void Attack(Character c)
+        public override void Move(Character c, List<Enemy> enemies, List<Rectangle> boxes)
         {
-            attackNum = 1;
+            if (Alive == true)
+            {
+                if (moving == true) base.Move(c, enemies, boxes);
+                else Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
+            }
+            else Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
+        }
+
+        public override void Draw(SpriteBatch sprite, float rAngle, int f, Color color)
+        {
+            base.Draw(sprite, rAngle, f, color);
+            sprite.Draw(healthImage, new Rectangle(Position.X, Position.Y - 20, maxHealth / 50, 10), Color.Red);
+            sprite.Draw(healthImage, new Rectangle(Position.X, Position.Y - 20, Health / 50, 10), Color.LawnGreen);
         }
 
         // Constructor
-        public Boss(int posX, int posY) : base(posX, posY)
+        public Boss(int posX, int posY, Texture2D hImg) : base(posX, posY)
         {
             Position = new Rectangle(posX, posY, 120, 120); // Set position
             FPosX = posX;
             FPosY = posY;
             CRect = new Rectangle(posX + 20, posY + 20, 80, 80); // Set the cRect based on the position
             Health = 6000; // Set health
-            Speed = 0.3f; // Set speed
+            maxHealth = Health;
+            Speed = 0.5f; // Set speed
             EState = EnemyState.Chase; // Set EState to chase, for testing
-            attackNum = 1;
-            attackCount = 100;
+            attackNum = 5;
+            attackCount = 240;
+            healthImage = hImg;
         }
     }
 }

@@ -24,7 +24,11 @@ namespace GroupGame
         // Override Move method to move range as well
         public override void Move(Character c, List<Enemy> enemies, List<Rectangle> boxes)
         {
-            base.Move(c, enemies, boxes);
+            if (Alive == true) base.Move(c, enemies, boxes);
+            else
+            {
+                Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
+            }
             range = new Rectangle(Position.X - 250, Position.Y - 250, range.Width, range.Height);
         }
 

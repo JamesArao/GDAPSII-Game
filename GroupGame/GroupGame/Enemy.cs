@@ -17,9 +17,10 @@ namespace GroupGame
     abstract class Enemy:GameObject
     {
         // Attributes
+        private int spawnCount = -1;
         private int health; // Health of the enemy
         private EnemyState eState; // State the enemy is in
-        private bool alive = true; // Is the enemy alive
+        private bool alive = false; // Is the enemy alive
         private Rectangle cRect; // Rectangle for enemy collision
         private float fPosX;
         private float fPosY;
@@ -88,6 +89,12 @@ namespace GroupGame
             set { shotCount = value; }
         }
 
+        public int SpawnCount
+        {
+            get { return spawnCount; }
+            set { spawnCount = value; }
+        }
+
         // Move method
         public virtual void Move(Character c, List<Enemy> enemies, List<Rectangle> boxes)
         {
@@ -110,7 +117,7 @@ namespace GroupGame
                         foreach (Enemy others in enemies)
                         {
                             // If the enemy intersects the position of another enemy that is alive, collides is true
-                            if (new Rectangle((int)(newX + Speed), (int)newY, 50, 50).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
+                            if (new Rectangle((int)(newX + Speed), (int)newY, Position.Width, Position.Height).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
                             {
                                 collides = true;
                             }
@@ -118,7 +125,7 @@ namespace GroupGame
                         }
                         foreach (Rectangle otherR in boxes)
                         {
-                            if (new Rectangle((int)(newX + Speed), (int)newY, 50, 50).Intersects(otherR) == true && otherR != this.Position)
+                            if (new Rectangle((int)(newX + Speed), (int)newY, Position.Width, Position.Height).Intersects(otherR) == true && otherR != this.Position)
                             {
                                 collides = true;
                             }
@@ -135,7 +142,7 @@ namespace GroupGame
                         bool collides = false;
                         foreach (Enemy others in enemies)
                         {
-                            if (new Rectangle((int)(newX - Speed), (int)newY, 50, 50).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
+                            if (new Rectangle((int)(newX - Speed), (int)newY, Position.Width, Position.Height).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
                             {
                                 collides = true;
                             }
@@ -143,7 +150,7 @@ namespace GroupGame
                         }
                         foreach (Rectangle otherR in boxes)
                         {
-                            if (new Rectangle((int)(newX - Speed), (int)newY, 50, 50).Intersects(otherR) == true && otherR != this.Position)
+                            if (new Rectangle((int)(newX - Speed), (int)newY, Position.Width, Position.Height).Intersects(otherR) == true && otherR != this.Position)
                             {
                                 collides = true;
                             }
@@ -159,7 +166,7 @@ namespace GroupGame
                         bool collides = false;
                         foreach (Enemy others in enemies)
                         {
-                            if (new Rectangle((int)newX, (int)(newY + Speed), 50, 50).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
+                            if (new Rectangle((int)newX, (int)(newY + Speed), Position.Width, Position.Height).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
                             {
                                 collides = true;
                             }
@@ -167,7 +174,7 @@ namespace GroupGame
                         }
                         foreach (Rectangle otherR in boxes)
                         {
-                            if (new Rectangle((int)newX, (int)(newY + Speed), 50, 50).Intersects(otherR) == true && otherR != this.Position)
+                            if (new Rectangle((int)newX, (int)(newY + Speed), Position.Width, Position.Height).Intersects(otherR) == true && otherR != this.Position)
                             {
                                 collides = true;
                             }
@@ -183,7 +190,7 @@ namespace GroupGame
                         bool collides = false;
                         foreach (Enemy others in enemies)
                         {
-                            if (new Rectangle((int)newX, (int)(newY - Speed), 50, 50).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
+                            if (new Rectangle((int)newX, (int)(newY - Speed), Position.Width, Position.Height).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
                             {
                                 collides = true;
                             }
@@ -191,7 +198,7 @@ namespace GroupGame
                         }
                         foreach (Rectangle otherR in boxes)
                         {
-                            if (new Rectangle((int)newX, (int)(newY - Speed), 50, 50).Intersects(otherR) == true && otherR != this.Position)
+                            if (new Rectangle((int)newX, (int)(newY - Speed), Position.Width, Position.Height).Intersects(otherR) == true && otherR != this.Position)
                             {
                                 collides = true;
                             }
@@ -211,7 +218,7 @@ namespace GroupGame
         }
 
         // Draw method
-        public void Draw(SpriteBatch sprite, float rAngle, int f , Color color)
+        public virtual void Draw(SpriteBatch sprite, float rAngle, int f , Color color)
         {
             // Create a Vector2 origin which equals the center of one frame of the player image
             Vector2 origin = new Vector2(16, 16);

@@ -102,7 +102,7 @@ namespace GroupGame
         // Draw method
         virtual public void Draw(SpriteBatch sprite)
         {
-            sprite.Draw(Image, Position, Color.White);
+            sprite.Draw(Image, new Rectangle(Position.X + Position.Width / 2, Position.Y + Position.Height / 2, Position.Width, Position.Height), null, Color.White, angle + (float)Math.PI/2, new Vector2(Image.Width / 2, Image.Height / 2), SpriteEffects.None, 0);
         }
 
         // Constructor for moving projectile with different size

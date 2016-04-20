@@ -54,6 +54,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RoundSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RoundSettings.Designer.cs">
+      <DependentUpon>RoundSettings.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -65,6 +71,9 @@
     </Compile>
     <EmbeddedResource Include="RoundEditor.resx">
       <DependentUpon>RoundEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RoundSettings.resx">
+      <DependentUpon>RoundSettings.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

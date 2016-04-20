@@ -14,6 +14,15 @@ namespace GroupGame
 {
     class Enemy1 : Enemy
     {
+        public override void Move(Character c, List<Enemy> enemies, List<Rectangle> boxes)
+        {
+            if(Alive == true)base.Move(c, enemies, boxes);
+            else
+            {
+                Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
+            }
+        }
+
         // Constructor
         public Enemy1(int posX, int posY) : base(posX, posY)
         {
