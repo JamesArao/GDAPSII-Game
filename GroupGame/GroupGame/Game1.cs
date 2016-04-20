@@ -72,6 +72,7 @@ namespace GroupGame
         Texture2D accelerateImage;
         Texture2D wobbleImage;
         Texture2D eMarker;
+        Texture2D superCharge;
         Texture2D leaderboardButton;
 
         // Rectangles for buttons and mouse
@@ -543,6 +544,22 @@ namespace GroupGame
             }
         }
 
+        public void SuperMove()
+        {
+            if(c.SuperCount < 60)
+            {
+                c.SuperCount++;
+            }
+            if(c.SuperCount == 60 && mState.LeftButton == ButtonState.Pressed)
+            {
+                projectiles.Add(new PSuper(30, 300, 300, c, rotationAngle, 2000, true, bulletImage));
+                c.ShotDelay = 60;
+                c.Super = 0;
+                c.SuperCount = 0;
+                c.FiringSuper = false;
+            }
+        }
+
         // Method for the player dashing
         public void PlayerDash()
         {
@@ -745,6 +762,7 @@ namespace GroupGame
             accelerateImage = Content.Load<Texture2D>("AccelerateProjectile");
             wobbleImage = Content.Load<Texture2D>("WobbleProjectile");
             eMarker = Content.Load<Texture2D>("EnemyMarker");
+            superCharge = Content.Load<Texture2D>("EnemyMarker");
 
             // Load fonts
             sFont = this.Content.Load<SpriteFont>("SpriteFont1");
@@ -953,7 +971,21 @@ namespace GroupGame
                     {
                         PlayerMove();
                         PlayerChangeAbility();
-                        PlayerShoot();
+                        if (c.FiringSuper == false) PlayerShoot();
+                        if (c.FiringSuper == true)
+                        {
+                            SuperMove();
+                        }
+                        if (c.Super == 100 && kbState.IsKeyDown(Keys.Space) && c.FiringSuper == false)
+                        {
+                            c.FiringSuper = true;
+                            SuperMove();
+                        }
+                        /*if (c.Super == 100 && kbState.IsKeyDown(Keys.Space) && c.FiringSuper == true)
+                        {
+                            c.FiringSuper = false;
+                            SuperMove();
+                        }*/
                     }
                     if (c.DashCount == 30)
                     {
@@ -1104,14 +1136,14 @@ namespace GroupGame
                         for (int i = projectiles.Count - 1; i >= 0; i--)
                         {
                             int removing = -1;
-                            if (projectiles[i] is PBasic || projectiles[i] is PExplosive || projectiles[i] is PMine) projectiles[i].Move();
+                            if (projectiles[i] is PBasic || projectiles[i] is PExplosive || projectiles[i] is PMine || projectiles[i] is PSuper) projectiles[i].Move();
                             if (projectiles[i] is PStationary)
                             {
                                 PStationary ps = (PStationary)(projectiles[i]);
                                 ps.Move(c, rotationAngle);
                             }
                             projectiles[i].Count++;
-                            if (projectiles[i].Count == projectiles[i].CountMax && (projectiles[i] is PExplosive) == false && (projectiles[i] is PMine) == false)
+                            if (projectiles[i].Count == projectiles[i].CountMax && (projectiles[i] is PExplosive) == false && (projectiles[i] is PMine) == false && (projectiles[i] is PSuper) == false)
                             {
                                 removing = i;
                             }
@@ -1137,7 +1169,7 @@ namespace GroupGame
                                             ex.Collided = true;
                                             break;
                                         }
-                                        else
+                                        else if (projectiles[i] is PSuper == false)
                                         {
                                             removing = i;
                                             break;
@@ -1430,21 +1462,29 @@ namespace GroupGame
                             if (e is Enemy1 && e.Alive == true)
                             {
                                 score += 100;
+                                c.Super += 10;
+                                if (c.Super > 100) c.Super = 100;
                                 e.Alive = false;
                             }
                             if (e is Enemy2 && e.Alive == true)
                             {
                                 score += 150;
+                                c.Super += 10;
+                                if (c.Super > 100) c.Super = 100;
                                 e.Alive = false;
                             }
                             if (e is Enemy3 && e.Alive == true)
                             {
                                 score += 200;
+                                c.Super += 10;
+                                if (c.Super > 100) c.Super = 100;
                                 e.Alive = false;
                             }
                             if (e is Boss && e.Alive == true)
                             {
                                 score += 1000;
+                                c.Super += 10;
+                                if (c.Super > 100) c.Super = 100;
                                 e.Alive = false;
                             }
                         }
@@ -1676,14 +1716,14 @@ namespace GroupGame
             spriteBatch.Begin();
 
             // Switch statement based on gState
-            switch(gState)
+            switch (gState)
             {
                 // Game is in Menu
                 case GameState.Menu:
                     Rectangle mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
                     if (rSButton.Intersects(mRectangle))
                     {
-                        spriteBatch.Draw(startButton , rSButton, Color.Red);
+                        spriteBatch.Draw(startButton, rSButton, Color.Red);
                     }
                     else
                     {
@@ -1793,12 +1833,12 @@ namespace GroupGame
                     foreach (Rectangle o in objects)
                     {
                         spriteBatch.Draw(boxes, o, Color.White);
-                        
+
                     }
 
                     foreach (Projectile p in projectiles)
                     {
-                        if (p is PBasic)
+                        if (p is PBasic || p is PSuper)
                         {
                             p.Draw(spriteBatch, frameProjectile);
                         }
@@ -1807,13 +1847,13 @@ namespace GroupGame
                             PStationary ps = (PStationary)p;
                             ps.Draw(spriteBatch, frameProjectile, rotationAngle);
                         }
-                        if(p is PExplosive)
+                        if (p is PExplosive)
                         {
                             PExplosive ex = (PExplosive)p;
                             if (ex.ExplosionCount == 0) ex.Draw(spriteBatch);
                             else spriteBatch.Draw(meleeImage, ex.Explosion, Color.White);
                         }
-                        if(p is PMine)
+                        if (p is PMine)
                         {
                             PMine mine = (PMine)p;
                             if (mine.ExplosionCount == 0) mine.Draw(spriteBatch);
@@ -1824,12 +1864,19 @@ namespace GroupGame
                     foreach (EnemyProjectile eP in eProjectiles)
                     {
                         eP.Draw(spriteBatch);
-                        
+
                     }
 
-                    if (c.DashCount == 0) c.Draw(spriteBatch, rotationAngle, framePlayer, Color.White); // Draw the character
-                    else if (c.DashCount < 20) c.Draw(spriteBatch, rotationAngle, framePlayer, Color.CadetBlue); // Draw the character
-                    else c.Draw(spriteBatch, rotationAngle, framePlayer, Color.IndianRed); // Draw the character
+                    if (c.SuperCount > 0 && c.SuperCount < 60)
+                    {
+                        Vector2 origin = new Vector2(superCharge.Width / 2, superCharge.Height / 2);
+                        spriteBatch.Draw(superCharge, new Vector2(c.Position.X + c.Position.Width/2, c.Position.Y + c.Position.Height/2), null, Color.White, 0, origin, (float)12 - ((float)c.SuperCount/5), SpriteEffects.None, 0);
+                    }
+
+                    if (c.DashCount == 0 && c.FiringSuper == true && c.SuperCount == 60) c.Draw(spriteBatch, rotationAngle, framePlayer, Color.Purple); // Draw the character
+                    if (c.DashCount == 0 && c.SuperCount != 60) c.Draw(spriteBatch, rotationAngle, framePlayer, Color.White); // Draw the character
+                    if (c.DashCount < 20 && c.DashCount > 0) c.Draw(spriteBatch, rotationAngle, framePlayer, Color.CadetBlue); // Draw the character
+                    if (c.DashCount >= 20) c.Draw(spriteBatch, rotationAngle, framePlayer, Color.IndianRed); // Draw the character
 
                     // Draw lines for the Enemy2s that are shooting
                     foreach (Enemy e in enemies)
@@ -1899,6 +1946,7 @@ namespace GroupGame
                     spriteBatch.DrawString(sFont, "Life", new Vector2(300, 25), Color.Black);
                     spriteBatch.Draw(rectangle, new Rectangle(300, 45, 260, 20), Color.Red);
                     spriteBatch.Draw(rectangle, new Rectangle(300, 45, c.Health * 13/5, 20), Color.LawnGreen);
+                    spriteBatch.Draw(rectangle, new Rectangle(675, 45, c.Super * 2, 20), Color.MediumPurple);
 
 
                     // Switch statement that draws the image for the ability the player is using for the interface
@@ -1934,7 +1982,7 @@ namespace GroupGame
                     // Draw projectiles
                     foreach (Projectile p in projectiles)
                     {
-                        if (p is PBasic)
+                        if (p is PBasic || p is PSuper)
                         {
                             p.Draw(spriteBatch, frameProjectile);
                         }
