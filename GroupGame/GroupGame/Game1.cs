@@ -2063,13 +2063,13 @@ namespace GroupGame
                         spriteBatch.DrawString(lFont, leaderboardNames[0] +  " -   Round " + leaderboardRounds[0] + "   Score " + leaderboardScores[0], new Vector2(GraphicsDevice.Viewport.Width / 2 - 50, 200), Color.Black);
                         switch(leaderboardCharacters[0])
                         {
-                            case "Fire": spriteBatch.Draw(player1Image, new Rectangle(GraphicsDevice.Viewport.Width / 2 - 450, 200, 32, 32), new Rectangle(0, 0, 32, 32), Color.White);
+                            case "Fire": spriteBatch.Draw(player1Image, new Rectangle(GraphicsDevice.Viewport.Width / 2 - 100, 207, 32, 32), new Rectangle(0, 0, 32, 32), Color.White);
                                 break;
                             case "Earth":
-                                spriteBatch.Draw(player2Image, new Rectangle(GraphicsDevice.Viewport.Width / 2 - 450, 200, 32, 32), new Rectangle(0, 0, 32, 32), Color.White);
+                                spriteBatch.Draw(player2Image, new Rectangle(GraphicsDevice.Viewport.Width / 2 - 100, 207, 32, 32), new Rectangle(0, 0, 32, 32), Color.White);
                                 break;
                             case "Water":
-                                spriteBatch.Draw(player4Image, new Rectangle(GraphicsDevice.Viewport.Width / 2 - 450, 200, 32, 32), new Rectangle(0, 0, 32, 32), Color.White);
+                                spriteBatch.Draw(player4Image, new Rectangle(GraphicsDevice.Viewport.Width / 2 - 100, 207, 32, 32), new Rectangle(0, 0, 32, 32), Color.White);
                                 break;
                             case "Electric":
                                 spriteBatch.Draw(player3Image, new Rectangle(GraphicsDevice.Viewport.Width / 2 - 100, 207, 32, 32), new Rectangle(0, 0, 32, 32), Color.White);
