@@ -705,9 +705,9 @@ namespace GroupGame
             for (int i = 0; i < 5; i++)
             {
                 int x = rgen.Next(80, 1220);
-                int y = rgen.Next(80, 1020);
+                int y = rgen.Next(80, 920);
 
-                Rectangle randObj = new Rectangle(x, y, 150, 150);
+                Rectangle randObj = new Rectangle(x, y, 50, 50);
                 objects.Add(randObj);
             }
 
