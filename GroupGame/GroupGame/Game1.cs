@@ -237,13 +237,27 @@ namespace GroupGame
                     Rectangle randObj = new Rectangle(x, y, 150, 150);
 
                     bool collision = false;
-                    foreach (Enemy e in enemies)
+                    if (maxOnScreen != -1)
                     {
-                        if (randObj.Intersects(e.Position) == true)
+                        foreach (Enemy e in enemiesSpawn)
                         {
-                            collision = true;
+                            if (randObj.Intersects(new Rectangle(e.Position.X - 5, e.Position.Y - 5, e.Position.Width + 10, e.Position.Height + 10)) == true)
+                            {
+                                collision = true;
+                            }
                         }
                     }
+                    else
+                    {
+                        foreach (Enemy e in enemies)
+                        {
+                            if (randObj.Intersects(new Rectangle(e.Position.X - 5, e.Position.Y - 5, e.Position.Width + 10, e.Position.Height + 10)) == true)
+                            {
+                                collision = true;
+                            }
+                        }
+                    }
+
                     if (collision == true || randObj.Intersects(c.Position) == true)
                     {
                         i--;
@@ -273,7 +287,7 @@ namespace GroupGame
             else
             {
                 c.Position = new Rectangle(GraphicsDevice.Viewport.Width / 2 - c.Position.Width / 2, GraphicsDevice.Viewport.Height / 2 - c.Position.Height / 2, c.Position.Width, c.Position.Height);
-                backgroundPoint = new Point(0 - maxX, 0 - maxY);
+                backgroundPoint = new Point(0 - maxX / 2, 0 - maxY / 2);
                 globalX = maxX / 2;
                 globalY = maxY / 2;
             }
@@ -583,14 +597,16 @@ namespace GroupGame
             enemiesSpawn.Clear();
             projectiles.Clear();
             c.Position = new Rectangle(GraphicsDevice.Viewport.Width / 2 - c.Position.Width / 2, GraphicsDevice.Viewport.Height / 2 - c.Position.Height / 2, c.Position.Width, c.Position.Height);
-            maxX = 1500 - GraphicsDevice.Viewport.Width;
+            maxX = background.Width - GraphicsDevice.Viewport.Width;
             if (maxX < 0) maxX = 0;
-            maxY = 1000 - GraphicsDevice.Viewport.Height;
+            maxY = background.Height - GraphicsDevice.Viewport.Height;
             if (maxY < 0) maxY = 0;
-            backgroundPoint = new Point(0 - maxX, 0 - maxY);
+            backgroundPoint = new Point(0 - maxX/2, 0 - maxY/2);
             globalX = maxX/2;
             globalY = maxY/2;
             c.Health = 100;
+            c.Super = 0;
+            c.SuperCount = 0;
             round = 0;
             score = 0;
             aState = AbilityState.a1;
@@ -952,7 +968,7 @@ namespace GroupGame
 
                     foreach (Rectangle o in objects)
                     {
-                        foreach (Enemy e in enemies)
+                        foreach (Enemy e in enemiesSpawn)
                         {
                             if (o.Intersects(e.Position))
                             {
@@ -1763,7 +1779,7 @@ namespace GroupGame
                         c.Image = playerWalking;
                         numFramesPlayer = 8;
                         c.Position = new Rectangle((char1.X + char1.Width / 2) - c.Position.Width / 2, (char1.Y - char1.Height) - c.Position.Height, c.Position.Width, c.Position.Height);
-                        c.Draw(spriteBatch, rotationAngle, framePlayer, 3);
+                        c.Draw(spriteBatch, (float)Math.PI/2, framePlayer, 3);
 
                     }
                     else
@@ -1782,7 +1798,7 @@ namespace GroupGame
                         c.Image = playerWalking;
                         numFramesPlayer = 8;
                         c.Position = new Rectangle((char2.X + char2.Width / 2) - c.Position.Width / 2, (char2.Y - char2.Height) - c.Position.Height, c.Position.Width, c.Position.Height);
-                        c.Draw(spriteBatch, rotationAngle, framePlayer, 3);
+                        c.Draw(spriteBatch, (float)Math.PI / 2, framePlayer, 3);
                     }
                     else
                     {
@@ -1800,7 +1816,7 @@ namespace GroupGame
                         c.Image = playerWalking;
                         numFramesPlayer = 8;
                         c.Position = new Rectangle((char3.X + char3.Width / 2) - c.Position.Width / 2, (char3.Y - char3.Height) - c.Position.Height, c.Position.Width, c.Position.Height);
-                        c.Draw(spriteBatch, rotationAngle, framePlayer, 3);
+                        c.Draw(spriteBatch, (float)Math.PI / 2, framePlayer, 3);
                     }
                     else
                     {
@@ -1818,7 +1834,7 @@ namespace GroupGame
                         c.Image = playerWalking;
                         numFramesPlayer = 8;
                         c.Position = new Rectangle((char4.X + char4.Width / 2) - c.Position.Width / 2, (char4.Y - char1.Height) - c.Position.Height, c.Position.Width, c.Position.Height);
-                        c.Draw(spriteBatch, rotationAngle, framePlayer, 3);
+                        c.Draw(spriteBatch, (float)Math.PI / 2, framePlayer, 3);
                     }
                     else
                     {
@@ -1828,12 +1844,12 @@ namespace GroupGame
 
                 // Game is in Horde Mode
                 case GameState.HordeMode:
-                    spriteBatch.Draw(background, new Rectangle(backgroundPoint, new Point(1800, 1300)), Color.White);
+                    spriteBatch.Draw(background, new Vector2(backgroundPoint.X, backgroundPoint.Y), Color.White);
 
+                    // Draw the boxes
                     foreach (Rectangle o in objects)
                     {
                         spriteBatch.Draw(boxes, o, Color.White);
-
                     }
 
                     foreach (Projectile p in projectiles)
@@ -1977,19 +1993,37 @@ namespace GroupGame
 
                 case GameState.Paused:
                     // Draw background
-                    spriteBatch.Draw(background, new Rectangle(backgroundPoint, new Point(1800, 1300)), Color.White);
+                    spriteBatch.Draw(background, new Vector2(backgroundPoint.X, backgroundPoint.Y), Color.White);
+
+                    // Draw boxes
+                    foreach (Rectangle o in objects)
+                    {
+                        spriteBatch.Draw(boxes, o, Color.White);
+                    }
 
                     // Draw projectiles
                     foreach (Projectile p in projectiles)
                     {
                         if (p is PBasic || p is PSuper)
                         {
-                            p.Draw(spriteBatch, frameProjectile);
+                            spriteBatch.Draw(p.Image, new Rectangle(p.Position.X + p.Position.Width / 2, p.Position.Y + p.Position.Height / 2, p.Position.Width, p.Position.Height), new Rectangle(0, 0, 32, 32), Color.White, p.Angle - (float)Math.PI / 2, new Vector2(16, 16), SpriteEffects.None, 0);
                         }
                         if (p is PStationary)
                         {
                             PStationary ps = (PStationary)p;
                             ps.Draw(spriteBatch, frameProjectile, rotationAngle);
+                        }
+                        if (p is PExplosive)
+                        {
+                            PExplosive ex = (PExplosive)p;
+                            if (ex.ExplosionCount == 0) ex.Draw(spriteBatch);
+                            else spriteBatch.Draw(meleeImage, ex.Explosion, Color.White);
+                        }
+                        if (p is PMine)
+                        {
+                            PMine mine = (PMine)p;
+                            if (mine.ExplosionCount == 0) mine.Draw(spriteBatch);
+                            else spriteBatch.Draw(meleeImage, mine.Explosion, Color.White);
                         }
                     }
 
@@ -2018,6 +2052,7 @@ namespace GroupGame
                     // Draw pause
                     spriteBatch.Draw(whiteBox, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.Gray * .5f);
                     spriteBatch.Draw(paused, new Rectangle((GraphicsDevice.Viewport.Width / 2) - (paused.Width / 8), (GraphicsDevice.Viewport.Height / 2) - (paused.Height / 2), paused.Width / 4, paused.Height / 4), Color.White);
+                    
                     // Draw menu
                     mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
                     if (rMButton.Intersects(mRectangle))
