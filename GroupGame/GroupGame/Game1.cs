@@ -76,6 +76,9 @@ namespace GroupGame
         Texture2D eMarker;
         Texture2D superCharge;
         Texture2D leaderboardButton;
+        Texture2D mine;
+        Texture2D grenade;
+        Texture2D boss;
 
         // Rectangles for buttons and mouse
         Rectangle rSButton;
@@ -198,7 +201,7 @@ namespace GroupGame
                             break;
                         case "4":
                             Enemy b = new Boss(c.Position.X - 500 + x, c.Position.Y - 300 + y, whiteBox);
-                            b.Image = enemyImage;
+                            b.Image = boss;
                             enemiesSpawn.Add(b);
                             bossRound = true;
                             break;
@@ -233,12 +236,12 @@ namespace GroupGame
 
             if(bossRound == false)
             {
-                for (int i = 0; i < 5; i++)
+                for (int i = 0; i < 10; i++)
                 {
-                    int x = rgen.Next(80, 1220);
-                    int y = rgen.Next(80, 1020);
+                    int x = rgen.Next(GraphicsDevice.Viewport.Width - 160) + 80;
+                    int y = rgen.Next(GraphicsDevice.Viewport.Height - 160) + 80;
 
-                    Rectangle randObj = new Rectangle(x, y, 150, 150);
+                    Rectangle randObj = new Rectangle(x, y, 75, 75);
 
                     bool collision = false;
                     if (maxOnScreen != -1)
@@ -551,11 +554,11 @@ namespace GroupGame
                         break;
 
                     case AbilityState.a5:
-                        projectiles.Add(new PExplosive(150, 30, 30, c, rotationAngle, 90, dot));
+                        projectiles.Add(new PExplosive(150, 30, 30, c, rotationAngle, 90, grenade));
                         c.ShotDelay = 120;
                         break;
                     case AbilityState.a6:
-                        projectiles.Add(new PMine(120, 30, 30, c, 0, 0, false, dot));
+                        projectiles.Add(new PMine(120, 30, 30, c, 0, 0, false, mine));
                         c.ShotDelay = 100;
                         break;
                 }
@@ -724,12 +727,12 @@ namespace GroupGame
             Random rgen = new Random();
 
             // creates 5 combinations of x and y coordinates and adds that box to the list
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 10; i++)
             {
-                int x = rgen.Next(80, 1220);
-                int y = rgen.Next(80, 1020);
+                int x = rgen.Next(GraphicsDevice.Viewport.Width - 160) + 80;
+                int y = rgen.Next(GraphicsDevice.Viewport.Height - 160) + 80;
 
-                Rectangle randObj = new Rectangle(x, y, 150, 150);
+                Rectangle randObj = new Rectangle(x, y, 75, 75);
                 objects.Add(randObj);
             }
 
@@ -786,6 +789,9 @@ namespace GroupGame
             wobbleImage = Content.Load<Texture2D>("WobbleProjectile");
             eMarker = Content.Load<Texture2D>("EnemyMarker");
             superCharge = Content.Load<Texture2D>("EnemyMarker");
+            mine = Content.Load<Texture2D>("mine");
+            grenade = Content.Load<Texture2D>("grenade");
+            boss = Content.Load<Texture2D>("boss");
 
             // Load fonts
             sFont = this.Content.Load<SpriteFont>("SpriteFont1");
@@ -1976,7 +1982,7 @@ namespace GroupGame
                             if (e is Enemy1) e.Draw(spriteBatch, enemyAngle, frameEnemy, Color.White);
                             if (e is Enemy2) e.Draw(spriteBatch, enemyAngle, frameEnemy, Color.Blue);
                             if (e is Enemy3) e.Draw(spriteBatch, enemyAngle, frameEnemy, Color.Orange);
-                            if (e is Boss) e.Draw(spriteBatch, enemyAngle, frameEnemy, Color.Red);
+                            if (e is Boss) e.Draw(spriteBatch, enemyAngle, frameEnemy, Color.White);
                         }
                         else if (e.SpawnCount != -1)
                         {
