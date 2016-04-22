@@ -31,6 +31,7 @@ namespace GroupGame
         SwitchHero switchHero = SwitchHero.Fire;
         HeroState heroState = HeroState.Still;
         Random rgen = new Random();
+        Boolean Bcont;
 
         // Images
         Texture2D enemyImage;
@@ -58,6 +59,7 @@ namespace GroupGame
         Texture2D whiteBox;
         Texture2D paused;
         Texture2D menu;
+        Texture2D continueButton;
         Texture2D rectangle;
         Texture2D circle;
         Texture2D fireButton;
@@ -72,16 +74,17 @@ namespace GroupGame
         Texture2D accelerateImage;
         Texture2D wobbleImage;
         Texture2D eMarker;
-        Texture2D superCharge;
         Texture2D leaderboardButton;
 
         // Rectangles for buttons and mouse
         Rectangle rSButton;
         Rectangle rOButton;
+        Rectangle rPOButton;
         Rectangle mRectangle;
         Rectangle rMButton;
         Rectangle rFButton;
         Rectangle rLButton;
+        Rectangle contButton;
         Rectangle char1;
         Rectangle char2;
         Rectangle char3;
@@ -558,22 +561,6 @@ namespace GroupGame
             }
         }
 
-        public void SuperMove()
-        {
-            if(c.SuperCount < 60)
-            {
-                c.SuperCount++;
-            }
-            if(c.SuperCount == 60 && mState.LeftButton == ButtonState.Pressed)
-            {
-                projectiles.Add(new PSuper(30, 300, 300, c, rotationAngle, 2000, true, bulletImage));
-                c.ShotDelay = 60;
-                c.Super = 0;
-                c.SuperCount = 0;
-                c.FiringSuper = false;
-            }
-        }
-
         // Method for the player dashing
         public void PlayerDash()
         {
@@ -593,6 +580,7 @@ namespace GroupGame
         // Method for reseting the game
         public void ResetGame()
         {
+            //
             enemies.Clear();
             enemiesSpawn.Clear();
             projectiles.Clear();
@@ -721,9 +709,9 @@ namespace GroupGame
             for (int i = 0; i < 5; i++)
             {
                 int x = rgen.Next(80, 1220);
-                int y = rgen.Next(80, 920);
+                int y = rgen.Next(80, 1020);
 
-                Rectangle randObj = new Rectangle(x, y, 50, 50);
+                Rectangle randObj = new Rectangle(x, y, 150, 150);
                 objects.Add(randObj);
             }
 
@@ -766,6 +754,7 @@ namespace GroupGame
             whiteBox = this.Content.Load<Texture2D>("whiteSquare");
             paused = this.Content.Load<Texture2D>("Pause");
             menu = this.Content.Load<Texture2D>("menuButton");
+            continueButton = this.Content.Load<Texture2D>("continueButton");
             rectangle = this.Content.Load<Texture2D>("WhiteRectangle");
             circle = this.Content.Load<Texture2D>("WhiteCircle");
             fireButton = this.Content.Load<Texture2D>("fireButton");
@@ -778,7 +767,6 @@ namespace GroupGame
             accelerateImage = Content.Load<Texture2D>("AccelerateProjectile");
             wobbleImage = Content.Load<Texture2D>("WobbleProjectile");
             eMarker = Content.Load<Texture2D>("EnemyMarker");
-            superCharge = Content.Load<Texture2D>("EnemyMarker");
 
             // Load fonts
             sFont = this.Content.Load<SpriteFont>("SpriteFont1");
@@ -858,7 +846,10 @@ namespace GroupGame
             {
                 // Game is in Menu
                 case GameState.Menu:
-                    
+
+                    // makes the continue button not visible
+                    Bcont = false;
+
                     // Checks to see if the start button has been pressed
                     rSButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rSButton.Width/2), (GraphicsDevice.Viewport.Height / 2) - (rSButton.Height * 2), startButton.Width/4, startButton.Height/4);
                     rOButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rOButton.Width / 2), (GraphicsDevice.Viewport.Height / 2), startButton.Width / 4, startButton.Height / 4);
@@ -949,6 +940,9 @@ namespace GroupGame
                 // Game is in Horde Mode
                 case GameState.HordeMode:
 
+                    // allows the continue button to now be visible
+                    Bcont = true;
+
                     // checks to see if the player paused the game
                     kbState = Keyboard.GetState();
                     if (kbState.IsKeyDown(Keys.P) && previousKbState.IsKeyUp(Keys.P))
@@ -987,21 +981,7 @@ namespace GroupGame
                     {
                         PlayerMove();
                         PlayerChangeAbility();
-                        if (c.FiringSuper == false) PlayerShoot();
-                        if (c.FiringSuper == true)
-                        {
-                            SuperMove();
-                        }
-                        if (c.Super == 100 && kbState.IsKeyDown(Keys.Space) && c.FiringSuper == false)
-                        {
-                            c.FiringSuper = true;
-                            SuperMove();
-                        }
-                        /*if (c.Super == 100 && kbState.IsKeyDown(Keys.Space) && c.FiringSuper == true)
-                        {
-                            c.FiringSuper = false;
-                            SuperMove();
-                        }*/
+                        PlayerShoot();
                     }
                     if (c.DashCount == 30)
                     {
@@ -1152,14 +1132,14 @@ namespace GroupGame
                         for (int i = projectiles.Count - 1; i >= 0; i--)
                         {
                             int removing = -1;
-                            if (projectiles[i] is PBasic || projectiles[i] is PExplosive || projectiles[i] is PMine || projectiles[i] is PSuper) projectiles[i].Move();
+                            if (projectiles[i] is PBasic || projectiles[i] is PExplosive || projectiles[i] is PMine) projectiles[i].Move();
                             if (projectiles[i] is PStationary)
                             {
                                 PStationary ps = (PStationary)(projectiles[i]);
                                 ps.Move(c, rotationAngle);
                             }
                             projectiles[i].Count++;
-                            if (projectiles[i].Count == projectiles[i].CountMax && (projectiles[i] is PExplosive) == false && (projectiles[i] is PMine) == false && (projectiles[i] is PSuper) == false)
+                            if (projectiles[i].Count == projectiles[i].CountMax && (projectiles[i] is PExplosive) == false && (projectiles[i] is PMine) == false)
                             {
                                 removing = i;
                             }
@@ -1185,7 +1165,7 @@ namespace GroupGame
                                             ex.Collided = true;
                                             break;
                                         }
-                                        else if (projectiles[i] is PSuper == false)
+                                        else
                                         {
                                             removing = i;
                                             break;
@@ -1478,29 +1458,21 @@ namespace GroupGame
                             if (e is Enemy1 && e.Alive == true)
                             {
                                 score += 100;
-                                c.Super += 10;
-                                if (c.Super > 100) c.Super = 100;
                                 e.Alive = false;
                             }
                             if (e is Enemy2 && e.Alive == true)
                             {
                                 score += 150;
-                                c.Super += 10;
-                                if (c.Super > 100) c.Super = 100;
                                 e.Alive = false;
                             }
                             if (e is Enemy3 && e.Alive == true)
                             {
                                 score += 200;
-                                c.Super += 10;
-                                if (c.Super > 100) c.Super = 100;
                                 e.Alive = false;
                             }
                             if (e is Boss && e.Alive == true)
                             {
                                 score += 1000;
-                                c.Super += 10;
-                                if (c.Super > 100) c.Super = 100;
                                 e.Alive = false;
                             }
                         }
@@ -1555,12 +1527,22 @@ namespace GroupGame
                         gState = GameState.HordeMode;
                         previousKbState = kbState;
                     }
+                    //
                     rMButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (rMButton.Height / 2), menu.Width / 4, menu.Height / 4);
                     mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
                     if (mState.LeftButton == ButtonState.Pressed && mRectangle.Intersects(rMButton))
                     {
                         gState = GameState.Menu;
                     }
+
+                    rPOButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (rMButton.Height/2) + rMButton.Height * 2, (menu.Width/4), (menu.Height/4));
+                    if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rPOButton))
+                    {
+                        gState = GameState.Options;
+                        prevMState = mState;
+                    }
+
+
                     break;
 
                 // Game is in Menu
@@ -1617,6 +1599,18 @@ namespace GroupGame
                                 fullscreen = false;
                                 graphics.IsFullScreen = false;
                                 graphics.ApplyChanges();
+                            }
+                        }
+
+                        if (Bcont == true)
+                        {
+                            contButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (contButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (5 * (rMButton.Height / 2)), menu.Width / 4, menu.Height / 4);
+                            mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+
+                            if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(contButton))
+                            {
+                                gState = GameState.HordeMode;
+                                prevMState = mState;
                             }
                         }
                     }
@@ -1732,14 +1726,14 @@ namespace GroupGame
             spriteBatch.Begin();
 
             // Switch statement based on gState
-            switch (gState)
+            switch(gState)
             {
                 // Game is in Menu
                 case GameState.Menu:
                     Rectangle mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
                     if (rSButton.Intersects(mRectangle))
                     {
-                        spriteBatch.Draw(startButton, rSButton, Color.Red);
+                        spriteBatch.Draw(startButton , rSButton, Color.Red);
                     }
                     else
                     {
@@ -1850,11 +1844,15 @@ namespace GroupGame
                     foreach (Rectangle o in objects)
                     {
                         spriteBatch.Draw(boxes, o, Color.White);
+<<<<<<< HEAD
+=======
+                        
+>>>>>>> f110ca1447d9ef9f85b51131c877539b8c49e304
                     }
 
                     foreach (Projectile p in projectiles)
                     {
-                        if (p is PBasic || p is PSuper)
+                        if (p is PBasic)
                         {
                             p.Draw(spriteBatch, frameProjectile);
                         }
@@ -1863,13 +1861,13 @@ namespace GroupGame
                             PStationary ps = (PStationary)p;
                             ps.Draw(spriteBatch, frameProjectile, rotationAngle);
                         }
-                        if (p is PExplosive)
+                        if(p is PExplosive)
                         {
                             PExplosive ex = (PExplosive)p;
                             if (ex.ExplosionCount == 0) ex.Draw(spriteBatch);
                             else spriteBatch.Draw(meleeImage, ex.Explosion, Color.White);
                         }
-                        if (p is PMine)
+                        if(p is PMine)
                         {
                             PMine mine = (PMine)p;
                             if (mine.ExplosionCount == 0) mine.Draw(spriteBatch);
@@ -1880,19 +1878,12 @@ namespace GroupGame
                     foreach (EnemyProjectile eP in eProjectiles)
                     {
                         eP.Draw(spriteBatch);
-
+                        
                     }
 
-                    if (c.SuperCount > 0 && c.SuperCount < 60)
-                    {
-                        Vector2 origin = new Vector2(superCharge.Width / 2, superCharge.Height / 2);
-                        spriteBatch.Draw(superCharge, new Vector2(c.Position.X + c.Position.Width/2, c.Position.Y + c.Position.Height/2), null, Color.White, 0, origin, (float)12 - ((float)c.SuperCount/5), SpriteEffects.None, 0);
-                    }
-
-                    if (c.DashCount == 0 && c.FiringSuper == true && c.SuperCount == 60) c.Draw(spriteBatch, rotationAngle, framePlayer, Color.Purple); // Draw the character
-                    if (c.DashCount == 0 && c.SuperCount != 60) c.Draw(spriteBatch, rotationAngle, framePlayer, Color.White); // Draw the character
-                    if (c.DashCount < 20 && c.DashCount > 0) c.Draw(spriteBatch, rotationAngle, framePlayer, Color.CadetBlue); // Draw the character
-                    if (c.DashCount >= 20) c.Draw(spriteBatch, rotationAngle, framePlayer, Color.IndianRed); // Draw the character
+                    if (c.DashCount == 0) c.Draw(spriteBatch, rotationAngle, framePlayer, Color.White); // Draw the character
+                    else if (c.DashCount < 20) c.Draw(spriteBatch, rotationAngle, framePlayer, Color.CadetBlue); // Draw the character
+                    else c.Draw(spriteBatch, rotationAngle, framePlayer, Color.IndianRed); // Draw the character
 
                     // Draw lines for the Enemy2s that are shooting
                     foreach (Enemy e in enemies)
@@ -1962,7 +1953,6 @@ namespace GroupGame
                     spriteBatch.DrawString(sFont, "Life", new Vector2(300, 25), Color.Black);
                     spriteBatch.Draw(rectangle, new Rectangle(300, 45, 260, 20), Color.Red);
                     spriteBatch.Draw(rectangle, new Rectangle(300, 45, c.Health * 13/5, 20), Color.LawnGreen);
-                    spriteBatch.Draw(rectangle, new Rectangle(675, 45, c.Super * 2, 20), Color.MediumPurple);
 
 
                     // Switch statement that draws the image for the ability the player is using for the interface
@@ -2004,7 +1994,7 @@ namespace GroupGame
                     // Draw projectiles
                     foreach (Projectile p in projectiles)
                     {
-                        if (p is PBasic || p is PSuper)
+                        if (p is PBasic)
                         {
                             spriteBatch.Draw(p.Image, new Rectangle(p.Position.X + p.Position.Width / 2, p.Position.Y + p.Position.Height / 2, p.Position.Width, p.Position.Height), new Rectangle(0, 0, 32, 32), Color.White, p.Angle - (float)Math.PI / 2, new Vector2(16, 16), SpriteEffects.None, 0);
                         }
@@ -2063,6 +2053,15 @@ namespace GroupGame
                     {
                         spriteBatch.Draw(menu, rMButton, Color.White);
                     }
+                    // Draw options
+                    if (rPOButton.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(optionsButton, rPOButton, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(optionsButton, rPOButton, Color.White);
+                    }
                     break;
 
                 // Game is in Options
@@ -2091,6 +2090,17 @@ namespace GroupGame
                         else
                         {
                             spriteBatch.Draw(menu, rMButton, Color.White);
+                        }
+                        if(Bcont == true)
+                        {
+                            if (contButton.Intersects(mRectangle))
+                            {
+                                spriteBatch.Draw(continueButton, contButton, Color.Red);
+                            }
+                            else
+                            {
+                                spriteBatch.Draw(continueButton, contButton, Color.White);
+                            }
                         }
                     }
 

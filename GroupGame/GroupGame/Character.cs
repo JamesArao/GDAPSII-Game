@@ -18,12 +18,9 @@ namespace GroupGame
         private int speed; // Speed the character moves at
         private int shotDelay; // Int that acts as a way of delaying player shooting, decreases by one every frame
         private int health; // Health of the player
-        private int super; // Super Move
-        private int superCount; // Count of the charging Super Move
         private Rectangle cRect; // Rectangle for character collision
         private int dashing;
         private int dashCount;
-        private bool firingSuper;
 
         // Values for animation
         const int heroY = 0;
@@ -71,25 +68,6 @@ namespace GroupGame
         {
             get { return dashCount; }
             set { dashCount = value; }
-        }
-
-        //
-        public int Super
-        {
-            get { return super; }
-            set { super = value; }
-        }
-
-        public int SuperCount
-        {
-            get { return superCount; }
-            set { superCount = value; }
-        }
-
-        public bool FiringSuper
-        {
-            get { return firingSuper; }
-            set { firingSuper = value; }
         }
 
         // Draw method, with the player rotating based on where the mouse is
