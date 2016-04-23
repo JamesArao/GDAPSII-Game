@@ -1,6 +1,6 @@
 ﻿// Enemy2
 // Class for the second enemy, the sniper enemy, inherits from Enemy
-// Coders: Kiernan Brown
+// Coders: Kiernan Brown, Nick Federico
 
 using System;
 using System.Collections.Generic;

@@ -1,6 +1,6 @@
 ﻿// Enemy3
 // Class for the third enemy, the shotgun enemy, inherits from Enemy
-// Coders: Kiernan Brown
+// Coders: Kiernan Brown, Nick Federico
 
 using System;
 using System.Collections.Generic;

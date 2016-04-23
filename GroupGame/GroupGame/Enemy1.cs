@@ -1,6 +1,6 @@
 ﻿// Enemy2
 // Class for the first enemy, inherits from Enemy
-// Coders: Kiernan Brown
+// Coders: Kiernan Brown, Nick Federico
 
 using System;
 using System.Collections.Generic;

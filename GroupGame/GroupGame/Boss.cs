@@ -1,5 +1,5 @@
 ﻿// Boss
-// Class for the boxx in our game
+// Class for the boss in our game
 // Coders: Kiernan Brown
 
 using System;

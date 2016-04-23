@@ -1,6 +1,6 @@
 ﻿// Enemy
 // Abstract class for enemies
-// Coders: Kiernan Brown, James Arao
+// Coders: Kiernan Brown, James Arao, Nick Federico
 
 using System;
 using System.Collections.Generic;
