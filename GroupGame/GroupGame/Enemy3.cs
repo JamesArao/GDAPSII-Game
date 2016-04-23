@@ -1,5 +1,5 @@
 ﻿// Enemy3
-// Class for the third enemy, inherits from Enemy
+// Class for the third enemy, the shotgun enemy, inherits from Enemy
 // Coders: Kiernan Brown
 
 using System;

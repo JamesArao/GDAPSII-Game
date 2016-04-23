@@ -1,4 +1,8 @@
-﻿using System;
+﻿// PSuper
+// Class for the super projectile shot by the super move, inherits from Projectile
+// Coders: Kiernan Brown
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Boss
+// Class for the boxx in our game
+// Coders: Kiernan Brown
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

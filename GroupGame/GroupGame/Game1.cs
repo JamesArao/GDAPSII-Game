@@ -248,7 +248,7 @@ namespace GroupGame
                     {
                         foreach (Enemy e in enemiesSpawn)
                         {
-                            if (randObj.Intersects(new Rectangle(e.Position.X - 5, e.Position.Y - 5, e.Position.Width + 10, e.Position.Height + 10)) == true)
+                            if (randObj.Intersects(new Rectangle(e.Position.X - 20, e.Position.Y - 20, e.Position.Width + 40, e.Position.Height + 40)) == true)
                             {
                                 collision = true;
                             }
@@ -258,7 +258,7 @@ namespace GroupGame
                     {
                         foreach (Enemy e in enemies)
                         {
-                            if (randObj.Intersects(new Rectangle(e.Position.X - 5, e.Position.Y - 5, e.Position.Width + 10, e.Position.Height + 10)) == true)
+                            if (randObj.Intersects(new Rectangle(e.Position.X - 20, e.Position.Y - 20, e.Position.Width + 40, e.Position.Height + 40)) == true)
                             {
                                 collision = true;
                             }
@@ -290,6 +290,7 @@ namespace GroupGame
                     }
                 }
             }
+
             // Center the player for the boss round
             else
             {

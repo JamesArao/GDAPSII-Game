@@ -1,4 +1,8 @@
-﻿using System;
+﻿// EPStall
+// Class for an enemy projectile that stays still for a time, then moves towards the player
+// Coders: Kiernan Brown
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
