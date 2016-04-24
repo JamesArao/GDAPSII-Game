@@ -87,6 +87,12 @@ namespace GroupGame
             set { moveY = value; }
         }
 
+        public float Angle
+        {
+            get { return angle; }
+            set { angle = value; }
+        }
+
         // CheckCollision method
         // Returns true if the projectile's position intersects the enemy's cRect
         public bool CheckCollision(Enemy e)

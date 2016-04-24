@@ -1,4 +1,8 @@
-﻿using System;
+﻿// EPWobble
+// Class for the basic projectile, inherits from Projectile
+// Coders: Kiernan Brown
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

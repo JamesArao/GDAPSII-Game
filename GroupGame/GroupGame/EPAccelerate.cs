@@ -1,4 +1,8 @@
-﻿using System;
+﻿// EPAccelerate
+// Class for an enemy projectile that accelerates, inherits from EnemyProjectile
+// Coders: Kiernan Brown
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,9 +14,10 @@ namespace GroupGame
 {
     class EPAccelerate : EnemyProjectile
     {
+        // Value that the projectiles will accelerate by, the larger the value, the faster they move
         private int accelerate;
 
-        // Override move method so it only moves when count is 0
+        // Override move method so that the MoveX and MoveY increase over time to make the projectile faster
         public override void Move()
         {
                 base.Move();

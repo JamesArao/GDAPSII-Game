@@ -1,4 +1,8 @@
-﻿using System;
+﻿// EPBasic
+// Class for the basic enemy projectile, inherits from EnemyProjectile
+// Coders: Kiernan Brown
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

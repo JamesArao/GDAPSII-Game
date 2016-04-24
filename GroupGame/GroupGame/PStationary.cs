@@ -1,4 +1,8 @@
-﻿using System;
+﻿// PStationary
+// Class for the stationary (melee) projectile, inherits from Projectile
+// Coders: Kiernan Brown, Nick Federico, Austin Richardson
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
