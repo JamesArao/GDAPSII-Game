@@ -145,6 +145,12 @@
     <Content Include="Content\grenade.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Instructions.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\InstructionsScreen.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Leaderboard.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

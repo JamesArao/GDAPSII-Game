@@ -21,21 +21,20 @@ namespace RoundEditor
     {
         // Create a list of Labels, used as a list for holding all the enemies in a round
         private List<Label> enemies = new List<Label>();
-        private List<Label> group2Enemies = new List<Label>();
-        private List<Label> group3Enemies = new List<Label>();
         private RoundSettings settingsForm;
 
         // Round Settings
         private int spawnType = 0; // 0 if individual, 1 if groups
         private int screenEnemies = -1;
-        private int group = 1;
 
+        // SpawnType property
         public int SpawnType
         {
             get { return spawnType; }
             set { spawnType = value; }
         }
 
+        // ScreenEnemies property
         public int ScreenEnemies
         {
             get { return screenEnemies; }
@@ -174,11 +173,8 @@ namespace RoundEditor
                 case "Enemy 3":
                     enemyLabel.Text = "3";
                     break;
-                case "Enemy 4":
+                case "Boss":
                     enemyLabel.Text = "4";
-                    break;
-                case "Enemy 5":
-                    enemyLabel.Text = "5";
                     break;
             }
 
@@ -207,15 +203,17 @@ namespace RoundEditor
         private void label_MouseMove(object sender, MouseEventArgs e)
         {
             // If the left mouse button is clicked, it will run this
-            if(e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left)
             {
                 // Cast the sender object to a new label
                 // This allows us to use this event with the multiple labels we generate with code
                 Label movingLabel = (Label)sender;
 
+
                 // Move the label based on the mouse
                 movingLabel.Left = e.Location.X + movingLabel.Left - mLocation.X; // Moves the label horizontally
                 movingLabel.Top = e.Location.Y + movingLabel.Top - mLocation.Y; // Moves the label vertically
+
             }
         }
 
@@ -247,27 +245,13 @@ namespace RoundEditor
                 this.Controls.Remove(deleteLabel); // Remove the enemy from the screen
             }
         }
-
+        
+        // Create the RoundSettings form when that button is pressed
         private void roundSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             settingsForm = new RoundSettings(this);
             settingsForm.Show();
             this.Enabled = false;
-        }
-
-        private void group1ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            group = 1;
-        }
-
-        private void group2ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            group = 2;
-        }
-
-        private void group3ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            group = 3;
         }
     }
 }

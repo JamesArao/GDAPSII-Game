@@ -13,13 +13,19 @@ namespace RoundEditor
     public partial class RoundSettings : Form
     {
         RoundEditor roundEditor;
+
+        // Constructor
         public RoundSettings(RoundEditor editor)
         {
             InitializeComponent();
             roundEditor = editor;
+
+            // We are doing the individual spawn type, make the indivual button be checked
             if (roundEditor.SpawnType == 0)
             {
                 individualButton.Checked = true;
+
+                // If 
                 if(roundEditor.ScreenEnemies != -1)
                 {
                     numberButton.Checked = true;
@@ -32,15 +38,15 @@ namespace RoundEditor
             }
             else
             {
-                groupButton.Checked = true;
+                //groupButton.Checked = true;
             }
         }
 
         protected override void OnClosing(CancelEventArgs e)
         {
             roundEditor.Enabled = true;
-            if (groupButton.Checked == true) roundEditor.SpawnType = 1;
-            else roundEditor.SpawnType = 0;
+            //if (groupButton.Checked == true) roundEditor.SpawnType = 1;
+            roundEditor.SpawnType = 0;
             if (individualButton.Checked == true && numberButton.Checked == true)
             {
                 int num = 0;
@@ -60,7 +66,7 @@ namespace RoundEditor
             base.OnClosing(e);
         }
 
-        private void groupButton_CheckedChanged(object sender, EventArgs e)
+        /*private void groupButton_CheckedChanged(object sender, EventArgs e)
         {
             if (groupButton.Checked == true)
             {
@@ -70,7 +76,7 @@ namespace RoundEditor
             {
                 enemiesBox.Enabled = true;
             }
-        }
+        }*/
 
         private void numberButton_CheckedChanged(object sender, EventArgs e)
         {

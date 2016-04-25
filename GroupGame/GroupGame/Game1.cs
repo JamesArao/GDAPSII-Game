@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-enum GameState { Menu, HordeMode, Paused, Options, CharacterSelection, GameOver, Leaderboard}; // GameState enum for keeping track of what state our game is in
+enum GameState { Menu, HordeMode, Paused, Options, CharacterSelection, GameOver, Leaderboard, Instructions}; // GameState enum for keeping track of what state our game is in
 enum AbilityState { a1, a2, a3, a4, a5, a6 }; // AbilityState enum for keeping track of the ability the player is using
 enum HeroState { Still, Walking }; // HeroState enum for keeping track of the state of the player
 enum SwitchHero { Fire, Earth, Water, Electric}; // switch heroes
@@ -79,6 +79,8 @@ namespace GroupGame
         Texture2D mine;
         Texture2D grenade;
         Texture2D boss;
+        Texture2D instructionsButton;
+        Texture2D instructionsScreen;
 
         // Rectangles for buttons and mouse
         Rectangle rSButton;
@@ -88,6 +90,7 @@ namespace GroupGame
         Rectangle rMButton;
         Rectangle rFButton;
         Rectangle rLButton;
+        Rectangle rIButton;
         Rectangle contButton;
         Rectangle char1;
         Rectangle char2;
@@ -602,7 +605,7 @@ namespace GroupGame
         // Method for reseting the game
         public void ResetGame()
         {
-            //
+            
             enemies.Clear();
             enemiesSpawn.Clear();
             projectiles.Clear();
@@ -621,6 +624,7 @@ namespace GroupGame
             score = 0;
             aState = AbilityState.a1;
             AdvanceRound();
+            Bcont = true;
         }
 
         public void ScoreEntry()
@@ -648,8 +652,8 @@ namespace GroupGame
             IsMouseVisible = true;
 
             // Adjust window size
-            graphics.PreferredBackBufferWidth = 1200;
-            graphics.PreferredBackBufferHeight = 700;
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 740;
             graphics.ApplyChanges();
         }
 
@@ -757,6 +761,8 @@ namespace GroupGame
             okButton = this.Content.Load<Texture2D>("Ok");
             cancelButton = this.Content.Load<Texture2D>("Cancel");
             leaderboardButton = Content.Load<Texture2D>("Leaderboard");
+            instructionsButton = Content.Load<Texture2D>("Instructions");
+            instructionsScreen = Content.Load<Texture2D>("InstructionsScreen");
 
             // Load images for the game
             enemyImage = this.Content.Load<Texture2D>("Enemy");
@@ -877,9 +883,10 @@ namespace GroupGame
                     Bcont = false;
 
                     // Checks to see if the start button has been pressed
-                    rSButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rSButton.Width/2), (GraphicsDevice.Viewport.Height / 2) - (rSButton.Height * 2), startButton.Width/4, startButton.Height/4);
-                    rOButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rOButton.Width / 2), (GraphicsDevice.Viewport.Height / 2), startButton.Width / 4, startButton.Height / 4);
-                    rLButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rLButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (rLButton.Height * 2), startButton.Width / 4, startButton.Height / 4);
+                    rSButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rSButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) - (rSButton.Height * 3), startButton.Width/4, startButton.Height/4);
+                    rOButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rOButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) - (int)(rOButton.Height * 1.5), startButton.Width / 4, startButton.Height / 4);
+                    rLButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rLButton.Width / 2), (GraphicsDevice.Viewport.Height / 2), startButton.Width / 4, startButton.Height / 4);
+                    rIButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rIButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (int)(rIButton.Height * 1.5), startButton.Width / 4, startButton.Height / 4);
 
                     Rectangle mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
                     if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rSButton))
@@ -894,6 +901,10 @@ namespace GroupGame
                     if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rLButton))
                     {
                         gState = GameState.Leaderboard;
+                    }
+                    if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rIButton))
+                    {
+                        gState = GameState.Instructions;
                     }
                     break;
 
@@ -1269,21 +1280,27 @@ namespace GroupGame
                     bool enemyAlive = false;
                     foreach (Enemy e in enemies)
                     {
+                        // Move all enemies
                         e.Move(c, enemies, objects);
+
+                        // Enemy is being spawned
                         if (e.SpawnCount != -1 && e.SpawnCount <= 90)
                         {
+                            // Enemy is done being spawned, it is now alive
                             if (e.SpawnCount == 90)
                             {
                                 e.SpawnCount = -1;
                                 e.Alive = true;
                             }
+                            // Otherwise increase its spawn count
                             else
                             {
                                 e.SpawnCount++;
                                 enemyAlive = true;
                             }
                         }
-                        // If the enemy is alive, it moves, and the enemyAlive boolean is set to true
+
+                        // If the enemy is alive, it can attack, and the enemyAlive boolean is set to true
                         if (e.Alive == true)
                         {
                             enemyAlive = true;
@@ -1309,7 +1326,7 @@ namespace GroupGame
                                 else e.ShotCount = 0;
                             }
 
-                            // Enemy2 attack
+                            // Enemy2 attack, sniper shot at the player
                             if (e is Enemy2)
                             {
                                 Enemy2 e2 = (Enemy2)e;
@@ -1324,7 +1341,7 @@ namespace GroupGame
                                 }
                             }
 
-                            // Enemy3 attack
+                            // Enemy3 attack, create five projectiles that fire at the player
                             if (e is Enemy3)
                             {
                                 Enemy3 e3 = (Enemy3)e;
@@ -1349,9 +1366,11 @@ namespace GroupGame
                                 Boss b = (Boss)e;
                                 switch (b.AttackNum)
                                 {
+                                    // Attack 1, spell out DIE in stall projectiles
                                     case 1:
                                         try
                                         {
+                                            // Read in the projectile pattern from the binary file and create the projectiles
                                             string attackType = "";
                                             int attackX = 0;
                                             int attackY = 0;
@@ -1377,6 +1396,8 @@ namespace GroupGame
                                             b.AttackCount = 360;
                                         }
                                         break;
+
+                                    // Attack 2, walk towards the player while spawning projectiles, slower speed smaller spread
                                     case 2:
                                         if (b.AttackCount % 15 == 0)
                                         {
@@ -1393,6 +1414,8 @@ namespace GroupGame
                                             b.AttackCount = 240;
                                         }
                                         break;
+
+                                    // Attack 3, walk towards the player while spawning projectiles, faster speed larger spread
                                     case 3:
                                         if (b.AttackCount % 10 == 0)
                                         {
@@ -1409,6 +1432,8 @@ namespace GroupGame
                                             b.AttackCount = 240;
                                         }
                                         break;
+
+                                    // Attack 4, create the four circles of wobble projectiles
                                     case 4:
                                         if (b.AttackCount % 45 == 0)
                                         {
@@ -1425,12 +1450,15 @@ namespace GroupGame
                                             b.AttackCount = 300;
                                         }
                                         break;
+
+                                    // Cooldown on attacks
                                     case 5:
                                         b.Moving = true;
                                         b.AttackCount--;
                                         if (b.AttackCount == 0)
                                         {
                                             int number = 0;
+                                            // Only be able to call attack 1 when the player is below the boss
                                             if (c.Position.Y > b.Position.Y) number = rgen.Next(4) + 1;
                                             else number = rgen.Next(3) + 2;
                                             switch (number)
@@ -1527,6 +1555,7 @@ namespace GroupGame
                         }
                     }
 
+                    // An enemy has been killed and there are more enemies to spawn, add another enemy to the list and start spawning it
                     if (maxOnScreen != -1 && enemiesSpawn.Count != 0)
                     {
                         for (int i = 0; i < enemies.Count; i++)
@@ -1679,6 +1708,7 @@ namespace GroupGame
                         // Ok button is pressed or name entering is done, change leaderboard and stop name entry
                         if ((mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rOKButton)) || lHandler.Done == true)
                         {
+                            // Go through the leaderboard, if the player's score is greater than the current score, insert it there
                             for (int i = 0; i < 5; i++)
                             {
                                 if (score > leaderboardScores[i])
@@ -1703,6 +1733,7 @@ namespace GroupGame
                                     break;
                                 }
                             }
+                            // Remove the 6th score on the list, as we only save the top 5
                             leaderboardScores.RemoveAt(5);
                             leaderboardRounds.RemoveAt(5);
                             leaderboardNames.RemoveAt(5);
@@ -1747,6 +1778,19 @@ namespace GroupGame
                     break;
 
                 case GameState.Leaderboard:
+                    // Mouse rectangle
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+
+                    rMButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height) - (rMButton.Height + 50), startButton.Width / 4, startButton.Height / 4);
+
+                    // If the menu button is pressed, go back to the menu
+                    if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rMButton))
+                    {
+                        gState = GameState.Menu;
+                    }
+                    break;
+
+                case GameState.Instructions:
                     // Mouse rectangle
                     mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
 
@@ -1805,6 +1849,15 @@ namespace GroupGame
                     else
                     {
                         spriteBatch.Draw(leaderboardButton, rLButton, Color.White);
+                    }
+
+                    if (rIButton.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(instructionsButton, rIButton, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(instructionsButton, rIButton, Color.White);
                     }
                     break;
 
@@ -2085,11 +2138,12 @@ namespace GroupGame
                             float enemyAngle = -(float)(Math.Atan2(aX, aY) + Math.PI / 2);
                             spriteBatch.Draw(e.Image, new Rectangle(e.Position.X + e.Position.Width / 2, e.Position.Y + e.Position.Height / 2, e.Position.Width, e.Position.Height), new Rectangle(0, 0, 32, 32), Color.White, enemyAngle - (float)Math.PI / 2, new Vector2(16, 16), SpriteEffects.None, 0);
                         }
-                        else if(e.SpawnCount != -1)
+                        else if (e.SpawnCount != -1)
                         {
-                            spriteBatch.Draw(eMarker, new Rectangle(e.Position.X, e.Position.Y, e.Position.Width * (e.SpawnCount/30), e.Position.Height * (e.SpawnCount/30)), Color.White);
+                            Vector2 origin = new Vector2(eMarker.Width / 2, eMarker.Height / 2);
+                            spriteBatch.Draw(eMarker, new Vector2(e.Position.X, e.Position.Y), null, Color.White, 0, origin, (float)e.SpawnCount / 30, SpriteEffects.None, 0);
                         }
-                        
+
                     }
 
                     // Draw pause
@@ -2274,6 +2328,19 @@ namespace GroupGame
                         spriteBatch.DrawString(lFont, leaderboardScores[i - 1].ToString(), new Vector2((GraphicsDevice.Viewport.Width / 2 + 200), 100 + (75 * i)), Color.Black);
                     }
 
+                    if (rMButton.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(menu, rMButton, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(menu, rMButton, Color.White);
+                    }
+                    break;
+
+                case GameState.Instructions:
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+                    spriteBatch.Draw(instructionsScreen, new Vector2(GraphicsDevice.Viewport.Width / 2 - instructionsScreen.Width / 2, 20), Color.White);
                     if (rMButton.Intersects(mRectangle))
                     {
                         spriteBatch.Draw(menu, rMButton, Color.Red);

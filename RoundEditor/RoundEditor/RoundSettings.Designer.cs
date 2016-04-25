@@ -29,19 +29,17 @@
         private void InitializeComponent()
         {
             this.spawningBox = new System.Windows.Forms.GroupBox();
-            this.enemiesBox = new System.Windows.Forms.GroupBox();
             this.individualButton = new System.Windows.Forms.RadioButton();
-            this.groupButton = new System.Windows.Forms.RadioButton();
-            this.allButton = new System.Windows.Forms.RadioButton();
-            this.numberButton = new System.Windows.Forms.RadioButton();
+            this.enemiesBox = new System.Windows.Forms.GroupBox();
             this.numberBox = new System.Windows.Forms.TextBox();
+            this.numberButton = new System.Windows.Forms.RadioButton();
+            this.allButton = new System.Windows.Forms.RadioButton();
             this.spawningBox.SuspendLayout();
             this.enemiesBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // spawningBox
             // 
-            this.spawningBox.Controls.Add(this.groupButton);
             this.spawningBox.Controls.Add(this.individualButton);
             this.spawningBox.Location = new System.Drawing.Point(13, 13);
             this.spawningBox.Name = "spawningBox";
@@ -49,18 +47,6 @@
             this.spawningBox.TabIndex = 0;
             this.spawningBox.TabStop = false;
             this.spawningBox.Text = "Spawning Type";
-            // 
-            // enemiesBox
-            // 
-            this.enemiesBox.Controls.Add(this.numberBox);
-            this.enemiesBox.Controls.Add(this.numberButton);
-            this.enemiesBox.Controls.Add(this.allButton);
-            this.enemiesBox.Location = new System.Drawing.Point(13, 90);
-            this.enemiesBox.Name = "enemiesBox";
-            this.enemiesBox.Size = new System.Drawing.Size(278, 70);
-            this.enemiesBox.TabIndex = 1;
-            this.enemiesBox.TabStop = false;
-            this.enemiesBox.Text = "Max Enemies on Screen (only for Individual spawning)";
             // 
             // individualButton
             // 
@@ -74,28 +60,25 @@
             this.individualButton.Text = "Individual";
             this.individualButton.UseVisualStyleBackColor = true;
             // 
-            // groupButton
+            // enemiesBox
             // 
-            this.groupButton.AutoSize = true;
-            this.groupButton.Location = new System.Drawing.Point(117, 30);
-            this.groupButton.Name = "groupButton";
-            this.groupButton.Size = new System.Drawing.Size(54, 17);
-            this.groupButton.TabIndex = 1;
-            this.groupButton.Text = "Group";
-            this.groupButton.UseVisualStyleBackColor = true;
-            this.groupButton.CheckedChanged += new System.EventHandler(this.groupButton_CheckedChanged);
+            this.enemiesBox.Controls.Add(this.numberBox);
+            this.enemiesBox.Controls.Add(this.numberButton);
+            this.enemiesBox.Controls.Add(this.allButton);
+            this.enemiesBox.Location = new System.Drawing.Point(13, 90);
+            this.enemiesBox.Name = "enemiesBox";
+            this.enemiesBox.Size = new System.Drawing.Size(278, 70);
+            this.enemiesBox.TabIndex = 1;
+            this.enemiesBox.TabStop = false;
+            this.enemiesBox.Text = "Max Enemies on Screen (only for Individual spawning)";
             // 
-            // allButton
+            // numberBox
             // 
-            this.allButton.AutoSize = true;
-            this.allButton.Checked = true;
-            this.allButton.Location = new System.Drawing.Point(7, 35);
-            this.allButton.Name = "allButton";
-            this.allButton.Size = new System.Drawing.Size(36, 17);
-            this.allButton.TabIndex = 0;
-            this.allButton.TabStop = true;
-            this.allButton.Text = "All";
-            this.allButton.UseVisualStyleBackColor = true;
+            this.numberBox.Enabled = false;
+            this.numberBox.Location = new System.Drawing.Point(207, 35);
+            this.numberBox.Name = "numberBox";
+            this.numberBox.Size = new System.Drawing.Size(55, 20);
+            this.numberBox.TabIndex = 2;
             // 
             // numberButton
             // 
@@ -108,13 +91,17 @@
             this.numberButton.UseVisualStyleBackColor = true;
             this.numberButton.CheckedChanged += new System.EventHandler(this.numberButton_CheckedChanged);
             // 
-            // numberBox
+            // allButton
             // 
-            this.numberBox.Enabled = false;
-            this.numberBox.Location = new System.Drawing.Point(207, 35);
-            this.numberBox.Name = "numberBox";
-            this.numberBox.Size = new System.Drawing.Size(55, 20);
-            this.numberBox.TabIndex = 2;
+            this.allButton.AutoSize = true;
+            this.allButton.Checked = true;
+            this.allButton.Location = new System.Drawing.Point(7, 35);
+            this.allButton.Name = "allButton";
+            this.allButton.Size = new System.Drawing.Size(36, 17);
+            this.allButton.TabIndex = 0;
+            this.allButton.TabStop = true;
+            this.allButton.Text = "All";
+            this.allButton.UseVisualStyleBackColor = true;
             // 
             // RoundSettings
             // 
@@ -137,7 +124,6 @@
 
         private System.Windows.Forms.GroupBox spawningBox;
         private System.Windows.Forms.GroupBox enemiesBox;
-        private System.Windows.Forms.RadioButton groupButton;
         private System.Windows.Forms.RadioButton individualButton;
         private System.Windows.Forms.RadioButton numberButton;
         private System.Windows.Forms.RadioButton allButton;
