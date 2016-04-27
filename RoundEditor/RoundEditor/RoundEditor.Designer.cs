@@ -40,8 +40,9 @@
             this.enemy1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.enemy2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.enemy3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.enemy4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.bossToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.enemy4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -110,7 +111,8 @@
             this.enemy1ToolStripMenuItem,
             this.enemy2ToolStripMenuItem,
             this.enemy3ToolStripMenuItem,
-            this.enemy4ToolStripMenuItem});
+            this.enemy4ToolStripMenuItem,
+            this.bossToolStripMenuItem});
             this.addEnemyToolStripMenuItem.Name = "addEnemyToolStripMenuItem";
             this.addEnemyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.addEnemyToolStripMenuItem.Text = "Add Enemy";
@@ -136,12 +138,12 @@
             this.enemy3ToolStripMenuItem.Text = "Enemy 3";
             this.enemy3ToolStripMenuItem.Click += new System.EventHandler(this.enemyToolStripMenuItem_Click);
             // 
-            // enemy4ToolStripMenuItem
+            // bossToolStripMenuItem
             // 
-            this.enemy4ToolStripMenuItem.Name = "enemy4ToolStripMenuItem";
-            this.enemy4ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.enemy4ToolStripMenuItem.Text = "Boss";
-            this.enemy4ToolStripMenuItem.Click += new System.EventHandler(this.enemyToolStripMenuItem_Click);
+            this.bossToolStripMenuItem.Name = "bossToolStripMenuItem";
+            this.bossToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.bossToolStripMenuItem.Text = "Boss";
+            this.bossToolStripMenuItem.Click += new System.EventHandler(this.enemyToolStripMenuItem_Click);
             // 
             // pictureBox1
             // 
@@ -151,6 +153,13 @@
             this.pictureBox1.Size = new System.Drawing.Size(50, 50);
             this.pictureBox1.TabIndex = 7;
             this.pictureBox1.TabStop = false;
+            // 
+            // enemy4ToolStripMenuItem
+            // 
+            this.enemy4ToolStripMenuItem.Name = "enemy4ToolStripMenuItem";
+            this.enemy4ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.enemy4ToolStripMenuItem.Text = "Enemy 4";
+            this.enemy4ToolStripMenuItem.Click += new System.EventHandler(this.enemyToolStripMenuItem_Click);
             // 
             // RoundEditor
             // 
@@ -180,10 +189,11 @@
         private System.Windows.Forms.ToolStripMenuItem enemy1ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem enemy2ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem enemy3ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem enemy4ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem bossToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem clearRoundToolStripMenuItem;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.ToolStripMenuItem roundSettingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem enemy4ToolStripMenuItem;
     }
 }
 

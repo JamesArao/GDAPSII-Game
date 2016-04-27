@@ -173,8 +173,11 @@ namespace RoundEditor
                 case "Enemy 3":
                     enemyLabel.Text = "3";
                     break;
-                case "Boss":
+                case "Enemy 4":
                     enemyLabel.Text = "4";
+                    break;
+                case "Boss":
+                    enemyLabel.Text = "B";
                     break;
             }
 

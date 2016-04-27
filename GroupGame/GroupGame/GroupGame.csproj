@@ -44,6 +44,7 @@
     <Compile Include="Boss.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Character1.cs" />
+    <Compile Include="Enemy4.cs" />
     <Compile Include="EPWobble.cs" />
     <Compile Include="LeaderboardHandler.cs" />
     <Compile Include="PBasic.cs" />

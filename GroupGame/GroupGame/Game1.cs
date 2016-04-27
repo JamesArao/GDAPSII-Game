@@ -139,6 +139,7 @@ namespace GroupGame
         int framesElapsedProjectile;
 
         // Values used for screen movement 
+
         int globalX;
         int globalY;
         int maxX;
@@ -176,8 +177,8 @@ namespace GroupGame
             // Select a random round to use
             //int num = rgen.Next(1,round+1);
             BinaryReader reader;
-            if (round < 10) reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round" + (round + 1) + ".dat"));
-            else reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round10.dat"));
+            if (round < 12) reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round" + (round + 1) + ".dat"));
+            else reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round12.dat"));
 
             // Try block
             try
@@ -212,6 +213,11 @@ namespace GroupGame
                             enemiesSpawn.Add(e3);
                             break;
                         case "4":
+                            Enemy e4 = new Enemy4(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                            e4.Image = enemyImage;
+                            enemiesSpawn.Add(e4);
+                            break;
+                        case "B":
                             Enemy b = new Boss(c.Position.X - 500 + x, c.Position.Y - 300 + y, whiteBox);
                             b.Image = boss;
                             enemiesSpawn.Add(b);
@@ -1294,6 +1300,16 @@ namespace GroupGame
                         // Move all enemies
                         e.Move(c, enemies, objects);
 
+                        if(e is Enemy4)
+                        {
+                            Enemy4 e4 = (Enemy4)e;
+                            if(e4.Charging == true && (e4.Position.X + globalX >= maxX + GraphicsDevice.Viewport.Width - e4.Position.Width || e4.Position.X + globalX <= 0 || e4.Position.Y + globalY >= maxY + GraphicsDevice.Viewport.Height - e4.Position.Height || e4.Position.Y + globalY <= 0))
+                            {
+                                e4.Charging = false;
+                                e4.ChargeCount = 300;
+                            }
+                        }
+
                         // Enemy is being spawned
                         if (e.SpawnCount != -1 && e.SpawnCount <= 90)
                         {
@@ -1317,7 +1333,7 @@ namespace GroupGame
                             enemyAlive = true;
 
                             // Enemy1 and Boss attack melee attack
-                            if (e is Enemy1 || e is Boss)
+                            if (e is Enemy1 || e is Enemy4 || e is Boss)
                             {
                                 if (e.ShotCount < 0)
                                 {
@@ -1347,7 +1363,7 @@ namespace GroupGame
                                     int shotX = (c.Position.X + c.Position.Width / 2) - (e.Position.X + e.Position.Width / 2);
                                     int shotY = (c.Position.Y + c.Position.Height / 2) - (e.Position.Y + e.Position.Height / 2);
                                     float shotAngle = (float)Math.Atan2(shotY, shotX);
-                                    eProjectiles.Add(new EPBasic(10, 30, 30, e, shotAngle, 15, basicImage));
+                                    eProjectiles.Add(new EPBasic(10, 30, 30, e, shotAngle, 17, basicImage));
                                     e2.ShotCount = 0;
                                 }
                             }
@@ -1550,6 +1566,13 @@ namespace GroupGame
                                 e.Alive = false;
                             }
                             if (e is Enemy3 && e.Alive == true)
+                            {
+                                score += 200;
+                                c.Super += 10;
+                                if (c.Super > 100) c.Super = 100;
+                                e.Alive = false;
+                            }
+                            if (e is Enemy4 && e.Alive == true)
                             {
                                 score += 200;
                                 c.Super += 10;
@@ -2047,6 +2070,7 @@ namespace GroupGame
                             if (e is Enemy1) e.Draw(spriteBatch, enemyAngle, frameEnemy, Color.White);
                             if (e is Enemy2) e.Draw(spriteBatch, enemyAngle, frameEnemy, Color.Blue);
                             if (e is Enemy3) e.Draw(spriteBatch, enemyAngle, frameEnemy, Color.Orange);
+                            if (e is Enemy4) e.Draw(spriteBatch, enemyAngle, frameEnemy, Color.White);
                             if (e is Boss) e.Draw(spriteBatch, enemyAngle, frameEnemy, Color.White);
                         }
                         else if (e.SpawnCount != -1)
