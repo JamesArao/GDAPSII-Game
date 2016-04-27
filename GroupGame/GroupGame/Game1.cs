@@ -584,7 +584,7 @@ namespace GroupGame
             }
         }
 
-        // Method for using teh SuperMove
+        // Method for using the SuperMove
         public void SuperMove()
         {
             if (c.SuperCount < 60)
