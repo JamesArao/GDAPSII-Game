@@ -2126,34 +2126,34 @@ namespace GroupGame
                             switch (aState)
                             {
                                 case AbilityState.a1:
-                                    spriteBatch.Draw(meleeImage, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 21, GraphicsDevice.Viewport.Height / 20, 40, 40), Color.White);
-                                    spriteBatch.Draw(mine, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 23, GraphicsDevice.Viewport.Height / 35, 20, 20), Color.White); //prev wpn
-                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 19, GraphicsDevice.Viewport.Height / 55, 30, 30), new Rectangle(32, 0, 32, 32), Color.White); //next wpn
+                                    spriteBatch.Draw(meleeImage, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 53, GraphicsDevice.Viewport.Height / 20, 40, 40), Color.White);
+                                    spriteBatch.Draw(mine, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 57, GraphicsDevice.Viewport.Height / 55, 30, 30), Color.White); //prev wpn
+                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 55, 30, 30), new Rectangle(32, 0, 32, 32), Color.White); //next wpn
                                     break;
                                 case AbilityState.a2:
-                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 21, GraphicsDevice.Viewport.Height / 20, 40, 40), new Rectangle(32, 0, 32, 32), Color.White);
-                                    spriteBatch.Draw(meleeImage, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 23, GraphicsDevice.Viewport.Height / 55, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
-                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 19, GraphicsDevice.Viewport.Height / 100, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 53, GraphicsDevice.Viewport.Height / 20, 40, 40), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(meleeImage, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 57, GraphicsDevice.Viewport.Height / 55, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 100, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
                                     break;
                                 case AbilityState.a3:
-                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 21, GraphicsDevice.Viewport.Height / 20, 55, 55), new Rectangle(32, 0, 32, 32), Color.White);
-                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 23, GraphicsDevice.Viewport.Height / 55, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
-                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 19, GraphicsDevice.Viewport.Height / 55, 20, 20), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 50 / 107, GraphicsDevice.Viewport.Height / 22, 55, 55), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 4 / 9, GraphicsDevice.Viewport.Height / 55, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 100 / 199, GraphicsDevice.Viewport.Height / 55, 20, 20), new Rectangle(32, 0, 32, 32), Color.White);
                                     break;
                                 case AbilityState.a4:
-                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 21, GraphicsDevice.Viewport.Height / 20, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
-                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 23, -10, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
-                                    spriteBatch.Draw(grenade, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 19, GraphicsDevice.Viewport.Height / 55, 30, 30), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 100 / 211, GraphicsDevice.Viewport.Height / 18, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 23, GraphicsDevice.Viewport.Height / 55, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(grenade, new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 55, 30, 30), Color.White);
                                     break;
                                 case AbilityState.a5:
-                                    spriteBatch.Draw(grenade, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 21, GraphicsDevice.Viewport.Height / 20, 30, 30), Color.White);
-                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 23, -10, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
-                                    spriteBatch.Draw(mine, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 19, GraphicsDevice.Viewport.Height / 55, 30, 30), Color.White);
+                                    spriteBatch.Draw(grenade, new Rectangle(GraphicsDevice.Viewport.Width * 100 / 211, GraphicsDevice.Viewport.Height / 20, 30, 30), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 23, GraphicsDevice.Viewport.Height / 55, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(mine, new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 55, 30, 30), Color.White);
                                     break;
                                 case AbilityState.a6:
-                                    spriteBatch.Draw(mine, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 21, GraphicsDevice.Viewport.Height / 20, 30, 30), Color.White);
-                                    spriteBatch.Draw(grenade, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 23, -10, 45, 45), Color.White);
-                                    spriteBatch.Draw(meleeImage, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 19, GraphicsDevice.Viewport.Height / 55, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(mine, new Rectangle(GraphicsDevice.Viewport.Width * 100 / 211, GraphicsDevice.Viewport.Height / 18, 30, 30), Color.White);
+                                    spriteBatch.Draw(grenade, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 57, GraphicsDevice.Viewport.Height / 65, 30, 30), Color.White);
+                                    spriteBatch.Draw(meleeImage, new Rectangle(GraphicsDevice.Viewport.Width * 50 / 99, GraphicsDevice.Viewport.Height / 55, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
                                     break;
                             }
                             break;
