@@ -2161,34 +2161,34 @@ namespace GroupGame
                             switch (aState)
                             {
                                 case AbilityState.a1:
-                                    spriteBatch.Draw(meleeImage, new Rectangle(600, 40, 40, 40), Color.White);
-                                    spriteBatch.Draw(mine, new Rectangle(550, 10, 20, 20), Color.White); //prev wpn
-                                    spriteBatch.Draw(bulletImage, new Rectangle(660, 0, 30, 30), new Rectangle(32, 0, 32, 32), Color.White); //next wpn
+                                    spriteBatch.Draw(meleeImage, new Rectangle(640, 40, 40, 40), Color.White);
+                                    spriteBatch.Draw(mine, new Rectangle(590, 10, 20, 20), Color.White); //prev wpn
+                                    spriteBatch.Draw(bulletImage, new Rectangle(700, 0, 30, 30), new Rectangle(32, 0, 32, 32), Color.White); //next wpn
                                     break;
                                 case AbilityState.a2:
-                                    spriteBatch.Draw(bulletImage, new Rectangle(600, 40, 40, 40), new Rectangle(32, 0, 32, 32), Color.White);
-                                    spriteBatch.Draw(meleeImage, new Rectangle(540, 5, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
-                                    spriteBatch.Draw(bulletImage, new Rectangle(654, -10, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(640, 40, 40, 40), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(meleeImage, new Rectangle(580, 5, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(694, -10, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
                                     break;
                                 case AbilityState.a3:
-                                    spriteBatch.Draw(bulletImage, new Rectangle(593, 30, 55, 55), new Rectangle(32, 0, 32, 32), Color.White);
-                                    spriteBatch.Draw(bulletImage, new Rectangle(540, 0, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
-                                    spriteBatch.Draw(bulletImage, new Rectangle(660, 10, 20, 20), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(633, 30, 55, 55), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(580, 0, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(700, 10, 20, 20), new Rectangle(32, 0, 32, 32), Color.White);
                                     break;
                                 case AbilityState.a4:
-                                    spriteBatch.Draw(bulletImage, new Rectangle(606, 45, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
-                                    spriteBatch.Draw(bulletImage, new Rectangle(541, -10, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
-                                    spriteBatch.Draw(grenade, new Rectangle(670, 5, 30, 30), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(646, 45, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(581, -10, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(grenade, new Rectangle(710, 5, 30, 30), Color.White);
                                     break;
                                 case AbilityState.a5:
-                                    spriteBatch.Draw(grenade, new Rectangle(606, 45, 30, 30), Color.White);
-                                    spriteBatch.Draw(bulletImage, new Rectangle(541, -10, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
-                                    spriteBatch.Draw(mine, new Rectangle(670, 5, 30, 30), Color.White);
+                                    spriteBatch.Draw(grenade, new Rectangle(646, 45, 30, 30), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(581, -10, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(mine, new Rectangle(710, 5, 30, 30), Color.White);
                                     break;
                                 case AbilityState.a6:
-                                    spriteBatch.Draw(mine, new Rectangle(606, 45, 30, 30), Color.White);
-                                    spriteBatch.Draw(grenade, new Rectangle(541, -10, 45, 45), Color.White);
-                                    spriteBatch.Draw(meleeImage, new Rectangle(670, 5, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(mine, new Rectangle(646, 45, 30, 30), Color.White);
+                                    spriteBatch.Draw(grenade, new Rectangle(581, -10, 45, 45), Color.White);
+                                    spriteBatch.Draw(meleeImage, new Rectangle(710, 5, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
                                     break;
                             }
                             break;
