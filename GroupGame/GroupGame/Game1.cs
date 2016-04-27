@@ -2088,17 +2088,17 @@ namespace GroupGame
                             spriteBatch.DrawString(sFont, "Round " + round, new Vector2(GraphicsDevice.Viewport.Width - 100, GraphicsDevice.Viewport.Height - 40), Color.Black);
                             spriteBatch.DrawString(sFont, "Score", new Vector2(30, GraphicsDevice.Viewport.Height - 60), Color.Black);
                             spriteBatch.DrawString(sFont, "" + score, new Vector2(30, GraphicsDevice.Viewport.Height - 40), Color.Black);
-                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 50 / 203, GraphicsDevice.Viewport.Height / 35, 42, 50), Color.DodgerBlue); //rectangle around "life"
-                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 50 / 203, GraphicsDevice.Viewport.Height / 18, 300, 35), Color.DodgerBlue); //rectangle around life bar
-                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 19, GraphicsDevice.Viewport.Height / 18, 300, 35), Color.DodgerBlue); //rectangle around special bar
-                            spriteBatch.Draw(hudcircle, new Rectangle(GraphicsDevice.Viewport.Width * 20 / 27, GraphicsDevice.Viewport.Height / 75, 100, 100), Color.DodgerBlue); //circle around special attack
-                            spriteBatch.Draw(hudcircle, new Rectangle(GraphicsDevice.Viewport.Width * 5 / 11, GraphicsDevice.Viewport.Height / 75, 100, 100), Color.DodgerBlue); //circle around current weapon
-                            spriteBatch.Draw(hudcircle, new Rectangle(GraphicsDevice.Viewport.Width * 100 / 217, GraphicsDevice.Viewport.Height / 35, 80, 80), Color.DarkBlue); //circle around current weapon (inner)
-                            spriteBatch.DrawString(sFont, "Life", new Vector2(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height / 30), Color.Black); //"life"
-                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height / 15, 260, 20), Color.Red); //red life bar
-                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 50 / 93, GraphicsDevice.Viewport.Height / 15, 260, 20), Color.Red); //red special bar
-                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height / 15, c.Health * 13/5, 20), Color.LawnGreen); //green life bar
-                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 50 / 93, GraphicsDevice.Viewport.Height / 15, c.Super * 13 / 5, 20), Color.Purple); //purple special bar
+                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 33, GraphicsDevice.Viewport.Height / 35, 42, 50), Color.DodgerBlue); //rectangle around "life"
+                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 33, GraphicsDevice.Viewport.Height / 18, 300, 35), Color.DodgerBlue); //rectangle around life bar
+                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 18, 300, 35), Color.DodgerBlue); //rectangle around special bar
+                            spriteBatch.Draw(hudcircle, new Rectangle(GraphicsDevice.Viewport.Width * 100 / 153, GraphicsDevice.Viewport.Height / 45, 100, 100), Color.DodgerBlue); //circle around special attack
+                            spriteBatch.Draw(hudcircle, new Rectangle(GraphicsDevice.Viewport.Width * 5 / 11, GraphicsDevice.Viewport.Height / 45, 100, 100), Color.DodgerBlue); //circle around current weapon
+                            spriteBatch.Draw(hudcircle, new Rectangle(GraphicsDevice.Viewport.Width * 100 / 217, GraphicsDevice.Viewport.Height / 30, 80, 80), Color.DarkBlue); //circle around current weapon (inner)
+                            spriteBatch.DrawString(sFont, "Life", new Vector2(GraphicsDevice.Viewport.Width * 25 / 82, GraphicsDevice.Viewport.Height / 30), Color.Black); //"life"
+                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 4 / 13, GraphicsDevice.Viewport.Height / 16, 260, 20), Color.Red); //red life bar
+                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 49, GraphicsDevice.Viewport.Height / 16, 260, 20), Color.Red); //red special bar
+                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 4 / 13, GraphicsDevice.Viewport.Height / 16, c.Health * 13 / 5, 20), Color.LawnGreen); //green life bar
+                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 49, GraphicsDevice.Viewport.Height / 16, c.Super * 13 / 5, 20), Color.Purple); //purple special bar
                             break;
                         case false:
                             spriteBatch.DrawString(sFont, "Round " + round, new Vector2(GraphicsDevice.Viewport.Width - 100, GraphicsDevice.Viewport.Height - 40), Color.Black);
@@ -2107,15 +2107,15 @@ namespace GroupGame
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 50 / 203, GraphicsDevice.Viewport.Height / 35, 42, 50), Color.DodgerBlue); //rectangle around "life"
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 50 / 203, GraphicsDevice.Viewport.Height / 18, 300, 35), Color.DodgerBlue); //rectangle around life bar
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 19, GraphicsDevice.Viewport.Height / 18, 300, 35), Color.DodgerBlue); //rectangle around special bar
-                            spriteBatch.Draw(hudcircle, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 13, GraphicsDevice.Viewport.Height / 75, 100, 100), Color.DodgerBlue); //circle around special attack
+                            spriteBatch.Draw(hudcircle, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 33, GraphicsDevice.Viewport.Height / 75, 100, 100), Color.DodgerBlue); //circle around special attack
                             spriteBatch.Draw(hudcircle, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 21, GraphicsDevice.Viewport.Height / 75, 100, 100), Color.DodgerBlue); //circle around current weapon
                             spriteBatch.Draw(hudcircle, new Rectangle(GraphicsDevice.Viewport.Width * 125 / 258, GraphicsDevice.Viewport.Height / 35, 80, 80), Color.DarkBlue); //circle around current weapon (inner)
                             spriteBatch.DrawString(sFont, "Life", new Vector2(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height / 30), Color.Black); //"life"
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height / 15, 260, 20), Color.Red); //red life bar
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 44, GraphicsDevice.Viewport.Height / 15, 230, 20), Color.Red); //red special bar
-                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height / 15, c.Health * 13/5, 20), Color.LawnGreen); //green life bar
+                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height / 15, c.Health * 13 / 5, 20), Color.LawnGreen); //green life bar
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 50 / 89, GraphicsDevice.Viewport.Height / 15, c.Super * 23 / 10, 20), Color.Purple); //purple special bar
-                        break;
+                            break;
                     }
 
 
