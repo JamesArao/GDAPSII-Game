@@ -184,7 +184,7 @@ namespace GroupGame
             BinaryReader reader;
             if (round < 12) reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round" + (round + 1) + ".dat"));
             else reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round12.dat"));
-            //reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round10.dat"));
+            reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round14.dat"));
 
             // Try block
             try
@@ -1905,6 +1905,19 @@ namespace GroupGame
                                 {
                                     enemies.Remove(enemies[i]);
                                     Enemy enemyAdding = enemiesSpawn[0];
+                                    foreach(Enemy buddies in enemies)
+                                    {
+                                        foreach(Rectangle boxes in objects)
+                                        {
+                                            if(enemyAdding.Position.Intersects(buddies.Position) || enemyAdding.Position.Intersects(boxes))
+                                            {
+                                                int x = rgen.Next(GraphicsDevice.Viewport.Width - 160) + 80;
+                                                int y = rgen.Next(GraphicsDevice.Viewport.Height - 160) + 80;
+
+                                                Rectangle randPos = new Rectangle(x, y, enemyAdding.Position.Width, enemyAdding.Position.Height);
+                                            }
+                                        }
+                                    }
                                     enemyAdding.SpawnCount = 0;
                                     enemies.Add(enemyAdding);
                                     enemiesSpawn.RemoveAt(0);
