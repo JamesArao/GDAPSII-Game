@@ -51,6 +51,7 @@ namespace GroupGame
         Texture2D player4Walking;
         Texture2D bullet4Image;
         Texture2D meleeImage;
+        Texture2D meleeStillImage;
         Texture2D startButton;
         Texture2D optionsButton;
         Texture2D fullscreenButton;
@@ -825,6 +826,7 @@ namespace GroupGame
             mine = Content.Load<Texture2D>("mine");
             grenade = Content.Load<Texture2D>("grenade");
             boss = Content.Load<Texture2D>("boss");
+            meleeStillImage = Content.Load<Texture2D>("meleeImage");
 
             // Load fonts
             sFont = this.Content.Load<SpriteFont>("SpriteFont1");
@@ -2310,31 +2312,6 @@ namespace GroupGame
                         spriteBatch.Draw(boxes, o, Color.White);
                     }
 
-                    foreach (Projectile p in projectiles)
-                    {
-                        if (p is PBasic || p is PSuper)
-                        {
-                            p.Draw(spriteBatch, frameProjectile);
-                        }
-                        if (p is PStationary)
-                        {
-                            PStationary ps = (PStationary)p;
-                            ps.Draw(spriteBatch, frameProjectile, rotationAngle);
-                        }
-                        if (p is PExplosive)
-                        {
-                            PExplosive ex = (PExplosive)p;
-                            if (ex.ExplosionCount == 0) ex.Draw(spriteBatch);
-                            else spriteBatch.Draw(meleeImage, ex.Explosion, Color.White);
-                        }
-                        if (p is PMine)
-                        {
-                            PMine mine = (PMine)p;
-                            if (mine.ExplosionCount == 0) mine.Draw(spriteBatch);
-                            else spriteBatch.Draw(meleeImage, mine.Explosion, Color.White);
-                        }
-                    }
-
                     if (reaperRound == false)
                     {
                         foreach (EnemyProjectile eP in eProjectiles)
@@ -2420,7 +2397,32 @@ namespace GroupGame
                         }
                     }
 
-                    if(reaperRound == true)
+                    foreach (Projectile p in projectiles)
+                    {
+                        if (p is PBasic || p is PSuper)
+                        {
+                            p.Draw(spriteBatch, frameProjectile);
+                        }
+                        if (p is PStationary)
+                        {
+                            PStationary ps = (PStationary)p;
+                            ps.Draw(spriteBatch, frameProjectile, rotationAngle);
+                        }
+                        if (p is PExplosive)
+                        {
+                            PExplosive ex = (PExplosive)p;
+                            if (ex.ExplosionCount == 0) ex.Draw(spriteBatch);
+                            else spriteBatch.Draw(meleeImage, ex.Explosion, Color.White);
+                        }
+                        if (p is PMine)
+                        {
+                            PMine mine = (PMine)p;
+                            if (mine.ExplosionCount == 0) mine.Draw(spriteBatch);
+                            else spriteBatch.Draw(meleeImage, mine.Explosion, Color.White);
+                        }
+                    }
+
+                    if (reaperRound == true)
                     {
                         foreach(Enemy e in enemies)
                         {
@@ -2487,13 +2489,13 @@ namespace GroupGame
                             switch (aState)
                             {
                                 case AbilityState.a1:
-                                    spriteBatch.Draw(meleeImage, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 53, GraphicsDevice.Viewport.Height / 20, 40, 40), Color.White);
+                                    spriteBatch.Draw(meleeStillImage, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 53, GraphicsDevice.Viewport.Height / 18, 40, 40), Color.White);
                                     spriteBatch.Draw(mine, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 57, GraphicsDevice.Viewport.Height / 55, 30, 30), Color.White); //prev wpn
                                     spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 55, 30, 30), new Rectangle(32, 0, 32, 32), Color.White); //next wpn
                                     break;
                                 case AbilityState.a2:
                                     spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 53, GraphicsDevice.Viewport.Height / 20, 40, 40), new Rectangle(32, 0, 32, 32), Color.White);
-                                    spriteBatch.Draw(meleeImage, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 57, GraphicsDevice.Viewport.Height / 55, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(meleeStillImage, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 57, GraphicsDevice.Viewport.Height / 55, 30, 30), Color.White);
                                     spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 100, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
                                     break;
                                 case AbilityState.a3:
@@ -2514,7 +2516,7 @@ namespace GroupGame
                                 case AbilityState.a6:
                                     spriteBatch.Draw(mine, new Rectangle(GraphicsDevice.Viewport.Width * 100 / 211, GraphicsDevice.Viewport.Height / 18, 30, 30), Color.White);
                                     spriteBatch.Draw(grenade, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 57, GraphicsDevice.Viewport.Height / 65, 30, 30), Color.White);
-                                    spriteBatch.Draw(meleeImage, new Rectangle(GraphicsDevice.Viewport.Width * 50 / 99, GraphicsDevice.Viewport.Height / 55, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(meleeStillImage, new Rectangle(GraphicsDevice.Viewport.Width * 50 / 99, GraphicsDevice.Viewport.Height / 55, 30, 30), Color.White);
                                     break;
                             }
                             break;
@@ -2522,13 +2524,13 @@ namespace GroupGame
                             switch (aState)
                             {
                                 case AbilityState.a1:
-                                    spriteBatch.Draw(meleeImage, new Rectangle(640, 40, 40, 40), Color.White);
+                                    spriteBatch.Draw(meleeStillImage, new Rectangle(640, 45, 40, 40), Color.White);
                                     spriteBatch.Draw(mine, new Rectangle(590, 10, 20, 20), Color.White); //prev wpn
                                     spriteBatch.Draw(bulletImage, new Rectangle(700, 0, 30, 30), new Rectangle(32, 0, 32, 32), Color.White); //next wpn
                                     break;
                                 case AbilityState.a2:
                                     spriteBatch.Draw(bulletImage, new Rectangle(640, 40, 40, 40), new Rectangle(32, 0, 32, 32), Color.White);
-                                    spriteBatch.Draw(meleeImage, new Rectangle(580, 5, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(meleeStillImage, new Rectangle(580, 5, 30, 30), Color.White);
                                     spriteBatch.Draw(bulletImage, new Rectangle(694, -10, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
                                     break;
                                 case AbilityState.a3:
@@ -2549,7 +2551,7 @@ namespace GroupGame
                                 case AbilityState.a6:
                                     spriteBatch.Draw(mine, new Rectangle(646, 45, 30, 30), Color.White);
                                     spriteBatch.Draw(grenade, new Rectangle(581, -10, 45, 45), Color.White);
-                                    spriteBatch.Draw(meleeImage, new Rectangle(710, 5, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(meleeStillImage, new Rectangle(710, 5, 30, 30), Color.White);
                                     break;
                             }
                             break;
