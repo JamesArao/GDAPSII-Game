@@ -163,6 +163,9 @@
     <Content Include="Content\Melee.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\meleeImage.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\menuButton.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
