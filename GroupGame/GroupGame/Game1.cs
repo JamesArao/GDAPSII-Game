@@ -84,6 +84,7 @@ namespace GroupGame
         Texture2D leaderboardButton;
         Texture2D mine;
         Texture2D grenade;
+        Texture2D explosion;
         Texture2D boss;
         Texture2D instructionsButton;
         Texture2D instructionsScreen;
@@ -185,7 +186,7 @@ namespace GroupGame
             BinaryReader reader;
             if (round < 12) reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round" + (round + 1) + ".dat"));
             else reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round12.dat"));
-            //reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round14.dat"));
+            //reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round10.dat"));
 
             // Try block
             try
@@ -581,7 +582,7 @@ namespace GroupGame
                     case AbilityState.a4:
                         if (c.Energy >= 1)
                         {
-                            projectiles.Add(new PBasic(3, 30, 30, c, rotationAngle, 90, false, bulletImage));
+                            projectiles.Add(new PBasic(15, 30, 30, c, rotationAngle, 90, false, bulletImage));
                             c.Energy -= 1;
                             c.ShotDelay = 2;
                         }
@@ -691,6 +692,7 @@ namespace GroupGame
             globalX = maxX/2;
             globalY = maxY/2;
             c.Health = 100;
+            c.Energy = 200;
             c.Super = 0;
             c.SuperCount = 0;
             round = 0;
@@ -876,6 +878,7 @@ namespace GroupGame
             superCharge = Content.Load<Texture2D>("EnemyMarker");
             mine = Content.Load<Texture2D>("mine");
             grenade = Content.Load<Texture2D>("grenade");
+            explosion = Content.Load<Texture2D>("Explosion");
             boss = Content.Load<Texture2D>("boss");
             meleeStillImage = Content.Load<Texture2D>("meleeImage");
 
@@ -2470,13 +2473,13 @@ namespace GroupGame
                         {
                             PExplosive ex = (PExplosive)p;
                             if (ex.ExplosionCount == 0) ex.Draw(spriteBatch);
-                            else spriteBatch.Draw(meleeImage, ex.Explosion, Color.White);
+                            else spriteBatch.Draw(explosion, ex.Explosion, Color.White);
                         }
                         if (p is PMine)
                         {
                             PMine mine = (PMine)p;
                             if (mine.ExplosionCount == 0) mine.Draw(spriteBatch);
-                            else spriteBatch.Draw(meleeImage, mine.Explosion, Color.White);
+                            else spriteBatch.Draw(explosion, mine.Explosion, Color.White);
                         }
                     }
 

@@ -133,6 +133,9 @@
     <Content Include="Content\exitButton.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Explosion.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Fire Bullet.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
