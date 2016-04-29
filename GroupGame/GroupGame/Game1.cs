@@ -60,6 +60,8 @@ namespace GroupGame
         Texture2D whiteBox;
         Texture2D paused;
         Texture2D menu;
+        Texture2D nextB;
+        Texture2D exitB;
         Texture2D hudrectangle;
         Texture2D hudcircle;
         Texture2D continueButton;
@@ -95,6 +97,7 @@ namespace GroupGame
         Rectangle rFButton;
         Rectangle rLButton;
         Rectangle rIButton;
+        Rectangle rEButton;
         Rectangle contButton;
         Rectangle char1;
         Rectangle char2;
@@ -182,7 +185,7 @@ namespace GroupGame
             BinaryReader reader;
             if (round < 12) reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round" + (round + 1) + ".dat"));
             else reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round12.dat"));
-            //reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round10.dat"));
+            reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round14.dat"));
 
             // Try block
             try
@@ -801,6 +804,8 @@ namespace GroupGame
             whiteBox = this.Content.Load<Texture2D>("whiteSquare");
             paused = this.Content.Load<Texture2D>("Pause");
             menu = this.Content.Load<Texture2D>("menuButton");
+            nextB = this.Content.Load<Texture2D>("nextButton");
+            exitB = this.Content.Load<Texture2D>("exitButton");
             hudrectangle = this.Content.Load<Texture2D>("WhiteRectangle");
             hudcircle = this.Content.Load<Texture2D>("WhiteCircle");
             continueButton = this.Content.Load<Texture2D>("continueButton");
@@ -910,6 +915,7 @@ namespace GroupGame
                     rOButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rOButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) - (int)(rOButton.Height * 1.5), startButton.Width / 4, startButton.Height / 4);
                     rLButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rLButton.Width / 2), (GraphicsDevice.Viewport.Height / 2), startButton.Width / 4, startButton.Height / 4);
                     rIButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rIButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (int)(rIButton.Height * 1.5), startButton.Width / 4, startButton.Height / 4);
+                    rEButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rEButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (int)(rEButton.Height * 3), startButton.Width / 4, startButton.Height / 4);
 
                     Rectangle mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
                     if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rSButton))
@@ -928,6 +934,10 @@ namespace GroupGame
                     if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rIButton))
                     {
                         gState = GameState.Instructions;
+                    }
+                    if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rEButton))
+                    {
+                        Exit();
                     }
                     break;
 
@@ -1897,6 +1907,19 @@ namespace GroupGame
                                 {
                                     enemies.Remove(enemies[i]);
                                     Enemy enemyAdding = enemiesSpawn[0];
+                                    foreach(Enemy buddies in enemies)
+                                    {
+                                        foreach(Rectangle boxes in objects)
+                                        {
+                                            if(enemyAdding.Position.Intersects(buddies.Position) || enemyAdding.Position.Intersects(boxes))
+                                            {
+                                                int x = rgen.Next(GraphicsDevice.Viewport.Width - 160) + 80;
+                                                int y = rgen.Next(GraphicsDevice.Viewport.Height - 160) + 80;
+
+                                                Rectangle randPos = new Rectangle(x, y, enemyAdding.Position.Width, enemyAdding.Position.Height);
+                                            }
+                                        }
+                                    }
                                     enemyAdding.SpawnCount = 0;
                                     enemies.Add(enemyAdding);
                                     enemiesSpawn.RemoveAt(0);
@@ -2190,6 +2213,15 @@ namespace GroupGame
                     {
                         spriteBatch.Draw(instructionsButton, rIButton, Color.White);
                     }
+
+                    if (rEButton.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(exitB, rEButton, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(exitB, rEButton, Color.White);
+                    }
                     break;
 
                 // Game is in character selection screen
@@ -2429,7 +2461,7 @@ namespace GroupGame
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 4 / 13, GraphicsDevice.Viewport.Height / 16, 260, 20), Color.Red); //red life bar
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 49, GraphicsDevice.Viewport.Height / 16, 260, 20), Color.Red); //red special bar
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 4 / 13, GraphicsDevice.Viewport.Height / 16, c.Health * 13 / 5, 20), Color.LawnGreen); //green life bar
-                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 49, GraphicsDevice.Viewport.Height / 16, c.Super * 13 / 5, 20), Color.Purple); //purple special bar
+                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 49, GraphicsDevice.Viewport.Height / 16, c.Super * 13 / 5, 20), Color.Aqua); //purple special bar
                             break;
                         case false:
                             spriteBatch.DrawString(sFont, "Round " + round, new Vector2(GraphicsDevice.Viewport.Width - 100, GraphicsDevice.Viewport.Height - 40), Color.Black);
@@ -2445,7 +2477,7 @@ namespace GroupGame
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height / 15, 260, 20), Color.Red); //red life bar
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 44, GraphicsDevice.Viewport.Height / 15, 230, 20), Color.Red); //red special bar
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height / 15, c.Health * 13 / 5, 20), Color.LawnGreen); //green life bar
-                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 50 / 89, GraphicsDevice.Viewport.Height / 15, c.Super * 23 / 10, 20), Color.Purple); //purple special bar
+                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 50 / 89, GraphicsDevice.Viewport.Height / 15, c.Super * 12 / 5, 20), Color.Aqua); //purple special bar
                             break;
                     }
 
