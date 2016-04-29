@@ -42,6 +42,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Boss.cs" />
+    <Compile Include="EPCircle.cs" />
+    <Compile Include="Reaper.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Character1.cs" />
     <Compile Include="Enemy4.cs" />
@@ -174,6 +176,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Pause.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\ReaperMarker.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\StallProjectile.png">

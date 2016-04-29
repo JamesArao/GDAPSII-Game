@@ -16,7 +16,7 @@ namespace GroupGame
     {
         // Attributes
         private int count;
-        private int speed;
+        private float speed;
         private bool moving = false;
 
         // Count property
@@ -26,7 +26,7 @@ namespace GroupGame
         }
 
         // Speed property
-        public int Speed
+        public float Speed
         {
             get { return speed; }
         }
@@ -53,7 +53,7 @@ namespace GroupGame
         }
 
         // Constructor
-        public EPStall(int dmg, float x, float y, int w, int h, int spd, int c, Texture2D img):base(dmg,w,h,null,0f,spd, img)
+        public EPStall(int dmg, float x, float y, int w, int h, float spd, int c, Texture2D img):base(dmg,w,h,null,0f,spd, img)
         {
             Position = new Rectangle((int)x, (int)y, w, h);
             FPosX = x;

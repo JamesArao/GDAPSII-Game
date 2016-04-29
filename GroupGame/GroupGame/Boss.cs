@@ -21,7 +21,6 @@ namespace GroupGame
         private int maxHealth;
         private bool moving = true;
         Texture2D healthImage;
-        Random attackGen = new Random();
 
         public bool Moving
         {

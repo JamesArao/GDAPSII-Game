@@ -101,12 +101,11 @@ namespace GroupGame
         }
 
         // Constructor for moving projectile with different size
-        public EnemyProjectile(int dmg, int w, int h, Enemy e, float ang, int speed, Texture2D img)
+        public EnemyProjectile(int dmg, int w, int h, Enemy e, float ang, float speed, Texture2D img)
         {
             // Values for damage, angle, countMax, and pierce
             damage = dmg;
             angle = ang;
-            //countMax = cMax;
 
             // Position and movement
             if(e != null)
@@ -115,7 +114,6 @@ namespace GroupGame
                 fPosX = e.Position.X + ((e.Position.Width - Position.Width) / 2);
                 fPosY = e.Position.Y + ((e.Position.Height - Position.Height) / 2);
             }
-
 
             // moveX and moveY values are set by taking the sin or cosine of the angle and multiplying it by speed
             moveX = -(float)Math.Sin(ang - Math.PI / 2) * speed;

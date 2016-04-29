@@ -15,20 +15,29 @@ namespace GroupGame
     class EPAccelerate : EnemyProjectile
     {
         // Value that the projectiles will accelerate by, the larger the value, the faster they move
-        private int accelerate;
+        private float accelerate;
 
         // Override move method so that the MoveX and MoveY increase over time to make the projectile faster
         public override void Move()
         {
                 base.Move();
-                MoveX += MoveX/(100 - accelerate);
-                MoveY += MoveY/(100 - accelerate);
+                MoveX += MoveX/(150 - accelerate);
+                MoveY += MoveY/(150 - accelerate);
         }
 
         // Constructor
-        public EPAccelerate(int dmg, int w, int h, Enemy e, float ang, int speed, int accel, Texture2D img):base(dmg,w,h,e,ang,speed, img)
+        public EPAccelerate(int dmg, int w, int h, Enemy e, float ang, float speed, float accel, Texture2D img):base(dmg,w,h,e,ang,speed, img)
         {
             accelerate = accel;
+        }
+
+        // Constructor X and Y
+        public EPAccelerate(int dmg, int w, int h, int x, int y, float ang, float speed, float accel, Texture2D img) : base(dmg, w, h, null, ang, speed, img)
+        {
+            accelerate = accel;
+            Position = new Rectangle(x, y, w, h);
+            FPosX = x;
+            FPosY = y;
         }
     }
 }

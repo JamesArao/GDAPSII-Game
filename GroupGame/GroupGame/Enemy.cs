@@ -112,34 +112,63 @@ namespace GroupGame
                     bool insideEnemy = false;
                     foreach (Enemy e in enemies)
                     {
-                        if (e.Position.Intersects(Position) && e != this)
+                        if (e.Position.Intersects(Position) && e.Alive == true && e != this)
                         {
                             insideEnemy = true;
                         }
                     }
                     if (insideEnemy == true)
                     {
+                        bool collideBox = false;
                         foreach (Enemy e in enemies)
                         {
-                            if (new Rectangle(Position.X, (int)(Position.Y + Position.Height), Position.Width, Position.Height).Intersects(e.Position) == false && e != this)
+                            if (new Rectangle(Position.X, (int)(Position.Y + Position.Height), Position.Width, Position.Height).Intersects(e.Position) == false && e.Alive == true && e != this)
                             {
-                                FPosY += speed;
-                                Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
+                                foreach(Rectangle r in boxes)
+                                {
+                                    if (new Rectangle(Position.X, (int)(Position.Y + Position.Height), Position.Width, Position.Height).Intersects(r)) collideBox = true;
+                                }
+                                if(collideBox == false)
+                                {
+                                    FPosY += speed;
+                                    Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
+                                }
                             }
-                            else if (new Rectangle(Position.X, (int)(Position.Y - Position.Height), Position.Width, Position.Height).Intersects(e.Position) == false && e != this)
+                            else if (new Rectangle(Position.X, (int)(Position.Y - Position.Height), Position.Width, Position.Height).Intersects(e.Position) == false && e.Alive == true && e != this)
                             {
-                                FPosY -= speed;
-                                Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
+                                foreach (Rectangle r in boxes)
+                                {
+                                    if (new Rectangle(Position.X, (int)(Position.Y - Position.Height), Position.Width, Position.Height).Intersects(r)) collideBox = true;
+                                }
+                                if (collideBox == false)
+                                {
+                                    FPosY -= speed;
+                                    Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
+                                }
                             }
-                            else if (new Rectangle((int)(Position.X + Position.Width), Position.Y, Position.Width, Position.Height).Intersects(e.Position) == false && e != this)
+                            else if (new Rectangle((int)(Position.X + Position.Width), Position.Y, Position.Width, Position.Height).Intersects(e.Position) == false && e.Alive == true && e != this)
                             {
-                                FPosX += speed;
-                                Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
+                                foreach (Rectangle r in boxes)
+                                {
+                                    if (new Rectangle((int)(Position.X + Position.Width), Position.Y, Position.Width, Position.Height).Intersects(r)) collideBox = true;
+                                }
+                                if (collideBox == false)
+                                {
+                                    FPosX += speed;
+                                    Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
+                                }
                             }
-                            else if (new Rectangle((int)(Position.X - Position.Width), Position.Y, Position.Width, Position.Height).Intersects(e.Position) == false && e != this)
+                            else if (new Rectangle((int)(Position.X - Position.Width), Position.Y, Position.Width, Position.Height).Intersects(e.Position) == false && e.Alive == true && e != this)
                             {
-                                FPosX -= speed;
-                                Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
+                                    foreach (Rectangle r in boxes)
+                                    {
+                                        if (new Rectangle((int)(Position.X - Position.Width), Position.Y, Position.Width, Position.Height).Intersects(r)) collideBox = true;
+                                    }
+                                if (collideBox == false)
+                                {
+                                    FPosX -= speed;
+                                    Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
+                                }
                             }
                         }
                     }
