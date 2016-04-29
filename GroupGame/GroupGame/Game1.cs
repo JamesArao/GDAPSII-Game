@@ -184,7 +184,7 @@ namespace GroupGame
             BinaryReader reader;
             if (round < 12) reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round" + (round + 1) + ".dat"));
             else reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round12.dat"));
-            reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round14.dat"));
+            //reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round14.dat"));
 
             // Try block
             try
