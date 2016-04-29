@@ -24,8 +24,8 @@ namespace GroupGame
         private int dashing;
         private int dashCount;
         private bool firingSuper;
-        private float fPosX;
-        private float fPosY;
+        private int energy;
+        private int energyCounter;
 
         // Values for animation
         const int heroY = 0;
@@ -94,16 +94,16 @@ namespace GroupGame
             set { firingSuper = value; }
         }
 
-        public float FPosX
+        public int Energy
         {
-            get { return fPosX; }
-            set { fPosX = value; }
+            get { return energy; }
+            set { energy = value; }
         }
 
-        public float FPosY
+        public int EnergyCounter
         {
-            get { return fPosY; }
-            set { fPosY = value; }
+            get { return energyCounter; }
+            set { energyCounter = value; }
         }
 
         // Draw method, with the player rotating based on where the mouse is
@@ -131,10 +131,10 @@ namespace GroupGame
         public Character(int x, int y)
         {
             Position = new Rectangle(x, y, Position.Width, Position.Height);
-            fPosX = x;
-            fPosY = y;
             cRect = new Rectangle(Position.X + 15, Position.Y + 15, Position.Width - 30, Position.Height - 30);
-            Health = 100;
+            health = 100;
+            energy = 200;
+            energyCounter = 0;
         }
     }
 }

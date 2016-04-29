@@ -559,8 +559,12 @@ namespace GroupGame
 
                     // The original shooting attack
                     case AbilityState.a2:
-                        projectiles.Add(new PBasic(25, 40,40, c, rotationAngle, 100, false, bulletImage));
-                        c.ShotDelay = 20; 
+                        if (c.Energy >= 3)
+                        {
+                            projectiles.Add(new PBasic(25, 40, 40, c, rotationAngle, 100, false, bulletImage));
+                            c.Energy -= 3;
+                            c.ShotDelay = 20;
+                        }
                         break;
 
                     // Test of a piercing attack with a different size
@@ -571,17 +575,29 @@ namespace GroupGame
 
                     // Test of a rapid fire attack
                     case AbilityState.a4:
-                        projectiles.Add(new PBasic(3, 30, 30, c, rotationAngle, 90, false, bulletImage));
-                        c.ShotDelay = 2;
+                        if (c.Energy >= 1)
+                        {
+                            projectiles.Add(new PBasic(3, 30, 30, c, rotationAngle, 90, false, bulletImage));
+                            c.Energy -= 1;
+                            c.ShotDelay = 2;
+                        }
                         break;
 
                     case AbilityState.a5:
-                        projectiles.Add(new PExplosive(150, 30, 30, c, rotationAngle, 90, grenade));
-                        c.ShotDelay = 120;
+                        if (c.Energy >= 10)
+                        {
+                            projectiles.Add(new PExplosive(150, 30, 30, c, rotationAngle, 90, grenade));
+                            c.Energy -= 10;
+                            c.ShotDelay = 120;
+                        }
                         break;
                     case AbilityState.a6:
-                        projectiles.Add(new PMine(120, 30, 30, c, 0, 0, false, mine));
-                        c.ShotDelay = 100;
+                        if (c.Energy >= 5)
+                        {
+                            projectiles.Add(new PMine(120, 30, 30, c, 0, 0, false, mine));
+                            c.Energy -= 5;
+                            c.ShotDelay = 100;
+                        }
                         break;
                 }
             }
@@ -609,14 +625,49 @@ namespace GroupGame
         {
             if (mState.RightButton == ButtonState.Pressed && c.Dashing == 0)
             {
-                if (kbState.IsKeyDown(Keys.W) && kbState.IsKeyDown(Keys.D)) c.Dashing = 2;
-                else if (kbState.IsKeyDown(Keys.W) && kbState.IsKeyDown(Keys.A)) c.Dashing = 8;
-                else if (kbState.IsKeyDown(Keys.S) && kbState.IsKeyDown(Keys.D)) c.Dashing = 4;
-                else if (kbState.IsKeyDown(Keys.S) && kbState.IsKeyDown(Keys.A)) c.Dashing = 6;
-                else if (kbState.IsKeyDown(Keys.W)) c.Dashing = 1;
-                else if (kbState.IsKeyDown(Keys.D)) c.Dashing = 3;
-                else if (kbState.IsKeyDown(Keys.S)) c.Dashing = 5;
-                else if (kbState.IsKeyDown(Keys.A)) c.Dashing = 7;
+                if (c.Energy >= 10)
+                {
+                    if (kbState.IsKeyDown(Keys.W) && kbState.IsKeyDown(Keys.D))
+                    {
+                        c.Energy -= 10;
+                        c.Dashing = 2;
+                    }
+                    else if (kbState.IsKeyDown(Keys.W) && kbState.IsKeyDown(Keys.A))
+                    {
+                        c.Energy -= 10;
+                        c.Dashing = 8;
+                    }
+                    else if (kbState.IsKeyDown(Keys.S) && kbState.IsKeyDown(Keys.D))
+                    {
+                        c.Energy -= 10;
+                        c.Dashing = 4;
+                    }
+                    else if (kbState.IsKeyDown(Keys.S) && kbState.IsKeyDown(Keys.A))
+                    {
+                        c.Energy -= 10;
+                        c.Dashing = 6;
+                    }
+                    else if (kbState.IsKeyDown(Keys.W))
+                    {
+                        c.Energy -= 10;
+                        c.Dashing = 1;
+                    }
+                    else if (kbState.IsKeyDown(Keys.D))
+                    {
+                        c.Energy -= 10;
+                        c.Dashing = 3;
+                    }
+                    else if (kbState.IsKeyDown(Keys.S))
+                    {
+                        c.Energy -= 10;
+                        c.Dashing = 5;
+                    }
+                    else if (kbState.IsKeyDown(Keys.A))
+                    {
+                        c.Energy -= 10;
+                        c.Dashing = 7;
+                    }
+                }
             }
         }
 
@@ -1030,6 +1081,17 @@ namespace GroupGame
                     int rotX = mState.X - (c.Position.X + c.Position.Width / 2);
                     int rotY = mState.Y - (c.Position.Y + c.Position.Height / 2);
                     rotationAngle = (float)Math.Atan2(rotY, rotX);
+
+                    if(c.EnergyCounter == 30)
+                    {
+                        c.EnergyCounter = 0;
+                        c.Energy++;
+                        if (c.Energy > 200) c.Energy = 200;
+                    }
+                    else
+                    {
+                        c.EnergyCounter++;
+                    }
 
                     PlayerDash();
                     if (c.Dashing == 0)
@@ -1758,12 +1820,6 @@ namespace GroupGame
                             }
                         }
 
-                        else if (e is Enemy2)
-                        {
-                            Enemy2 e2 = (Enemy2)e;
-                            e2.Shooting = false;
-                        }
-
                         // Change Reaper phase
                         if(e is Reaper)
                         {
@@ -1845,6 +1901,8 @@ namespace GroupGame
                                 score += 150;
                                 c.Super += 10;
                                 if (c.Super > 100) c.Super = 100;
+                                Enemy2 e2 = (Enemy2)e;
+                                e2.Shooting = false;
                                 e.Alive = false;
                             }
                             if (e is Enemy3 && e.Alive == true)
@@ -2447,6 +2505,7 @@ namespace GroupGame
                             break;
                     }
 
+                    spriteBatch.DrawString(lFont, "Energy: " + c.Energy, new Vector2(100,0),Color.Black);
 
                     // Switch statement that draws the image for the ability the player is using for the interface
                     switch (fullscreen)
@@ -2735,9 +2794,9 @@ namespace GroupGame
 
                 case GameState.Leaderboard:
                     mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
-                    spriteBatch.DrawString(lFont, "LEADERBOARD", new Vector2(GraphicsDevice.Viewport.Width / 2 - 50, 30), Color.Black);
+                    spriteBatch.DrawString(lFont, "LEADERBOARD", new Vector2(GraphicsDevice.Viewport.Width / 2 - 100, 30), Color.Black);
 
-                    spriteBatch.DrawString(lFont, "Name", new Vector2(GraphicsDevice.Viewport.Width / 2 - 200, 100), Color.Black);
+                    spriteBatch.DrawString(lFont, "Name", new Vector2(GraphicsDevice.Viewport.Width / 2 - 300, 100), Color.Black);
                     spriteBatch.DrawString(lFont, "Round", new Vector2(GraphicsDevice.Viewport.Width / 2, 100), Color.Black);
                     spriteBatch.DrawString(lFont, "Score", new Vector2(GraphicsDevice.Viewport.Width / 2 + 200, 100), Color.Black);
 
@@ -2746,21 +2805,21 @@ namespace GroupGame
                         switch (leaderboardCharacters[i - 1])
                         {
                             case "Fire":
-                                spriteBatch.Draw(player1Image, new Rectangle((GraphicsDevice.Viewport.Width / 2 - 325), 100 + (75 * i), 50, 50), new Rectangle(0, 0, 32, 32), Color.White);
+                                spriteBatch.Draw(player1Image, new Rectangle((GraphicsDevice.Viewport.Width / 2 - 475), 100 + (75 * i), 50, 50), new Rectangle(0, 0, 32, 32), Color.White);
                                 break;
                             case "Earth":
-                                spriteBatch.Draw(player2Image, new Rectangle((GraphicsDevice.Viewport.Width / 2 - 325), 100 + (75 * i), 50, 50), new Rectangle(0, 0, 32, 32), Color.White);
+                                spriteBatch.Draw(player2Image, new Rectangle((GraphicsDevice.Viewport.Width / 2 - 475), 100 + (75 * i), 50, 50), new Rectangle(0, 0, 32, 32), Color.White);
                                 break;
                             case "Water":
-                                spriteBatch.Draw(player4Image, new Rectangle((GraphicsDevice.Viewport.Width / 2 - 325), 100 + (75 * i), 50, 50), new Rectangle(0, 0, 32, 32), Color.White);
+                                spriteBatch.Draw(player4Image, new Rectangle((GraphicsDevice.Viewport.Width / 2 - 475), 100 + (75 * i), 50, 50), new Rectangle(0, 0, 32, 32), Color.White);
                                 break;
                             case "Electric":
-                                spriteBatch.Draw(player3Image, new Rectangle((GraphicsDevice.Viewport.Width / 2 - 325), 100 + (75 * i), 50, 50), new Rectangle(0, 0, 32, 32), Color.White);
+                                spriteBatch.Draw(player3Image, new Rectangle((GraphicsDevice.Viewport.Width / 2 - 475), 100 + (75 * i), 50, 50), new Rectangle(0, 0, 32, 32), Color.White);
                                 break;
                             default: break;
                         }
-                        spriteBatch.DrawString(lFont, i + ".", new Vector2((GraphicsDevice.Viewport.Width / 2 - 250), 100 + (75 * i)), Color.Black);
-                        spriteBatch.DrawString(lFont, leaderboardNames[i - 1], new Vector2((GraphicsDevice.Viewport.Width / 2 - 200), 100 + (75 * i)), Color.Black);
+                        spriteBatch.DrawString(lFont, i + ".", new Vector2((GraphicsDevice.Viewport.Width / 2 - 400), 100 + (75 * i)), Color.Black);
+                        spriteBatch.DrawString(lFont, leaderboardNames[i - 1], new Vector2((GraphicsDevice.Viewport.Width / 2 - 350), 100 + (75 * i)), Color.Black);
                         spriteBatch.DrawString(lFont, leaderboardRounds[i - 1].ToString(), new Vector2((GraphicsDevice.Viewport.Width / 2 + 25), 100 + (75 * i)), Color.Black);
                         spriteBatch.DrawString(lFont, leaderboardScores[i - 1].ToString(), new Vector2((GraphicsDevice.Viewport.Width / 2 + 200), 100 + (75 * i)), Color.Black);
                     }
