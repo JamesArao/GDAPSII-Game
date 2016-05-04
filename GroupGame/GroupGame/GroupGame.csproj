@@ -152,6 +152,9 @@
     <Content Include="Content\Fullscreen.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\garbage.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\grenade.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -91,6 +91,7 @@ namespace GroupGame
         Texture2D instructionsScreen;
         Texture2D roundMarker;
         Texture2D powerupMarker;
+        Texture2D garbage;
 
         // Rectangles for buttons, mouse, and HUD
         Rectangle rSButton;
@@ -254,7 +255,10 @@ namespace GroupGame
                 reader.Close();
             }
             // Catch Exceptions
-            catch(Exception ex){}
+            catch(Exception ex)
+            {
+                Console.Write(ex);
+            }
 
             if (maxOnScreen == -1)
             {
@@ -280,12 +284,25 @@ namespace GroupGame
 
             if(bossRound == false)
             {
+                Random rgenItem = new Random();
+
                 for (int i = 0; i < 10; i++)
                 {
-                    int x = rgen.Next(GraphicsDevice.Viewport.Width - 160) + 80;
-                    int y = rgen.Next(GraphicsDevice.Viewport.Height - 160) + 80;
+                    int x = rgen.Next((background.Width - 160) + 80) + backgroundPoint.X;
+                    int y = rgen.Next((background.Height - 160) + 80) + backgroundPoint.Y;
 
-                    Rectangle randObj = new Rectangle(x, y, 75, 75);
+                    Rectangle randObj = new Rectangle(0, 0, 0, 0);
+      
+                    int item = rgenItem.Next(0, 2);
+
+                    if (item == 0)
+                    {
+                        randObj = new Rectangle(x, y, 75, 75);
+                    }
+                    else if(item == 1)
+                    {
+                        randObj = new Rectangle(x, y, 50, 75);
+                    }
 
                     bool collision = false;
                     if (maxOnScreen != -1)
@@ -787,6 +804,7 @@ namespace GroupGame
             }
             catch(Exception ex)
             {
+                Console.Write(ex);
             }
 
             // Read the leaderboard file
@@ -919,6 +937,7 @@ namespace GroupGame
 
             // loads boxes
             boxes = this.Content.Load<Texture2D>("boxes");
+            garbage = this.Content.Load<Texture2D>("garbage");
         }
 
         /// <summary>
@@ -2287,7 +2306,10 @@ namespace GroupGame
                                 }
                                 leaderboardWriter.Close();
                             }
-                            catch (Exception ex) { }
+                            catch (Exception ex)
+                            {
+                                Console.Write(ex);
+                            }
 
                             enteringName = false;
                         }
@@ -2490,7 +2512,15 @@ namespace GroupGame
                     // Draw the boxes
                     foreach (Rectangle o in objects)
                     {
-                        spriteBatch.Draw(boxes, o, Color.White);
+                        if(o.Width == 50 && o.Height == 75)
+                        {
+                            spriteBatch.Draw(garbage, o, Color.White);
+                        }
+                        else if(o.Width == 75 && o.Height == 75)
+                        {
+                            spriteBatch.Draw(boxes, o, Color.White);
+                        }
+                        
                     }
 
                     if (reaperRound == false)
