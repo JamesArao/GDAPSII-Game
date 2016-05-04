@@ -34,7 +34,7 @@ namespace GroupGame
         Random rgen = new Random();
         Boolean Bcont;
 
-        // Images
+        // charcter and projectile textures
         Texture2D enemyImage;
         Texture2D playerImage;
         Texture2D playerWalking;
@@ -53,6 +53,9 @@ namespace GroupGame
         Texture2D bullet4Image;
         Texture2D meleeImage;
         Texture2D meleeStillImage;
+        Texture2D boss;
+
+        // menu textures
         Texture2D startButton;
         Texture2D optionsButton;
         Texture2D fullscreenButton;
@@ -82,17 +85,27 @@ namespace GroupGame
         Texture2D rMarker;
         Texture2D superCharge;
         Texture2D leaderboardButton;
+        Texture2D instructionsButton;
+        Texture2D instructionsScreen;
+
+        // ability textures
         Texture2D mine;
         Texture2D grenade;
         Texture2D explosion;
-        Texture2D boss;
-        Texture2D instructionsButton;
-        Texture2D instructionsScreen;
+        
+        // in-game banner textures
         Texture2D roundMarker;
         Texture2D powerupMarker;
+
+        // obstacle textures
         Texture2D garbage;
         Texture2D car;
         Texture2D boxes;
+
+        // power up textures
+        Texture2D medkit;
+        Texture2D energy;
+        Texture2D points;
 
         // Rectangles for buttons, mouse, and HUD
         Rectangle rSButton;
@@ -955,6 +968,11 @@ namespace GroupGame
             boxes = this.Content.Load<Texture2D>("boxes");
             garbage = this.Content.Load<Texture2D>("garbage");
             car = this.Content.Load<Texture2D>("car");
+
+            // loads powerups
+            medkit = Content.Load<Texture2D>("medkit");
+            points = Content.Load<Texture2D>("points");
+            energy = Content.Load<Texture2D>("energy");
         }
 
         /// <summary>
@@ -1389,15 +1407,15 @@ namespace GroupGame
                         {
                             case 1:
                                 pType = "Max Health";
-                                pImg = whiteBox;
+                                pImg = medkit;
                                 break;
                             case 2:
                                 pType = "Max Energy";
-                                pImg = whiteBox;
+                                pImg = energy;
                                 break;
                             case 3:
                                 pType = "Bonus Points";
-                                pImg = whiteBox;
+                                pImg = points;
                                 break;
                             case 4:
                                 pType = "Death";
