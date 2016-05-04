@@ -90,6 +90,7 @@ namespace GroupGame
         Texture2D instructionsButton;
         Texture2D instructionsScreen;
         Texture2D roundMarker;
+        Texture2D powerupMarker;
 
         // Rectangles for buttons, mouse, and HUD
         Rectangle rSButton;
@@ -120,6 +121,7 @@ namespace GroupGame
         List<Enemy> enemiesSpawn = new List<Enemy>();
         List<Projectile> projectiles = new List<Projectile>();
         List<EnemyProjectile> eProjectiles = new List<EnemyProjectile>();
+        List<Powerup> powerups = new List<Powerup>();
 
         // Keyboard states
         KeyboardState kbState;
@@ -135,6 +137,11 @@ namespace GroupGame
         int roundChange;
         string roundStr;
         string roundStrPartial;
+        int powerupTimer;
+        string powerUpPickup;
+        string powerUpPartial;
+        int pickupTimer;
+        int skulls;
 
         int maxOnScreen = -1;
         bool reaperRound = false;
@@ -183,6 +190,7 @@ namespace GroupGame
             roundChange = 180;
             roundStr = "Round " + (round + 1);
             roundStrPartial = "";
+            powerups.Clear();
 
             bool bossRound = false;
 
@@ -194,8 +202,8 @@ namespace GroupGame
             // Select a random round to use
             //int num = rgen.Next(1,round+1);
             BinaryReader reader;
-            if (round < 12) reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round" + (round + 1) + ".dat"));
-            else reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round12.dat"));
+            if (round < 14) reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round" + (round + 1) + ".dat"));
+            else reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round14.dat"));
             //reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round10.dat"));
 
             // Try block
@@ -362,6 +370,10 @@ namespace GroupGame
                 {
                     objects[i] = new Rectangle(objects[i].X, objects[i].Y + amount, objects[i].Width, objects[i].Height);
                 }
+                foreach (Powerup pUp in powerups)
+                {
+                    pUp.Position = new Rectangle(pUp.Position.X, pUp.Position.Y + amount, pUp.Position.Width, pUp.Position.Height);
+                }
                 backgroundPoint = new Point(backgroundPoint.X, backgroundPoint.Y + amount);
             }
 
@@ -383,6 +395,10 @@ namespace GroupGame
                 for (int i = 0; i < objects.Count; i++)
                 {
                     objects[i] = new Rectangle(objects[i].X, objects[i].Y - amount, objects[i].Width, objects[i].Height);
+                }
+                foreach (Powerup pUp in powerups)
+                {
+                    pUp.Position = new Rectangle(pUp.Position.X, pUp.Position.Y - amount, pUp.Position.Width, pUp.Position.Height);
                 }
                 backgroundPoint = new Point(backgroundPoint.X, backgroundPoint.Y - amount);
             }
@@ -406,6 +422,10 @@ namespace GroupGame
                 {
                     objects[i] = new Rectangle(objects[i].X + amount, objects[i].Y, objects[i].Width, objects[i].Height);
                 }
+                foreach (Powerup pUp in powerups)
+                {
+                    pUp.Position = new Rectangle(pUp.Position.X + amount, pUp.Position.Y, pUp.Position.Width, pUp.Position.Height);
+                }
                 backgroundPoint = new Point(backgroundPoint.X + amount, backgroundPoint.Y);
             }
 
@@ -427,6 +447,10 @@ namespace GroupGame
                 for (int i = 0; i < objects.Count; i++)
                 {
                     objects[i] = new Rectangle(objects[i].X - amount, objects[i].Y, objects[i].Width, objects[i].Height);
+                }
+                foreach (Powerup pUp in powerups)
+                {
+                    pUp.Position = new Rectangle(pUp.Position.X - amount, pUp.Position.Y, pUp.Position.Width, pUp.Position.Height);
                 }
                 backgroundPoint = new Point(backgroundPoint.X - amount, backgroundPoint.Y);
             }
@@ -528,7 +552,7 @@ namespace GroupGame
                 // If E is pressed, increase the ability by one. If Q is pressed, decrease the ability by one
                 case AbilityState.a1:
                     if (kbState.IsKeyDown(Keys.E) && previousKbState.IsKeyUp(Keys.E)) aState = AbilityState.a2;
-                    if (kbState.IsKeyDown(Keys.Q) && previousKbState.IsKeyUp(Keys.Q)) aState = AbilityState.a6;
+                    if (kbState.IsKeyDown(Keys.Q) && previousKbState.IsKeyUp(Keys.Q)) aState = AbilityState.a5;
                     break;
 
                 case AbilityState.a2:
@@ -547,13 +571,8 @@ namespace GroupGame
                     break;
 
                 case AbilityState.a5:
-                    if (kbState.IsKeyDown(Keys.E) && previousKbState.IsKeyUp(Keys.E)) aState = AbilityState.a6;
-                    if (kbState.IsKeyDown(Keys.Q) && previousKbState.IsKeyUp(Keys.Q)) aState = AbilityState.a4;
-                    break;
-
-                case AbilityState.a6:
                     if (kbState.IsKeyDown(Keys.E) && previousKbState.IsKeyUp(Keys.E)) aState = AbilityState.a1;
-                    if (kbState.IsKeyDown(Keys.Q) && previousKbState.IsKeyUp(Keys.Q)) aState = AbilityState.a5;
+                    if (kbState.IsKeyDown(Keys.Q) && previousKbState.IsKeyUp(Keys.Q)) aState = AbilityState.a4;
                     break;
             }
         }
@@ -576,29 +595,23 @@ namespace GroupGame
                     case AbilityState.a2:
                         if (c.Energy >= 2)
                         {
-                            projectiles.Add(new PBasic(25, 40, 40, c, rotationAngle, 100, false, bulletImage));
+                            projectiles.Add(new PBasic(25, 45, 45, c, rotationAngle, 100, false, bulletImage));
                             c.Energy -= 2;
                             c.ShotDelay = 20;
                         }
                         break;
 
-                    // Test of a piercing attack with a different size
-                    case AbilityState.a3:
-                        projectiles.Add(new PBasic(10, 100, 100, c, rotationAngle, 120, true, bulletImage));
-                        c.ShotDelay = 80;
-                        break;
-
                     // Test of a rapid fire attack
-                    case AbilityState.a4:
+                    case AbilityState.a3:
                         if (c.Energy >= 1)
                         {
-                            projectiles.Add(new PBasic(15, 30, 30, c, rotationAngle, 90, false, bulletImage));
+                            projectiles.Add(new PBasic(15, 28, 28, c, rotationAngle, 90, false, bulletImage));
                             c.Energy -= 1;
                             c.ShotDelay = 3;
                         }
                         break;
 
-                    case AbilityState.a5:
+                    case AbilityState.a4:
                         if (c.Energy >= 10)
                         {
                             projectiles.Add(new PExplosive(150, 30, 30, c, rotationAngle, 90, grenade));
@@ -606,7 +619,7 @@ namespace GroupGame
                             c.ShotDelay = 120;
                         }
                         break;
-                    case AbilityState.a6:
+                    case AbilityState.a5:
                         if (c.Energy >= 5)
                         {
                             projectiles.Add(new PMine(120, 30, 30, c, 0, 0, false, mine));
@@ -708,6 +721,8 @@ namespace GroupGame
             round = 0;
             score = 0;
             aState = AbilityState.a1;
+            powerupTimer = 1200;
+            skulls = 0;
             AdvanceRound();
             Bcont = true;
         }
@@ -892,6 +907,7 @@ namespace GroupGame
             boss = Content.Load<Texture2D>("boss");
             meleeStillImage = Content.Load<Texture2D>("meleeImage");
             roundMarker = Content.Load<Texture2D>("RoundMarker");
+            powerupMarker = Content.Load<Texture2D>("PowerupMarker");
 
             // Load fonts
             sFont = Content.Load<SpriteFont>("SpriteFont1");
@@ -1282,6 +1298,90 @@ namespace GroupGame
                     if (c.ShotDelay > 0)
                     {
                         c.ShotDelay--;
+                    }
+
+                    // Move powerups
+                    foreach (Powerup pUp in powerups)
+                    {
+                        pUp.Move();
+                        if(pUp.Pickup(c))
+                        {
+                            powerUpPickup = pUp.Type;
+                            powerUpPartial = "";
+                            if (pUp.Type == "Death")
+                            {
+                                enemyPause = 300;
+                                pickupTimer = 300;
+                            }
+                            else pickupTimer = 210;
+                            if(pUp.Type == "Max Health")
+                            {
+                                c.Health = 100;
+                            }
+                            if (pUp.Type == "Max Energy")
+                            {
+                                c.Energy = 200;
+                            }
+                            if (pUp.Type == "Bonus Points")
+                            {
+                                score += 1000;
+                            }
+
+                        }
+                    }
+
+                    if (pickupTimer > 0) pickupTimer--;
+
+                    if(pickupTimer == 60 && powerUpPickup == "Death")
+                    {
+                        AdvanceRound();
+                    }
+
+                    // Spawn a powerup or decrease the time until a powerup spawns
+                    if (powerupTimer == 0 && powerups.Count == 0)
+                    {
+                        int pNum = rgen.Next(4) + 1;
+                        string pType = "";
+                        Texture2D pImg = null;
+                        switch (pNum)
+                        {
+                            case 1:
+                                pType = "Max Health";
+                                pImg = whiteBox;
+                                break;
+                            case 2:
+                                pType = "Max Energy";
+                                pImg = whiteBox;
+                                break;
+                            case 3:
+                                pType = "Bonus Points";
+                                pImg = whiteBox;
+                                break;
+                            case 4:
+                                pType = "Death";
+                                pImg = rMarker;
+                                break;
+                        }
+                        Powerup pUp = new Powerup(pType, pImg);
+                        bool colliding = true;
+                        while(colliding)
+                        {
+                            int pX = rgen.Next(0 - globalX, GraphicsDevice.Viewport.Width + maxX - globalX - 140) + 70;
+                            int pY = rgen.Next(0 - globalY, GraphicsDevice.Viewport.Height + maxY - globalY - 140) + 70;
+                            Rectangle pRect = new Rectangle(pX, pY, 70, 70);
+                            colliding = false;
+                            foreach(Rectangle obj in objects)
+                            {
+                                if (pRect.Intersects(obj)) colliding = true;
+                            }
+                            pUp.Position = pRect;
+                        }
+                        powerups.Add(pUp);
+                        powerupTimer = 1200;
+                    }
+                    else if (powerups.Count == 0 && powerupTimer > 0)
+                    {
+                        powerupTimer--;
                     }
 
                     try
@@ -2407,6 +2507,11 @@ namespace GroupGame
                         spriteBatch.Draw(superCharge, new Vector2(c.Position.X + c.Position.Width / 2, c.Position.Y + c.Position.Height / 2), null, Color.White, 0, origin, (float)24 - ((float)c.SuperCount / 2.5f), SpriteEffects.None, 0);
                     }
 
+                    foreach(Powerup pUp in powerups)
+                    {
+                        if(pUp.Active) pUp.Draw(spriteBatch);
+                    }
+
                     if(reaperRound == false)
                     {
                         if (c.DashCount == 0 && c.FiringSuper == true && c.SuperCount == 60) c.Draw(spriteBatch, rotationAngle, framePlayer, Color.Purple); // Draw the character
@@ -2538,15 +2643,60 @@ namespace GroupGame
                             {
                                 roundStrPartial += roundStr[roundStrPartial.Length];
                             }
-                            spriteBatch.DrawString(rFont, roundStrPartial, new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2 - 170), Color.White, 0, new Vector2(rFont.MeasureString(roundStrPartial).X / 2, lFont.MeasureString(roundStrPartial).Y / 2), 1, SpriteEffects.None, 0);
+                            spriteBatch.DrawString(rFont, roundStrPartial, new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2 - 100), Color.White, 0, new Vector2(rFont.MeasureString(roundStrPartial).X / 2, rFont.MeasureString(roundStrPartial).Y / 2), 1, SpriteEffects.None, 0);
                         }
                         if(roundChange <= 60)
                         {
                             float drawX = GraphicsDevice.Viewport.Width / 2 + (GraphicsDevice.Viewport.Width - 100 - GraphicsDevice.Viewport.Width / 2) * (60 - roundChange) / 60;
                             float drawY = (GraphicsDevice.Viewport.Height / 2 - 100) + ((GraphicsDevice.Viewport.Height - 40) - (GraphicsDevice.Viewport.Height / 2 - 100)) * (60 - roundChange) / 60;
-                            float drawStrY = (GraphicsDevice.Viewport.Height / 2 - 170) + ((GraphicsDevice.Viewport.Height - 57) - (GraphicsDevice.Viewport.Height / 2 - 170)) * (60 - roundChange) / 60;
+                            float drawStrY = (GraphicsDevice.Viewport.Height / 2 - 100) + ((GraphicsDevice.Viewport.Height - 40) - (GraphicsDevice.Viewport.Height / 2 - 100)) * (60 - roundChange) / 60;
                             spriteBatch.Draw(roundMarker, new Vector2(drawX, drawY), null, Color.White, 0, new Vector2(roundMarker.Width / 2, roundMarker.Height / 2), 1 - (60-roundChange)/80f, SpriteEffects.None, 0);
-                            spriteBatch.DrawString(rFont, roundStrPartial, new Vector2(drawX, drawStrY), Color.White, 0, new Vector2(rFont.MeasureString(roundStrPartial).X / 2, lFont.MeasureString(roundStrPartial).Y / 2), 1 - (60 - roundChange) / 80f, SpriteEffects.None, 0);
+                            spriteBatch.DrawString(rFont, roundStrPartial, new Vector2(drawX, drawStrY), Color.White, 0, new Vector2(rFont.MeasureString(roundStrPartial).X / 2, rFont.MeasureString(roundStrPartial).Y / 2), 1 - (60 - roundChange) / 80f, SpriteEffects.None, 0);
+                        }
+                    }
+
+                    if(pickupTimer != 0)
+                    {
+                        if(powerUpPickup == "Death")
+                        {
+                            if(pickupTimer > 60)
+                            {
+                                float dark = (300 - pickupTimer) / 60f;
+                                if (dark > 1) dark = 1;
+                                spriteBatch.Draw(whiteBox, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.Black * dark);
+                            }
+                            if(pickupTimer <= 60)
+                            {
+                                float dark = (pickupTimer) / 60f;
+                                spriteBatch.Draw(whiteBox, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.Black * dark);
+                            }
+                        }
+                        else
+                        {
+                            if(pickupTimer > 150)
+                            {
+                                spriteBatch.Draw(powerupMarker, new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2 - 200), null, Color.White, 0, new Vector2(powerupMarker.Width / 2, powerupMarker.Height / 2), (210 - pickupTimer) / 60f, SpriteEffects.None, 0);
+                            }
+                            if(pickupTimer <= 150 && pickupTimer > 60)
+                            {
+                                spriteBatch.Draw(powerupMarker, new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2 - 200), null, Color.White, 0, new Vector2(powerupMarker.Width / 2, powerupMarker.Height / 2), 1, SpriteEffects.None, 0);
+                                if (pickupTimer % 4 == 0 && powerUpPartial != powerUpPickup)
+                                {
+                                    powerUpPartial += powerUpPickup[powerUpPartial.Length];
+                                }
+                                spriteBatch.DrawString(rFont, powerUpPartial, new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2 - 200), Color.White, 0, new Vector2(rFont.MeasureString(powerUpPartial).X / 2, rFont.MeasureString(powerUpPartial).Y / 2), .85f, SpriteEffects.None, 0);
+                            }
+                            if(pickupTimer <= 60 && pickupTimer > 40)
+                            {
+                                spriteBatch.Draw(powerupMarker, new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2 - 200), null, Color.White, 0, new Vector2(powerupMarker.Width / 2, powerupMarker.Height / 2), 1, SpriteEffects.None, 0);
+                                spriteBatch.DrawString(rFont, powerUpPickup, new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2 - 200), Color.White, 0, new Vector2(rFont.MeasureString(powerUpPartial).X / 2, rFont.MeasureString(powerUpPartial).Y / 2), .85f, SpriteEffects.None, 0);
+                            }
+                            if(pickupTimer <= 40)
+                            {
+                                spriteBatch.Draw(powerupMarker, new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2 - 200), null, Color.White, 0, new Vector2(powerupMarker.Width / 2, powerupMarker.Height / 2), pickupTimer/40f, SpriteEffects.None, 0);
+                                float strScale = pickupTimer / 40f - .15f;
+                                if(strScale > 0) spriteBatch.DrawString(rFont, powerUpPickup, new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2 - 200), Color.White, 0, new Vector2(rFont.MeasureString(powerUpPartial).X / 2, rFont.MeasureString(powerUpPartial).Y / 2), strScale, SpriteEffects.None, 0);
+                            }
                         }
                     }
 
@@ -2599,29 +2749,29 @@ namespace GroupGame
                                 case AbilityState.a1:
                                     spriteBatch.Draw(meleeStillImage, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 53, GraphicsDevice.Viewport.Height / 18, 40, 40), Color.White);
                                     spriteBatch.Draw(mine, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 57, GraphicsDevice.Viewport.Height / 55, 30, 30), Color.White); //prev wpn
-                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 55, 30, 30), new Rectangle(32, 0, 32, 32), Color.White); //next wpn
+                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 100, 45, 45), new Rectangle(32, 0, 32, 32), Color.White); //next wpn
                                     break;
-                                case AbilityState.a2:
+                                /*case AbilityState.a2:
                                     spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 53, GraphicsDevice.Viewport.Height / 20, 40, 40), new Rectangle(32, 0, 32, 32), Color.White);
                                     spriteBatch.Draw(meleeStillImage, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 57, GraphicsDevice.Viewport.Height / 55, 30, 30), Color.White);
                                     spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 100, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
-                                    break;
-                                case AbilityState.a3:
+                                    break;*/
+                                case AbilityState.a2:
                                     spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 50 / 107, GraphicsDevice.Viewport.Height / 22, 55, 55), new Rectangle(32, 0, 32, 32), Color.White);
-                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 4 / 9, GraphicsDevice.Viewport.Height / 55, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(meleeStillImage, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 57, GraphicsDevice.Viewport.Height / 55, 30, 30), Color.White);
                                     spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 100 / 199, GraphicsDevice.Viewport.Height / 55, 20, 20), new Rectangle(32, 0, 32, 32), Color.White);
                                     break;
-                                case AbilityState.a4:
+                                case AbilityState.a3:
                                     spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 100 / 211, GraphicsDevice.Viewport.Height / 18, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
                                     spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 23, GraphicsDevice.Viewport.Height / 55, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
                                     spriteBatch.Draw(grenade, new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 55, 30, 30), Color.White);
                                     break;
-                                case AbilityState.a5:
+                                case AbilityState.a4:
                                     spriteBatch.Draw(grenade, new Rectangle(GraphicsDevice.Viewport.Width * 100 / 211, GraphicsDevice.Viewport.Height / 20, 30, 30), Color.White);
-                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 23, GraphicsDevice.Viewport.Height / 55, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 22, GraphicsDevice.Viewport.Height / 54, 20, 20), new Rectangle(32, 0, 32, 32), Color.White);
                                     spriteBatch.Draw(mine, new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 55, 30, 30), Color.White);
                                     break;
-                                case AbilityState.a6:
+                                case AbilityState.a5:
                                     spriteBatch.Draw(mine, new Rectangle(GraphicsDevice.Viewport.Width * 100 / 211, GraphicsDevice.Viewport.Height / 18, 30, 30), Color.White);
                                     spriteBatch.Draw(grenade, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 57, GraphicsDevice.Viewport.Height / 65, 30, 30), Color.White);
                                     spriteBatch.Draw(meleeStillImage, new Rectangle(GraphicsDevice.Viewport.Width * 50 / 99, GraphicsDevice.Viewport.Height / 55, 30, 30), Color.White);
@@ -2636,27 +2786,27 @@ namespace GroupGame
                                     spriteBatch.Draw(mine, new Rectangle(590, 10, 20, 20), Color.White); //prev wpn
                                     spriteBatch.Draw(bulletImage, new Rectangle(700, 0, 30, 30), new Rectangle(32, 0, 32, 32), Color.White); //next wpn
                                     break;
-                                case AbilityState.a2:
+                                /*case AbilityState.a2:
                                     spriteBatch.Draw(bulletImage, new Rectangle(640, 40, 40, 40), new Rectangle(32, 0, 32, 32), Color.White);
                                     spriteBatch.Draw(meleeStillImage, new Rectangle(580, 5, 30, 30), Color.White);
                                     spriteBatch.Draw(bulletImage, new Rectangle(694, -10, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
-                                    break;
-                                case AbilityState.a3:
+                                    break;*/
+                                case AbilityState.a2:
                                     spriteBatch.Draw(bulletImage, new Rectangle(633, 30, 55, 55), new Rectangle(32, 0, 32, 32), Color.White);
-                                    spriteBatch.Draw(bulletImage, new Rectangle(580, 0, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(meleeStillImage, new Rectangle(580, 5, 30, 30), Color.White);
                                     spriteBatch.Draw(bulletImage, new Rectangle(700, 10, 20, 20), new Rectangle(32, 0, 32, 32), Color.White);
                                     break;
-                                case AbilityState.a4:
+                                case AbilityState.a3:
                                     spriteBatch.Draw(bulletImage, new Rectangle(646, 45, 30, 30), new Rectangle(32, 0, 32, 32), Color.White);
                                     spriteBatch.Draw(bulletImage, new Rectangle(581, -10, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
                                     spriteBatch.Draw(grenade, new Rectangle(710, 5, 30, 30), Color.White);
                                     break;
-                                case AbilityState.a5:
+                                case AbilityState.a4:
                                     spriteBatch.Draw(grenade, new Rectangle(646, 45, 30, 30), Color.White);
-                                    spriteBatch.Draw(bulletImage, new Rectangle(581, -10, 45, 45), new Rectangle(32, 0, 32, 32), Color.White);
+                                    spriteBatch.Draw(bulletImage, new Rectangle(581, 10, 20, 20), new Rectangle(32, 0, 32, 32), Color.White);
                                     spriteBatch.Draw(mine, new Rectangle(710, 5, 30, 30), Color.White);
                                     break;
-                                case AbilityState.a6:
+                                case AbilityState.a5:
                                     spriteBatch.Draw(mine, new Rectangle(646, 45, 30, 30), Color.White);
                                     spriteBatch.Draw(grenade, new Rectangle(581, -10, 45, 45), Color.White);
                                     spriteBatch.Draw(meleeStillImage, new Rectangle(710, 5, 30, 30), Color.White);
