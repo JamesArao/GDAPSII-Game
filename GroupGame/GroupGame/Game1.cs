@@ -74,7 +74,6 @@ namespace GroupGame
         Texture2D waterButton;
         Texture2D background;
         Texture2D dot;
-        Texture2D boxes;
         Texture2D basicImage;
         Texture2D stallImage;
         Texture2D accelerateImage;
@@ -92,6 +91,8 @@ namespace GroupGame
         Texture2D roundMarker;
         Texture2D powerupMarker;
         Texture2D garbage;
+        Texture2D car;
+        Texture2D boxes;
 
         // Rectangles for buttons, mouse, and HUD
         Rectangle rSButton;
@@ -304,7 +305,7 @@ namespace GroupGame
 
                     Rectangle randObj = new Rectangle(0, 0, 0, 0);
 
-                    int item = rgenItem.Next(0, 2);
+                    int item = rgenItem.Next(0, 3);
 
                     if (item == 0)
                     {
@@ -313,6 +314,10 @@ namespace GroupGame
                     else if (item == 1)
                     {
                         randObj = new Rectangle(x, y, 50, 75);
+                    }
+                    else if(item == 2)
+                    {
+                        randObj = new Rectangle(x, y, 200, 100);
                     }
 
                     bool collision = false;
@@ -946,9 +951,10 @@ namespace GroupGame
             // loads background
             background = this.Content.Load<Texture2D>("background");
 
-            // loads boxes
+            // loads items
             boxes = this.Content.Load<Texture2D>("boxes");
             garbage = this.Content.Load<Texture2D>("garbage");
+            car = this.Content.Load<Texture2D>("car");
         }
 
         /// <summary>
@@ -2537,7 +2543,11 @@ namespace GroupGame
                         {
                             spriteBatch.Draw(boxes, o, Color.White);
                         }
-                        
+                        else if (o.Width == 200 && o.Height == 100)
+                        {
+                            spriteBatch.Draw(car, o, Color.White);
+                        }
+
                     }
 
                     if (reaperRound == false)
@@ -2870,7 +2880,19 @@ namespace GroupGame
                     // Draw boxes
                     foreach (Rectangle o in objects)
                     {
-                        spriteBatch.Draw(boxes, o, Color.White);
+                        if (o.Width == 50 && o.Height == 75)
+                        {
+                            spriteBatch.Draw(garbage, o, Color.White);
+                        }
+                        else if (o.Width == 75 && o.Height == 75)
+                        {
+                            spriteBatch.Draw(boxes, o, Color.White);
+                        }
+                        else if (o.Width == 200 && o.Height == 100)
+                        {
+                            spriteBatch.Draw(car, o, Color.White);
+                        }
+
                     }
 
                     // Draw projectiles

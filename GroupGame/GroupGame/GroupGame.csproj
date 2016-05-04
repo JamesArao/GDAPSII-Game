@@ -98,6 +98,9 @@
     <Content Include="Content\Cancel.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\car.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\continueButton.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
