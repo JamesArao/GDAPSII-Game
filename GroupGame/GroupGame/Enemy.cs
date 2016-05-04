@@ -133,6 +133,7 @@ namespace GroupGame
                                     FPosY += speed;
                                     Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
                                 }
+                                else Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
                             }
                             else if (new Rectangle(Position.X, (int)(Position.Y - Position.Height), Position.Width, Position.Height).Intersects(e.Position) == false && e.Alive == true && e != this)
                             {
@@ -145,6 +146,7 @@ namespace GroupGame
                                     FPosY -= speed;
                                     Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
                                 }
+                                else Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
                             }
                             else if (new Rectangle((int)(Position.X + Position.Width), Position.Y, Position.Width, Position.Height).Intersects(e.Position) == false && e.Alive == true && e != this)
                             {
@@ -157,6 +159,7 @@ namespace GroupGame
                                     FPosX += speed;
                                     Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
                                 }
+                                else Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
                             }
                             else if (new Rectangle((int)(Position.X - Position.Width), Position.Y, Position.Width, Position.Height).Intersects(e.Position) == false && e.Alive == true && e != this)
                             {
@@ -169,6 +172,7 @@ namespace GroupGame
                                     FPosX -= speed;
                                     Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
                                 }
+                                else Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
                             }
                         }
                     }

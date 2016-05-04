@@ -206,56 +206,69 @@ namespace GroupGame
             else reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round14.dat"));
             //reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round10.dat"));
 
+            /*if (skulls == 3)
+            {
+                Enemy r = new Reaper(c.Position.X - 500, c.Position.Y - 300, whiteBox); 
+                r.Image = boss;
+                r.Position = new Rectangle((GraphicsDevice.Viewport.Width + maxX - globalX) / 2 - r.Position.Width, (GraphicsDevice.Viewport.Height + maxY - globalY) / 2 - r.Position.Height, r.Position.Width, r.Position.Height);
+                enemiesSpawn.Add(r);
+                bossRound = true;
+                skulls = 0;
+                c.Health = 100;
+                c.Energy = 200;
+            }
+            else
+            {*/
             // Try block
             try
             {
-                maxOnScreen = reader.ReadInt32();
-                // While loop that will run until the end of the file
-                while(reader.PeekChar() != -1)
-                {
-                    // Read in information from the round file
-                    string type = reader.ReadString();
-                    int x = reader.ReadInt32();
-                    int y = reader.ReadInt32();
-
-                    // Switch statement based on the type string, creates an enemy based on the type and adds it to the enemies list
-                    switch(type)
+                    maxOnScreen = reader.ReadInt32();
+                    // While loop that will run until the end of the file
+                    while (reader.PeekChar() != -1)
                     {
-                        case "1":
-                            Enemy e1 = new Enemy1(c.Position.X-500+x, c.Position.Y-300+y);
-                            e1.Image = enemyImage;
-                            enemiesSpawn.Add(e1);
-                            break;
+                        // Read in information from the round file
+                        string type = reader.ReadString();
+                        int x = reader.ReadInt32();
+                        int y = reader.ReadInt32();
 
-                        case "2":
-                            Enemy e2 = new Enemy2(c.Position.X - 500 + x, c.Position.Y - 300 + y);
-                            e2.Image = enemyImage;
-                            enemiesSpawn.Add(e2);
-                            break;
+                        // Switch statement based on the type string, creates an enemy based on the type and adds it to the enemies list
+                        switch (type)
+                        {
+                            case "1":
+                                Enemy e1 = new Enemy1(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                                e1.Image = enemyImage;
+                                enemiesSpawn.Add(e1);
+                                break;
 
-                        case "3":
-                            Enemy e3 = new Enemy3(c.Position.X - 500 + x, c.Position.Y - 300 + y);
-                            e3.Image = enemyImage;
-                            enemiesSpawn.Add(e3);
-                            break;
-                        case "4":
-                            Enemy e4 = new Enemy4(c.Position.X - 500 + x, c.Position.Y - 300 + y);
-                            e4.Image = enemyImage;
-                            enemiesSpawn.Add(e4);
-                            break;
-                        case "B":
-                            Enemy b = new Boss(c.Position.X - 500 + x, c.Position.Y - 300 + y, whiteBox);
-                            b.Image = boss;
-                            enemiesSpawn.Add(b);
-                            bossRound = true;
-                            break;
+                            case "2":
+                                Enemy e2 = new Enemy2(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                                e2.Image = enemyImage;
+                                enemiesSpawn.Add(e2);
+                                break;
+
+                            case "3":
+                                Enemy e3 = new Enemy3(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                                e3.Image = enemyImage;
+                                enemiesSpawn.Add(e3);
+                                break;
+                            case "4":
+                                Enemy e4 = new Enemy4(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                                e4.Image = enemyImage;
+                                enemiesSpawn.Add(e4);
+                                break;
+                            case "B":
+                                Enemy b = new Boss(c.Position.X - 500 + x, c.Position.Y - 300 + y, whiteBox);
+                                b.Image = boss;
+                                enemiesSpawn.Add(b);
+                                bossRound = true;
+                                break;
+                        }
                     }
+                    reader.Close();
                 }
-                reader.Close();
-            }
-            // Catch Exceptions
-            catch(Exception ex){}
-
+                // Catch Exceptions
+                catch (Exception ex) { }
+            //}
             if (maxOnScreen == -1)
             {
                 foreach (Enemy e in enemiesSpawn)
@@ -1094,6 +1107,11 @@ namespace GroupGame
 
                     // checks to see if the player paused the game
                     kbState = Keyboard.GetState();
+                    if(reaperRound)
+                    {
+                        c.Energy = 200;
+                    }
+
                     if (kbState.IsKeyDown(Keys.P) && previousKbState.IsKeyUp(Keys.P))
                     {
                         gState = GameState.Paused;
@@ -1312,6 +1330,7 @@ namespace GroupGame
                             {
                                 enemyPause = 300;
                                 pickupTimer = 300;
+                                skulls++;
                             }
                             else pickupTimer = 210;
                             if(pUp.Type == "Max Health")
@@ -1338,7 +1357,7 @@ namespace GroupGame
                     }
 
                     // Spawn a powerup or decrease the time until a powerup spawns
-                    if (powerupTimer == 0 && powerups.Count == 0)
+                    if (powerupTimer == 0 && powerups.Count == 0 && reaperRound == false)
                     {
                         int pNum = rgen.Next(4) + 1;
                         string pType = "";
