@@ -138,6 +138,8 @@ namespace GroupGame
         List<Projectile> projectiles = new List<Projectile>();
         List<EnemyProjectile> eProjectiles = new List<EnemyProjectile>();
         List<Powerup> powerups = new List<Powerup>();
+        List<Vector2> ePositions = new List<Vector2>();
+        List<string> eTypes = new List<string>();
 
         // Keyboard states
         KeyboardState kbState;
@@ -155,7 +157,9 @@ namespace GroupGame
         string roundStrPartial;
         int powerupTimer;
         string powerUpPickup;
+        string deathStr;
         string powerUpPartial;
+        string powerUpPartial2;
         int pickupTimer;
         int skulls;
 
@@ -244,7 +248,13 @@ namespace GroupGame
                         string type = reader.ReadString();
                         int x = reader.ReadInt32();
                         int y = reader.ReadInt32();
+                        if (type == "B") bossRound = true;
+                        Vector2 ePos = new Vector2(x, y);
 
+                        ePositions.Add(ePos);
+                        eTypes.Add(type);
+
+                        
                         // Switch statement based on the type string, creates an enemy based on the type and adds it to the enemies list
                         switch (type)
                         {
@@ -293,11 +303,93 @@ namespace GroupGame
                     enemies.Add(e);
                 }
                 enemiesSpawn.Clear();
+                for(int i = eTypes.Count - 1; i >= 0; i--)
+                {
+                    int x = (int)ePositions[i].X;
+                    int y = (int)ePositions[i].Y;
+                    switch(eTypes[i])
+                    {
+                        case "1":
+                            Enemy e1 = new Enemy1(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                            e1.Image = enemyImage;
+                            e1.SpawnCount = 0;
+                            enemies.Add(e1);
+                            break;
+
+                        case "2":
+                            Enemy e2 = new Enemy2(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                            e2.Image = enemyImage;
+                            e2.SpawnCount = 0;
+                            enemies.Add(e2);
+                            break;
+
+                        case "3":
+                            Enemy e3 = new Enemy3(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                            e3.Image = enemyImage;
+                            e3.SpawnCount = 0;
+                            enemies.Add(e3);
+                            break;
+                        case "4":
+                            Enemy e4 = new Enemy4(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                            e4.Image = enemyImage;
+                            e4.SpawnCount = 0;
+                            enemies.Add(e4);
+                            break;
+                        case "B":
+                            Enemy b = new Boss(c.Position.X - 500 + x, c.Position.Y - 300 + y, whiteBox);
+                            b.Image = boss;
+                            b.SpawnCount = 0;
+                            enemies.Add(b);
+                            break;
+                    }
+                    eTypes.RemoveAt(i);
+                    ePositions.RemoveAt(i);
+                }
             }
             else
             {
                 for (int i = maxOnScreen - 1; i >= 0; i--)
                 {
+                    int x = (int)ePositions[i].X;
+                    int y = (int)ePositions[i].Y;
+                    switch (eTypes[i])
+                    {
+                        case "1":
+                            Enemy e1 = new Enemy1(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                            e1.Image = enemyImage;
+                            e1.SpawnCount = 0;
+                            enemies.Add(e1);
+                            break;
+
+                        case "2":
+                            Enemy e2 = new Enemy2(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                            e2.Image = enemyImage;
+                            e2.SpawnCount = 0;
+                            enemies.Add(e2);
+                            break;
+
+                        case "3":
+                            Enemy e3 = new Enemy3(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                            e3.Image = enemyImage;
+                            e3.SpawnCount = 0;
+                            enemies.Add(e3);
+                            break;
+                        case "4":
+                            Enemy e4 = new Enemy4(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                            e4.Image = enemyImage;
+                            e4.SpawnCount = 0;
+                            enemies.Add(e4);
+                            break;
+                        case "B":
+                            Enemy b = new Boss(c.Position.X - 500 + x, c.Position.Y - 300 + y, whiteBox);
+                            b.Image = boss;
+                            b.SpawnCount = 0;
+                            enemies.Add(b);
+                            break;
+                    }
+                    eTypes.RemoveAt(i);
+                    ePositions.RemoveAt(i);
+
                     enemies.Add(enemiesSpawn[i]);
                     enemies[maxOnScreen - 1 - i].SpawnCount = 0;
                     enemiesSpawn.RemoveAt(i);
@@ -1364,6 +1456,7 @@ namespace GroupGame
                         {
                             powerUpPickup = pUp.Type;
                             powerUpPartial = "";
+                            powerUpPartial2 = "";
                             if (pUp.Type == "Death")
                             {
                                 enemyPause = 300;
@@ -1397,27 +1490,28 @@ namespace GroupGame
                     // Spawn a powerup or decrease the time until a powerup spawns
                     if (powerupTimer == 0 && powerups.Count == 0 && reaperRound == false)
                     {
-                        int pNum = rgen.Next(4) + 1;
+                        int pNum = rgen.Next(10) + 1;
                         string pType = "";
                         Texture2D pImg = null;
-                        switch (pNum)
+                        if(pNum == 1 || pNum == 2)
                         {
-                            case 1:
-                                pType = "Max Health";
-                                pImg = medkit;
-                                break;
-                            case 2:
-                                pType = "Max Energy";
-                                pImg = energy;
-                                break;
-                            case 3:
-                                pType = "Bonus Points";
-                                pImg = points;
-                                break;
-                            case 4:
-                                pType = "Death";
-                                pImg = rMarker;
-                                break;
+                            pType = "Max Health";
+                            pImg = medkit;
+                        }
+                        if (pNum == 3 || pNum == 4)
+                        {
+                            pType = "Max Energy";
+                            pImg = energy;
+                        }
+                        if (pNum >= 5 && pNum <= 7)
+                        {
+                            pType = "Bonus Points";
+                            pImg = points;
+                        }
+                        if (pNum >= 8 && pNum <= 10)
+                        {
+                            pType = "Death";
+                            pImg = rMarker;
                         }
                         Powerup pUp = new Powerup(pType, pImg);
                         bool colliding = true;
@@ -1883,7 +1977,7 @@ namespace GroupGame
                                                     shotY = rgen.Next(0 - globalY, GraphicsDevice.Viewport.Height + maxY - globalY - 40);
                                                 } while (new Rectangle(shotX, shotY, 40, 40).Intersects(new Rectangle(c.Position.X - 200, c.Position.Y - 200, 400, 400)));
 
-                                                eProjectiles.Add(new EPStall(5, shotX, shotY, 40, 40, 5.55f, 60, stallImage));
+                                                eProjectiles.Add(new EPStall(4, shotX, shotY, 40, 40, 5.55f, 60, stallImage));
                                             }
                                             r.AttackCount--;
                                             if (r.AttackCount <= 90)
@@ -1908,7 +2002,7 @@ namespace GroupGame
                                                 {
                                                     float moveX = -(float)Math.Sin((float)(2 * Math.PI / 28) * i - Math.PI / 2) * 400;
                                                     float moveY = (float)Math.Cos((float)(2 * Math.PI / 28) * i - Math.PI / 2) * 400;
-                                                    eProjectiles.Add(new EPBasic(5, 40, 40, c.Position.X + (int)moveX, c.Position.Y + (int)moveY, ((float)(2 * Math.PI / 28) * i) + (float)Math.PI, 4.75f, basicImage));
+                                                    eProjectiles.Add(new EPBasic(4, 40, 40, c.Position.X + (int)moveX, c.Position.Y + (int)moveY, ((float)(2 * Math.PI / 28) * i) + (float)Math.PI, 4.75f, basicImage));
                                                 }
                                             }
                                             r.AttackCount--;
@@ -1929,9 +2023,9 @@ namespace GroupGame
                                         case 4:
                                             if (r.AttackCount == 600)
                                             {
-                                                eProjectiles.Add(new EPCircle(5, 80, 80, (GraphicsDevice.Viewport.Width + maxX - globalX) / 2 - 80, 0 - globalY, 0, 3.2f, 15, basicImage, false));
-                                                eProjectiles.Add(new EPCircle(5, 80, 80, 0 - globalX, GraphicsDevice.Viewport.Height + maxY - globalY - 80, 0, 3.2f, 15, basicImage, false));
-                                                eProjectiles.Add(new EPCircle(5, 80, 80, GraphicsDevice.Viewport.Width + maxX - globalX - 80, GraphicsDevice.Viewport.Height + maxY - globalY - 80, 0, 3.2f, 15, basicImage, false));
+                                                eProjectiles.Add(new EPCircle(4, 80, 80, (GraphicsDevice.Viewport.Width + maxX - globalX) / 2 - 80, 0 - globalY, 0, 3.2f, 15, basicImage, false));
+                                                eProjectiles.Add(new EPCircle(4, 80, 80, 0 - globalX, GraphicsDevice.Viewport.Height + maxY - globalY - 80, 0, 3.2f, 15, basicImage, false));
+                                                eProjectiles.Add(new EPCircle(4, 80, 80, GraphicsDevice.Viewport.Width + maxX - globalX - 80, GraphicsDevice.Viewport.Height + maxY - globalY - 80, 0, 3.2f, 15, basicImage, false));
 
                                             }
                                             for (int i = 0; i < eProjectiles.Count; i++)
@@ -1959,7 +2053,7 @@ namespace GroupGame
                                                 }
                                                 r.PrevAttack = r.AttackNum;
                                                 r.AttackNum = 6;
-                                                r.AttackCount = 500;
+                                                r.AttackCount = 460;
                                             }
                                             break;
 
@@ -1981,7 +2075,7 @@ namespace GroupGame
                                                 {
                                                     float moveX = -(float)Math.Sin((float)(2 * Math.PI / 16) * i - Math.PI / 2) * 68;
                                                     float moveY = (float)Math.Cos((float)(2 * Math.PI / 16) * i - Math.PI / 2) * 68;
-                                                    eProjectiles.Add(new EPBasic(5, 40, 40, (int)moveX + x, (int)moveY + y, angle, 12.5f, basicImage));
+                                                    eProjectiles.Add(new EPBasic(4, 40, 40, (int)moveX + x, (int)moveY + y, angle, 12.5f, basicImage));
                                                 }
                                             }
                                             r.AttackCount--;
@@ -2367,6 +2461,13 @@ namespace GroupGame
 
                                             if(otherAlive == false)
                                             {
+                                                for(int i = eProjectiles.Count - 1; i >= 0; i--)
+                                                {
+                                                    if(eProjectiles[i] is EPRectangle)
+                                                    {
+                                                        eProjectiles.RemoveAt(i);
+                                                    }
+                                                }
                                                 r.Visible = true;
                                                 r.PrevAttack = r.AttackNum;
                                                 r.AttackNum = 6;
@@ -2492,7 +2593,7 @@ namespace GroupGame
                                     else
                                     {
                                         Reaper r = (Reaper)e;
-                                        if (r.Visible)
+                                        if (r.Phase == 1 || (r.Phase == 2 && r.AttackNum != 5))
                                         {
                                             if (projectiles[i] is PExplosive)
                                             {
@@ -2505,13 +2606,18 @@ namespace GroupGame
                                                 if (mine.ExplosionCount == 0) mine.Explode(c, enemies, projectiles, eProjectiles);
                                                 break;
                                             }
-                                            else if (projectiles[i] is PSuper)
+                                            else if (projectiles[i] is PSuper && r.Visible)
                                             {
                                                 e.Health -= (int)(projectiles[i].Damage / 2.5);
                                             }
+                                            else if (projectiles[i] is PSuper && !r.Visible)
+                                            {
+                                                e.Health -= (int)(projectiles[i].Damage / 4);
+                                            }
                                             else
                                             {
-                                                e.Health -= projectiles[i].Damage;
+                                                if (r.Visible) e.Health -= projectiles[i].Damage;
+                                                if (!r.Visible) e.Health -= (int)(projectiles[i].Damage / 2.2);
                                                 if (projectiles[i].Pierce == false)
                                                 {
                                                     projectiles.RemoveAt(i);
@@ -2560,18 +2666,21 @@ namespace GroupGame
                                     score += 1000;
                                     c.Super += 10;
                                     if (c.Super > 100) c.Super = 100;
+                                    c.Health += 10;
+                                    if (c.Health > 100) c.Health = 100;
                                     e.Alive = false;
                                 }
                                 if (e is Reaper && e.Alive == true)
                                 {
                                     Reaper r = (Reaper)e;
-                                    if (r.Phase == 1)
+                                    if (r.Phase == 1 && r.AttackNum == 6)
                                     {
                                         r.Phase = 0;
                                     }
                                     if (r.Phase == 2)
                                     {
                                         score += 6666;
+                                        c.Health = 100;
                                         r.Alive = false;
                                     }
                                 }
@@ -3084,7 +3193,6 @@ namespace GroupGame
                             if (e is Enemy3) e.Draw(spriteBatch, enemyAngle, frameEnemy, Color.Orange);
                             if (e is Enemy4) e.Draw(spriteBatch, enemyAngle, frameEnemy, Color.White);
                             if (e is Boss) e.Draw(spriteBatch, enemyAngle, frameEnemy, Color.White);
-                            if (e is Reaper) e.Draw(spriteBatch, enemyAngle, 0, Color.White);
                         }
                         else if (e.SpawnCount != -1 && (e is Reaper != true))
                         {
@@ -3099,31 +3207,33 @@ namespace GroupGame
                         }
                     }
 
-                    foreach (Projectile p in projectiles)
+                    if (reaperRound == false)
                     {
-                        if (p is PBasic || p is PSuper)
+                        foreach (Projectile p in projectiles)
                         {
-                            p.Draw(spriteBatch, frameProjectile);
-                        }
-                        if (p is PStationary)
-                        {
-                            PStationary ps = (PStationary)p;
-                            ps.Draw(spriteBatch, frameProjectile, rotationAngle);
-                        }
-                        if (p is PExplosive)
-                        {
-                            PExplosive ex = (PExplosive)p;
-                            if (ex.ExplosionCount == 0) ex.Draw(spriteBatch);
-                            else spriteBatch.Draw(explosion, ex.Explosion, Color.White);
-                        }
-                        if (p is PMine)
-                        {
-                            PMine mine = (PMine)p;
-                            if (mine.ExplosionCount == 0) mine.Draw(spriteBatch);
-                            else spriteBatch.Draw(explosion, mine.Explosion, Color.White);
+                            if (p is PBasic || p is PSuper)
+                            {
+                                p.Draw(spriteBatch, frameProjectile);
+                            }
+                            if (p is PStationary)
+                            {
+                                PStationary ps = (PStationary)p;
+                                ps.Draw(spriteBatch, frameProjectile, rotationAngle);
+                            }
+                            if (p is PExplosive)
+                            {
+                                PExplosive ex = (PExplosive)p;
+                                if (ex.ExplosionCount == 0) ex.Draw(spriteBatch);
+                                else spriteBatch.Draw(explosion, ex.Explosion, Color.White);
+                            }
+                            if (p is PMine)
+                            {
+                                PMine mine = (PMine)p;
+                                if (mine.ExplosionCount == 0) mine.Draw(spriteBatch);
+                                else spriteBatch.Draw(explosion, mine.Explosion, Color.White);
+                            }
                         }
                     }
-
                     if (reaperRound == true)
                     {
                         foreach(Enemy e in enemies)
@@ -3133,6 +3243,40 @@ namespace GroupGame
                                 Reaper r = (Reaper)e;
                                 spriteBatch.Draw(whiteBox, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.Black * r.Darkness);
                                 spriteBatch.Draw(whiteBox, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.Black * (r.Darkness - .3f));
+                            }
+                        }
+                        foreach (Enemy e in enemies)
+                        {
+                            int aX = e.Position.X - c.Position.X;
+                            int aY = e.Position.Y - c.Position.Y;
+                            float enemyAngle = -(float)(Math.Atan2(aX, aY) + Math.PI / 2);
+                            if (e.Alive == true)
+                            {
+                                if (e is Reaper) e.Draw(spriteBatch, enemyAngle, 0, Color.White);
+                            }
+                        }
+                        foreach (Projectile p in projectiles)
+                        {
+                            if (p is PBasic || p is PSuper)
+                            {
+                                p.Draw(spriteBatch, frameProjectile);
+                            }
+                            if (p is PStationary)
+                            {
+                                PStationary ps = (PStationary)p;
+                                ps.Draw(spriteBatch, frameProjectile, rotationAngle);
+                            }
+                            if (p is PExplosive)
+                            {
+                                PExplosive ex = (PExplosive)p;
+                                if (ex.ExplosionCount == 0) ex.Draw(spriteBatch);
+                                else spriteBatch.Draw(explosion, ex.Explosion, Color.White);
+                            }
+                            if (p is PMine)
+                            {
+                                PMine mine = (PMine)p;
+                                if (mine.ExplosionCount == 0) mine.Draw(spriteBatch);
+                                else spriteBatch.Draw(explosion, mine.Explosion, Color.White);
                             }
                         }
                         if (c.DashCount == 0 && c.FiringSuper == true && c.SuperCount == 60) c.Draw(spriteBatch, rotationAngle, framePlayer, Color.Purple); // Draw the character
@@ -3175,16 +3319,71 @@ namespace GroupGame
                     {
                         if(powerUpPickup == "Death")
                         {
-                            if(pickupTimer > 60)
+                            if (pickupTimer > 60)
                             {
                                 float dark = (300 - pickupTimer) / 60f;
                                 if (dark > 1) dark = 1;
                                 spriteBatch.Draw(whiteBox, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.Black * dark);
                             }
-                            if(pickupTimer <= 60)
+                            if (pickupTimer <= 60)
                             {
                                 float dark = (pickupTimer) / 60f;
                                 spriteBatch.Draw(whiteBox, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.Black * dark);
+                            }
+                            if (skulls == 1 && pickupTimer > 60)
+                            {
+                                deathStr = "The souls of those you killed claw at your back";
+                                if(pickupTimer % 4 == 0 && powerUpPartial.Length < 23)
+                                {
+                                    powerUpPartial += deathStr[powerUpPartial.Length];
+                                }
+                                else if(pickupTimer % 4 == 0 && powerUpPartial2.Length < deathStr.Length - powerUpPartial.Length)
+                                {
+                                    powerUpPartial2 += deathStr[powerUpPartial2.Length + powerUpPartial.Length];
+                                }
+                                if (fullscreen)
+                                {
+                                    spriteBatch.DrawString(rFont, powerUpPartial, new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2 - 200), Color.White, 0, new Vector2(rFont.MeasureString(powerUpPartial).X / 2, rFont.MeasureString(powerUpPartial).Y / 2), .95f, SpriteEffects.None, 0);
+                                    spriteBatch.DrawString(rFont, powerUpPartial2, new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2 - 70), Color.White, 0, new Vector2(rFont.MeasureString(powerUpPartial2).X / 2, rFont.MeasureString(powerUpPartial).Y / 2), .95f, SpriteEffects.None, 0);
+                                }
+                                else
+                                {
+                                    spriteBatch.DrawString(rFont, powerUpPartial, new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2 - 200), Color.White, 0, new Vector2(rFont.MeasureString(powerUpPartial).X / 2, rFont.MeasureString(powerUpPartial).Y / 2), .7f, SpriteEffects.None, 0);
+                                    spriteBatch.DrawString(rFont, powerUpPartial2, new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2 - 70), Color.White, 0, new Vector2(rFont.MeasureString(powerUpPartial2).X / 2, rFont.MeasureString(powerUpPartial).Y / 2), .7f, SpriteEffects.None, 0);
+                                }
+                            }
+
+                            if(skulls == 2 && pickupTimer > 60)
+                            {
+                                deathStr = "You hear horrible screams coming closer";
+                                if (pickupTimer % 4 == 0 && powerUpPartial.Length < 18)
+                                {
+                                    powerUpPartial += deathStr[powerUpPartial.Length];
+                                }
+                                else if (pickupTimer % 4 == 0 && powerUpPartial2.Length < deathStr.Length - powerUpPartial.Length)
+                                {
+                                    powerUpPartial2 += deathStr[powerUpPartial2.Length + powerUpPartial.Length];
+                                }
+                                if (fullscreen)
+                                {
+                                    spriteBatch.DrawString(rFont, powerUpPartial, new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2 - 200), Color.White, 0, new Vector2(rFont.MeasureString(powerUpPartial).X / 2, rFont.MeasureString(powerUpPartial).Y / 2), 1f, SpriteEffects.None, 0);
+                                    spriteBatch.DrawString(rFont, powerUpPartial2, new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2 - 70), Color.White, 0, new Vector2(rFont.MeasureString(powerUpPartial2).X / 2, rFont.MeasureString(powerUpPartial).Y / 2), 1f, SpriteEffects.None, 0);
+                                }
+                                else
+                                {
+                                    spriteBatch.DrawString(rFont, powerUpPartial, new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2 - 200), Color.White, 0, new Vector2(rFont.MeasureString(powerUpPartial).X / 2, rFont.MeasureString(powerUpPartial).Y / 2), .7f, SpriteEffects.None, 0);
+                                    spriteBatch.DrawString(rFont, powerUpPartial2, new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2 - 70), Color.White, 0, new Vector2(rFont.MeasureString(powerUpPartial2).X / 2, rFont.MeasureString(powerUpPartial).Y / 2), .7f, SpriteEffects.None, 0);
+                                }
+                            }
+
+                            if(skulls == 3 && pickupTimer > 60)
+                            {
+                                deathStr = "He's here...";
+                                if (pickupTimer % 13 == 0 && powerUpPartial != deathStr)
+                                {
+                                    powerUpPartial += deathStr[powerUpPartial.Length];
+                                }
+                                spriteBatch.DrawString(rFont, powerUpPartial, new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2 - 200), Color.White, 0, new Vector2(rFont.MeasureString(powerUpPartial).X / 2, rFont.MeasureString(powerUpPartial).Y / 2), 1f, SpriteEffects.None, 0);
                             }
                         }
                         else
@@ -3222,8 +3421,9 @@ namespace GroupGame
                     {
                         case true:
                             //spriteBatch.DrawString(sFont, "Round " + round, new Vector2(GraphicsDevice.Viewport.Width - 100, GraphicsDevice.Viewport.Height - 40), Color.Black);
-                            spriteBatch.DrawString(sFont, "Score", new Vector2(30, GraphicsDevice.Viewport.Height - 60), Color.Black);
-                            spriteBatch.DrawString(sFont, "" + score, new Vector2(30, GraphicsDevice.Viewport.Height - 40), Color.Black);
+                            spriteBatch.Draw(roundMarker, new Rectangle(10, GraphicsDevice.Viewport.Height - 60, 120, 60), Color.White);
+                            spriteBatch.DrawString(lFont, "Score", new Vector2(30, GraphicsDevice.Viewport.Height - 60), Color.White, 0, new Vector2(0,0), .75f, SpriteEffects.None, 0);
+                            spriteBatch.DrawString(lFont, "" + score, new Vector2(30, GraphicsDevice.Viewport.Height - 35), Color.White, 0, new Vector2(0,0), .75f, SpriteEffects.None, 0);
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 33, GraphicsDevice.Viewport.Height / 35, 42, 50), Color.DodgerBlue); //rectangle around "life"
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 33, GraphicsDevice.Viewport.Height / 18, 300, 35), Color.DodgerBlue); //rectangle around life bar
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 18, 300, 35), Color.DodgerBlue); //rectangle around special bar
@@ -3238,8 +3438,9 @@ namespace GroupGame
                             break;
                         case false:
                             //spriteBatch.DrawString(sFont, "Round " + round, new Vector2(GraphicsDevice.Viewport.Width - 100, GraphicsDevice.Viewport.Height - 40), Color.Black);
-                            spriteBatch.DrawString(sFont, "Score", new Vector2(30, GraphicsDevice.Viewport.Height - 60), Color.Black);
-                            spriteBatch.DrawString(sFont, "" + score, new Vector2(30, GraphicsDevice.Viewport.Height - 40), Color.Black);
+                            spriteBatch.Draw(roundMarker, new Rectangle(10, GraphicsDevice.Viewport.Height - 60, 120, 60), Color.White);
+                            spriteBatch.DrawString(lFont, "Score", new Vector2(30, GraphicsDevice.Viewport.Height - 60), Color.White, 0, new Vector2(0, 0), .75f, SpriteEffects.None, 0);
+                            spriteBatch.DrawString(lFont, "" + score, new Vector2(30, GraphicsDevice.Viewport.Height - 35), Color.White, 0, new Vector2(0, 0), .75f, SpriteEffects.None, 0);
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 50 / 203, GraphicsDevice.Viewport.Height / 35, 42, 50), Color.DodgerBlue); //rectangle around "life"
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 50 / 203, GraphicsDevice.Viewport.Height / 18, 300, 35), Color.DodgerBlue); //rectangle around life bar
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 19, GraphicsDevice.Viewport.Height / 18, 300, 35), Color.DodgerBlue); //rectangle around special bar

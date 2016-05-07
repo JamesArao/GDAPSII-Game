@@ -77,8 +77,37 @@ namespace GroupGame
 
                 // Draw the player at it's position plus half its size, and rotate it based on the rAngle passed in
                 sprite.Draw(Image, new Rectangle(Position.X + Position.Width / 2, Position.Y + Position.Height / 2, Position.Width, Position.Height), null, color, rAngle - (float)Math.PI / 2, origin, SpriteEffects.None, 0);
-                sprite.Draw(healthImage, new Rectangle(Position.X + (maxHealth / 50 - Position.Width / 4), Position.Y - 20, maxHealth / 50, 10), Color.Red);
-                sprite.Draw(healthImage, new Rectangle(Position.X + (maxHealth / 50 - Position.Width / 4), Position.Y - 20, Health / 50, 10), Color.LawnGreen);
+
+                if (phase == 1)
+                {
+                    sprite.Draw(healthImage, new Rectangle(Position.X, Position.Y - 30, maxHealth / 50, 10), Color.Red);
+                    sprite.Draw(healthImage, new Rectangle(Position.X, Position.Y - 30, Health / 50, 10), Color.LawnGreen);
+                }
+                if (phase == 2)
+                {
+                    sprite.Draw(healthImage, new Rectangle(Position.X - 10, Position.Y - 30, maxHealth / 47, 10), Color.Red);
+                    sprite.Draw(healthImage, new Rectangle(Position.X - 10, Position.Y - 30, Health / 47, 10), Color.LawnGreen);
+                }
+            }
+            else
+            {
+
+                // Create a Vector2 origin which equals the center of one frame of the player image
+                Vector2 origin = new Vector2(Image.Width / 2, Image.Height / 2);
+
+                // Draw the player at it's position plus half its size, and rotate it based on the rAngle passed in
+                sprite.Draw(Image, new Rectangle(Position.X + Position.Width / 2, Position.Y + Position.Height / 2, Position.Width, Position.Height), null, color * .25f, rAngle - (float)Math.PI / 2, origin, SpriteEffects.None, 0);
+
+                if (phase == 1)
+                {
+                    sprite.Draw(healthImage, new Rectangle(Position.X, Position.Y - 30, maxHealth / 50, 10), Color.Red * .25f);
+                    sprite.Draw(healthImage, new Rectangle(Position.X, Position.Y - 30, Health / 50, 10), Color.LawnGreen * .25f);
+                }
+                if (phase == 2)
+                {
+                    sprite.Draw(healthImage, new Rectangle(Position.X - 10, Position.Y - 30, maxHealth / 47, 10), Color.Red * .25f);
+                    sprite.Draw(healthImage, new Rectangle(Position.X - 10, Position.Y - 30, Health / 47, 10), Color.LawnGreen * .25f);
+                }
             }
         }
 
