@@ -34,7 +34,7 @@ namespace GroupGame
         Random rgen = new Random();
         Boolean Bcont;
 
-        // Images
+        // charcter and projectile textures
         Texture2D enemyImage;
         Texture2D playerImage;
         Texture2D playerWalking;
@@ -53,6 +53,10 @@ namespace GroupGame
         Texture2D bullet4Image;
         Texture2D meleeImage;
         Texture2D meleeStillImage;
+        Texture2D boss;
+        Texture2D reaper;
+
+        // menu textures
         Texture2D startButton;
         Texture2D optionsButton;
         Texture2D fullscreenButton;
@@ -74,7 +78,6 @@ namespace GroupGame
         Texture2D waterButton;
         Texture2D background;
         Texture2D dot;
-        Texture2D boxes;
         Texture2D basicImage;
         Texture2D stallImage;
         Texture2D accelerateImage;
@@ -83,16 +86,27 @@ namespace GroupGame
         Texture2D rMarker;
         Texture2D superCharge;
         Texture2D leaderboardButton;
+        Texture2D instructionsButton;
+        Texture2D instructionsScreen;
+
+        // ability textures
         Texture2D mine;
         Texture2D grenade;
         Texture2D explosion;
-        Texture2D boss;
-        Texture2D instructionsButton;
-        Texture2D instructionsScreen;
+        
+        // in-game banner textures
         Texture2D roundMarker;
         Texture2D powerupMarker;
+
+        // obstacle textures
         Texture2D garbage;
-        Texture2D reaper;
+        Texture2D car;
+        Texture2D boxes;
+
+        // power up textures
+        Texture2D medkit;
+        Texture2D energy;
+        Texture2D points;
 
         // Rectangles for buttons, mouse, and HUD
         Rectangle rSButton;
@@ -209,14 +223,13 @@ namespace GroupGame
             else reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round14.dat"));
             //reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round10.dat"));
 
-            if (skulls == 3)
+            if (skulls == 0)
             {
                 Enemy r = new Reaper((GraphicsDevice.Viewport.Width + maxX - globalX) / 2 - 120, (GraphicsDevice.Viewport.Height + maxY - globalY) / 2 - 120, whiteBox); 
                 r.Image = reaper;
                 enemiesSpawn.Add(r);
                 bossRound = true;
                 skulls = 0;
-                c.Energy = 200;
             }
             else
             {
@@ -304,7 +317,7 @@ namespace GroupGame
 
                     Rectangle randObj = new Rectangle(0, 0, 0, 0);
 
-                    int item = rgenItem.Next(0, 2);
+                    int item = rgenItem.Next(0, 3);
 
                     if (item == 0)
                     {
@@ -313,6 +326,10 @@ namespace GroupGame
                     else if (item == 1)
                     {
                         randObj = new Rectangle(x, y, 50, 75);
+                    }
+                    else if(item == 2)
+                    {
+                        randObj = new Rectangle(x, y, 200, 100);
                     }
 
                     bool collision = false;
@@ -947,9 +964,15 @@ namespace GroupGame
             // loads background
             background = this.Content.Load<Texture2D>("background");
 
-            // loads boxes
+            // loads items
             boxes = this.Content.Load<Texture2D>("boxes");
             garbage = this.Content.Load<Texture2D>("garbage");
+            car = this.Content.Load<Texture2D>("car");
+
+            // loads powerups
+            medkit = Content.Load<Texture2D>("medkit");
+            points = Content.Load<Texture2D>("points");
+            energy = Content.Load<Texture2D>("energy");
         }
 
         /// <summary>
@@ -1381,15 +1404,15 @@ namespace GroupGame
                         {
                             case 1:
                                 pType = "Max Health";
-                                pImg = whiteBox;
+                                pImg = medkit;
                                 break;
                             case 2:
                                 pType = "Max Energy";
-                                pImg = whiteBox;
+                                pImg = energy;
                                 break;
                             case 3:
                                 pType = "Bonus Points";
-                                pImg = whiteBox;
+                                pImg = points;
                                 break;
                             case 4:
                                 pType = "Death";
@@ -2979,7 +3002,11 @@ namespace GroupGame
                         {
                             spriteBatch.Draw(boxes, o, Color.White);
                         }
-                        
+                        else if (o.Width == 200 && o.Height == 100)
+                        {
+                            spriteBatch.Draw(car, o, Color.White);
+                        }
+
                     }
 
                     if (reaperRound == false)
@@ -3312,7 +3339,19 @@ namespace GroupGame
                     // Draw boxes
                     foreach (Rectangle o in objects)
                     {
-                        spriteBatch.Draw(boxes, o, Color.White);
+                        if (o.Width == 50 && o.Height == 75)
+                        {
+                            spriteBatch.Draw(garbage, o, Color.White);
+                        }
+                        else if (o.Width == 75 && o.Height == 75)
+                        {
+                            spriteBatch.Draw(boxes, o, Color.White);
+                        }
+                        else if (o.Width == 200 && o.Height == 100)
+                        {
+                            spriteBatch.Draw(car, o, Color.White);
+                        }
+
                     }
 
                     // Draw projectiles
