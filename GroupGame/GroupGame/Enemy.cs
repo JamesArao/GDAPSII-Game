@@ -112,7 +112,7 @@ namespace GroupGame
                     bool insideEnemy = false;
                     foreach (Enemy e in enemies)
                     {
-                        if (e.Position.Intersects(Position) && e.Alive == true && e != this)
+                        if (e.Position.Intersects(Position) && e.Alive == true && e != this && e is Reaper == false)
                         {
                             insideEnemy = true;
                         }
@@ -184,10 +184,13 @@ namespace GroupGame
                             bool collides = false;
                             foreach (Enemy others in enemies)
                             {
-                                // If the enemy intersects the position of another enemy that is alive, collides is true
-                                if (new Rectangle((int)(newX + Speed), (int)newY, Position.Width, Position.Height).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
+                                if (others is Reaper == false)
                                 {
-                                    collides = true;
+                                    // If the enemy intersects the position of another enemy that is alive, collides is true
+                                    if (new Rectangle((int)(newX + Speed), (int)newY, Position.Width, Position.Height).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
+                                    {
+                                        collides = true;
+                                    }
                                 }
 
                             }
@@ -210,9 +213,12 @@ namespace GroupGame
                             bool collides = false;
                             foreach (Enemy others in enemies)
                             {
-                                if (new Rectangle((int)(newX - Speed), (int)newY, Position.Width, Position.Height).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
+                                if (others is Reaper == false)
                                 {
-                                    collides = true;
+                                    if (new Rectangle((int)(newX - Speed), (int)newY, Position.Width, Position.Height).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
+                                    {
+                                        collides = true;
+                                    }
                                 }
 
                             }
@@ -222,7 +228,6 @@ namespace GroupGame
                                 {
                                     collides = true;
                                 }
-
                             }
                             if (collides != true)
                             {
@@ -234,11 +239,13 @@ namespace GroupGame
                             bool collides = false;
                             foreach (Enemy others in enemies)
                             {
-                                if (new Rectangle((int)newX, (int)(newY + Speed), Position.Width, Position.Height).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
+                                if (others is Reaper == false)
                                 {
-                                    collides = true;
+                                    if (new Rectangle((int)newX, (int)(newY + Speed), Position.Width, Position.Height).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
+                                    {
+                                        collides = true;
+                                    }
                                 }
-
                             }
                             foreach (Rectangle otherR in boxes)
                             {
@@ -258,9 +265,12 @@ namespace GroupGame
                             bool collides = false;
                             foreach (Enemy others in enemies)
                             {
-                                if (new Rectangle((int)newX, (int)(newY - Speed), Position.Width, Position.Height).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
+                                if (others is Reaper == false)
                                 {
-                                    collides = true;
+                                    if (new Rectangle((int)newX, (int)(newY - Speed), Position.Width, Position.Height).Intersects(others.Position) == true && others.Position != this.Position && others.Alive == true)
+                                    {
+                                        collides = true;
+                                    }
                                 }
 
                             }

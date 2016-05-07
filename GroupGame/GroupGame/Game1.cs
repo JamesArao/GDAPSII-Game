@@ -92,6 +92,7 @@ namespace GroupGame
         Texture2D roundMarker;
         Texture2D powerupMarker;
         Texture2D garbage;
+        Texture2D reaper;
 
         // Rectangles for buttons, mouse, and HUD
         Rectangle rSButton;
@@ -194,6 +195,7 @@ namespace GroupGame
             powerups.Clear();
 
             bool bossRound = false;
+            reaperRound = false;
 
             enemies.Clear(); // Clear Enemies list
             enemiesSpawn.Clear(); // Clear the EnemiesSpawn list
@@ -207,19 +209,17 @@ namespace GroupGame
             else reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round14.dat"));
             //reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round10.dat"));
 
-            /*if (skulls == 3)
+            if (skulls == 3)
             {
-                Enemy r = new Reaper(c.Position.X - 500, c.Position.Y - 300, whiteBox); 
-                r.Image = boss;
-                r.Position = new Rectangle((GraphicsDevice.Viewport.Width + maxX - globalX) / 2 - r.Position.Width, (GraphicsDevice.Viewport.Height + maxY - globalY) / 2 - r.Position.Height, r.Position.Width, r.Position.Height);
+                Enemy r = new Reaper((GraphicsDevice.Viewport.Width + maxX - globalX) / 2 - 120, (GraphicsDevice.Viewport.Height + maxY - globalY) / 2 - 120, whiteBox); 
+                r.Image = reaper;
                 enemiesSpawn.Add(r);
                 bossRound = true;
                 skulls = 0;
-                c.Health = 100;
                 c.Energy = 200;
             }
             else
-            {*/
+            {
             // Try block
             try
             {
@@ -269,7 +269,7 @@ namespace GroupGame
                 }
                 // Catch Exceptions
                 catch (Exception ex) { }
-            //}
+            }
                 reader.Close();
             if (maxOnScreen == -1)
             {
@@ -937,6 +937,7 @@ namespace GroupGame
             meleeStillImage = Content.Load<Texture2D>("meleeImage");
             roundMarker = Content.Load<Texture2D>("RoundMarker");
             powerupMarker = Content.Load<Texture2D>("PowerupMarker");
+            reaper = Content.Load<Texture2D>("Reaper");
 
             // Load fonts
             sFont = Content.Load<SpriteFont>("SpriteFont1");
@@ -1124,10 +1125,6 @@ namespace GroupGame
 
                     // checks to see if the player paused the game
                     kbState = Keyboard.GetState();
-                    if(reaperRound)
-                    {
-                        c.Energy = 200;
-                    }
 
                     if (kbState.IsKeyDown(Keys.P) && previousKbState.IsKeyUp(Keys.P))
                     {
@@ -1160,10 +1157,11 @@ namespace GroupGame
                     int rotY = mState.Y - (c.Position.Y + c.Position.Height / 2);
                     rotationAngle = (float)Math.Atan2(rotY, rotX);
 
-                    if(c.EnergyCounter == 24)
+                    if(c.EnergyCounter == 20)
                     {
                         c.EnergyCounter = 0;
-                        c.Energy++;
+                        if(reaperRound == false) c.Energy++;
+                        if (reaperRound == true) c.Energy += 3;
                         if (c.Energy > 200) c.Energy = 200;
                     }
                     else
@@ -1485,7 +1483,12 @@ namespace GroupGame
                         {
                             eProjectiles[i].Move();
                         }
-                        else if (eProjectiles[i] is EPStall)
+                        if(eProjectiles[i] is EPCircle)
+                        {
+                            EPCircle ep = (EPCircle)eProjectiles[i];
+                            ep.Move(c);
+                        }
+                        if (eProjectiles[i] is EPStall)
                         {
                             EPStall ep = (EPStall)eProjectiles[i];
                             if (ep.Count == 0 && ep.Moving == false)
@@ -1500,7 +1503,7 @@ namespace GroupGame
                             ep.Move();
                         }
 
-                        if (eProjectiles[i].Position.Intersects(c.CRect) && (c.DashCount > 20 || c.DashCount == 0))
+                        if (eProjectiles[i].Position.Intersects(c.CRect) && (c.DashCount > 20 || c.DashCount == 0) && eProjectiles[i] is EPRectangle == false)
                         {
                             c.Health -= eProjectiles[i].Damage;
                             removing = i;
@@ -1532,8 +1535,9 @@ namespace GroupGame
                     }
                     else
                     {
-                        foreach (Enemy e in enemies)
+                        for(int j = enemies.Count - 1; j >= 0; j--)
                         {
+                            Enemy e = enemies[j];
                             // Move all enemies
                             e.Move(c, enemies, objects);
 
@@ -1560,6 +1564,13 @@ namespace GroupGame
                                 // Otherwise increase its spawn count
                                 else
                                 {
+                                    if(e.SpawnCount % 2 == 0)
+                                    {
+                                        c.Health++;
+                                        c.Energy++;
+                                        if (c.Health > 100) c.Health = 100;
+                                        if (c.Energy > 200) c.Energy = 200;
+                                    }
                                     e.SpawnCount++;
                                     enemyAlive = true;
                                 }
@@ -1785,7 +1796,7 @@ namespace GroupGame
                                     {
                                         // Attack 1, shoot acclerating projectiles from the corners
                                         case 1:
-                                            if (r.AttackCount % 70 == 0 && r.AttackCount > 90)
+                                            if (r.AttackCount % 50 == 0 && r.AttackCount > 90)
                                             {
                                                 int corner = rgen.Next(4) + 1;
                                                 switch (corner)
@@ -1794,7 +1805,7 @@ namespace GroupGame
                                                     case 1:
                                                         for (int i = 0; i < 20; i++)
                                                         {
-                                                            eProjectiles.Add(new EPAccelerate(6, 36, 36, 0 - globalX, 0 - globalY, i / 12.25f, 6, 5, accelerateImage));
+                                                            eProjectiles.Add(new EPAccelerate(5, 36, 36, 0 - globalX, 0 - globalY, i / 12.25f, 6, 5, accelerateImage));
                                                         }
                                                         break;
 
@@ -1802,7 +1813,7 @@ namespace GroupGame
                                                     case 2:
                                                         for (int i = 0; i < 20; i++)
                                                         {
-                                                            eProjectiles.Add(new EPAccelerate(6, 36, 36, GraphicsDevice.Viewport.Width + maxX - globalX - 36, 0 - globalY, (i / 12.25f) + (float)Math.PI / 2, 6, 5, accelerateImage));
+                                                            eProjectiles.Add(new EPAccelerate(5, 36, 36, GraphicsDevice.Viewport.Width + maxX - globalX - 36, 0 - globalY, (i / 12.25f) + (float)Math.PI / 2, 6, 5, accelerateImage));
                                                         }
                                                         break;
 
@@ -1810,7 +1821,7 @@ namespace GroupGame
                                                     case 3:
                                                         for (int i = 0; i < 20; i++)
                                                         {
-                                                            eProjectiles.Add(new EPAccelerate(6, 36, 36, GraphicsDevice.Viewport.Width + maxX - globalX - 36, GraphicsDevice.Viewport.Height + maxY - globalY - 36, (i / 12.25f) + (float)Math.PI, 6, 5, accelerateImage));
+                                                            eProjectiles.Add(new EPAccelerate(5, 36, 36, GraphicsDevice.Viewport.Width + maxX - globalX - 36, GraphicsDevice.Viewport.Height + maxY - globalY - 36, (i / 12.25f) + (float)Math.PI, 6, 5, accelerateImage));
                                                         }
                                                         break;
 
@@ -1818,7 +1829,7 @@ namespace GroupGame
                                                     case 4:
                                                         for (int i = 0; i < 20; i++)
                                                         {
-                                                            eProjectiles.Add(new EPAccelerate(6, 36, 36, 0 - globalX, GraphicsDevice.Viewport.Height + maxY - globalY - 36, (i / 12.25f) - (float)Math.PI / 2, 6, 5, accelerateImage));
+                                                            eProjectiles.Add(new EPAccelerate(5, 36, 36, 0 - globalX, GraphicsDevice.Viewport.Height + maxY - globalY - 36, (i / 12.25f) - (float)Math.PI / 2, 6, 5, accelerateImage));
                                                         }
                                                         break;
                                                 }
@@ -1831,14 +1842,15 @@ namespace GroupGame
                                             }
                                             if (r.AttackCount == 0)
                                             {
+                                                r.PrevAttack = r.AttackNum;
                                                 r.AttackNum = 6;
-                                                r.AttackCount = 480;
+                                                r.AttackCount = 400;
                                             }
                                             break;
 
-                                        //Attack 2, walk towards the player while spawning projectiles, slower speed smaller spread
+                                        // Attack 2, random stall projectiles
                                         case 2:
-                                            if (r.AttackCount % 10 == 0 && r.AttackCount > 90)
+                                            if (r.AttackCount % 8 == 0 && r.AttackCount > 90)
                                             {
                                                 int shotX = 0;
                                                 int shotY = 0;
@@ -1846,9 +1858,9 @@ namespace GroupGame
                                                 {
                                                     shotX = rgen.Next(0 - globalX, GraphicsDevice.Viewport.Width + maxX - globalX - 40);
                                                     shotY = rgen.Next(0 - globalY, GraphicsDevice.Viewport.Height + maxY - globalY - 40);
-                                                } while (new Rectangle(shotX, shotY, 40, 40).Intersects(new Rectangle(c.Position.X + 100, c.Position.Y + 100, 200, 200)));
+                                                } while (new Rectangle(shotX, shotY, 40, 40).Intersects(new Rectangle(c.Position.X - 200, c.Position.Y - 200, 400, 400)));
 
-                                                eProjectiles.Add(new EPStall(6, shotX, shotY, 40, 40, 7, 60, stallImage));
+                                                eProjectiles.Add(new EPStall(5, shotX, shotY, 40, 40, 5.55f, 60, stallImage));
                                             }
                                             r.AttackCount--;
                                             if (r.AttackCount <= 90)
@@ -1858,21 +1870,22 @@ namespace GroupGame
                                             }
                                             if (r.AttackCount == 0)
                                             {
+                                                r.PrevAttack = r.AttackNum;
                                                 r.AttackNum = 6;
-                                                r.AttackCount = 480;
+                                                r.AttackCount = 400;
                                             }
                                             break;
 
-                                        // Attack 3, walk towards the player while spawning projectiles, faster speed larger spread
+                                        // Attack 3, circles close in on player
                                         case 3:
-                                            if (r.AttackCount % 75 == 0 && r.AttackCount > 90)
+                                            if (r.AttackCount % 80 == 0 && r.AttackCount > 90)
                                             {
 
                                                 for (int i = 0; i < 28; i++)
                                                 {
                                                     float moveX = -(float)Math.Sin((float)(2 * Math.PI / 28) * i - Math.PI / 2) * 400;
                                                     float moveY = (float)Math.Cos((float)(2 * Math.PI / 28) * i - Math.PI / 2) * 400;
-                                                    eProjectiles.Add(new EPBasic(6, 40, 40, c.Position.X + (int)moveX, c.Position.Y + (int)moveY, ((float)(2 * Math.PI / 28) * i) + (float)Math.PI, 4.9f, basicImage));
+                                                    eProjectiles.Add(new EPBasic(5, 40, 40, c.Position.X + (int)moveX, c.Position.Y + (int)moveY, ((float)(2 * Math.PI / 28) * i) + (float)Math.PI, 4.75f, basicImage));
                                                 }
                                             }
                                             r.AttackCount--;
@@ -1883,18 +1896,19 @@ namespace GroupGame
                                             }
                                             if (r.AttackCount == 0)
                                             {
+                                                r.PrevAttack = r.AttackNum;
                                                 r.AttackNum = 6;
-                                                r.AttackCount = 480;
+                                                r.AttackCount = 400;
                                             }
                                             break;
 
-                                        //Attack 4, create the four circles of wobble projectiles
+                                        //Attack 4, three circle projectiles that spawn others
                                         case 4:
                                             if (r.AttackCount == 600)
                                             {
-                                                eProjectiles.Add(new EPCircle(6, 80, 80, (GraphicsDevice.Viewport.Width + maxX - globalX) / 2 - 80, 0 - globalY, 0, 3.2f, 15, basicImage));
-                                                eProjectiles.Add(new EPCircle(6, 80, 80, 0 - globalX, GraphicsDevice.Viewport.Height + maxY - globalY - 80, 0, 3.2f, 15, basicImage));
-                                                eProjectiles.Add(new EPCircle(6, 80, 80, GraphicsDevice.Viewport.Width + maxX - globalX - 80, GraphicsDevice.Viewport.Height + maxY - globalY - 80, 0, 3.2f, 15, basicImage));
+                                                eProjectiles.Add(new EPCircle(5, 80, 80, (GraphicsDevice.Viewport.Width + maxX - globalX) / 2 - 80, 0 - globalY, 0, 3.2f, 15, basicImage, false));
+                                                eProjectiles.Add(new EPCircle(5, 80, 80, 0 - globalX, GraphicsDevice.Viewport.Height + maxY - globalY - 80, 0, 3.2f, 15, basicImage, false));
+                                                eProjectiles.Add(new EPCircle(5, 80, 80, GraphicsDevice.Viewport.Width + maxX - globalX - 80, GraphicsDevice.Viewport.Height + maxY - globalY - 80, 0, 3.2f, 15, basicImage, false));
 
                                             }
                                             for (int i = 0; i < eProjectiles.Count; i++)
@@ -1920,8 +1934,44 @@ namespace GroupGame
                                                         eProjectiles.RemoveAt(i);
                                                     }
                                                 }
+                                                r.PrevAttack = r.AttackNum;
                                                 r.AttackNum = 6;
-                                                r.AttackCount = 540;
+                                                r.AttackCount = 500;
+                                            }
+                                            break;
+
+                                        // Attack 5, circles move towards player
+                                        case 5:
+                                            if(r.AttackCount % 35 == 0 && r.AttackCount > 90)
+                                            {
+                                                int x = 400;
+                                                int y = 400;
+                                                do
+                                                {
+                                                    x = rgen.Next(0 - globalX, GraphicsDevice.Viewport.Width + maxX - globalX - 200) + 100;
+                                                    y = rgen.Next(0 - globalY, GraphicsDevice.Viewport.Height + maxY - globalY - 200) + 100;
+                                                } while (new Rectangle(x - 400, y - 400, 800, 800).Intersects(c.Position));
+                                                int angX = (c.Position.X + c.Position.Width / 2) - (x + 100);
+                                                int angY = (c.Position.Y + c.Position.Height / 2) - (y + 100);
+                                                float angle = (float)Math.Atan2(angY, angX);
+                                                for (int i = 0; i < 16; i++)
+                                                {
+                                                    float moveX = -(float)Math.Sin((float)(2 * Math.PI / 16) * i - Math.PI / 2) * 68;
+                                                    float moveY = (float)Math.Cos((float)(2 * Math.PI / 16) * i - Math.PI / 2) * 68;
+                                                    eProjectiles.Add(new EPBasic(5, 40, 40, (int)moveX + x, (int)moveY + y, angle, 12.5f, basicImage));
+                                                }
+                                            }
+                                            r.AttackCount--;
+                                            if (r.AttackCount <= 90)
+                                            {
+                                                r.Visible = true;
+                                                r.Darkness -= .005f;
+                                            }
+                                            if (r.AttackCount == 0)
+                                            {
+                                                r.PrevAttack = r.AttackNum;
+                                                r.AttackNum = 6;
+                                                r.AttackCount = 400;
                                             }
                                             break;
 
@@ -1965,7 +2015,11 @@ namespace GroupGame
                                                 r.FPosX = r.Position.X;
                                                 r.FPosY = r.Position.Y;
                                                 r.Visible = false;
-                                                int number = rgen.Next(4) + 1;
+                                                int number = 0;
+                                                do
+                                                {
+                                                    number = rgen.Next(5) + 1;
+                                                } while (number == r.PrevAttack);
                                                 switch (number)
                                                 {
                                                     case 1:
@@ -1982,6 +2036,390 @@ namespace GroupGame
                                                         break;
                                                     case 4:
                                                         r.AttackNum = 4;
+                                                        r.AttackCount = 600;
+                                                        break;
+                                                    case 5: r.AttackNum = 5;
+                                                        r.AttackCount = 600;
+                                                        break;
+                                                }
+                                            }
+                                            break;
+                                    }
+                                }
+
+                                if (r.Phase == 2)
+                                {
+                                    if(r.AttackNum != 6 && r.Health < 4500)
+                                    {
+                                        if ((r.AttackCount + 120) % 180 == 0 && r.AttackCount > 180)
+                                        {
+                                            int x = rgen.Next(0 - globalX, GraphicsDevice.Viewport.Width + maxX - globalX - 360) + 180;
+                                            eProjectiles.Add(new EPRectangle(5, 360, GraphicsDevice.Viewport.Height + maxY, x, 0 - globalY, 0, 0, 180, whiteBox));
+                                        }
+                                        for (int i = eProjectiles.Count - 1; i >= 0; i--)
+                                        {
+                                            if (eProjectiles[i] is EPRectangle)
+                                            {
+                                                EPRectangle rect = (EPRectangle)eProjectiles[i];
+                                                rect.Shoot(eProjectiles, basicImage);
+                                            }
+                                        }
+                                    }
+
+                                    switch (r.AttackNum)
+                                    {
+                                        // Attack 1, shoot acclerating projectiles from the corners and spawn random
+                                        case 1:
+                                            if (r.AttackCount % 75 == 0 && r.AttackCount > 90)
+                                            {
+                                                int corner = rgen.Next(4) + 1;
+                                                switch (corner)
+                                                {
+                                                    // Top left corner
+                                                    case 1:
+                                                        for (int i = 0; i < 20; i++)
+                                                        {
+                                                            eProjectiles.Add(new EPAccelerate(5, 36, 36, 0 - globalX, 0 - globalY, i / 12.25f, 6, 5, accelerateImage));
+                                                        }
+                                                        break;
+
+                                                    // Top right corner
+                                                    case 2:
+                                                        for (int i = 0; i < 20; i++)
+                                                        {
+                                                            eProjectiles.Add(new EPAccelerate(5, 36, 36, GraphicsDevice.Viewport.Width + maxX - globalX - 36, 0 - globalY, (i / 12.25f) + (float)Math.PI / 2, 6, 5, accelerateImage));
+                                                        }
+                                                        break;
+
+                                                    // Bottom right corner
+                                                    case 3:
+                                                        for (int i = 0; i < 20; i++)
+                                                        {
+                                                            eProjectiles.Add(new EPAccelerate(5, 36, 36, GraphicsDevice.Viewport.Width + maxX - globalX - 36, GraphicsDevice.Viewport.Height + maxY - globalY - 36, (i / 12.25f) + (float)Math.PI, 6, 5, accelerateImage));
+                                                        }
+                                                        break;
+
+                                                    // Bottom left corner
+                                                    case 4:
+                                                        for (int i = 0; i < 20; i++)
+                                                        {
+                                                            eProjectiles.Add(new EPAccelerate(5, 36, 36, 0 - globalX, GraphicsDevice.Viewport.Height + maxY - globalY - 36, (i / 12.25f) - (float)Math.PI / 2, 6, 5, accelerateImage));
+                                                        }
+                                                        break;
+                                                }
+                                            }
+
+                                            if (r.AttackCount % 13 == 0 && r.AttackCount > 90)
+                                            {
+                                                int shotX = 0;
+                                                int shotY = 0;
+                                                do
+                                                {
+                                                    shotX = rgen.Next(0 - globalX, GraphicsDevice.Viewport.Width + maxX - globalX - 40);
+                                                    shotY = rgen.Next(0 - globalY, GraphicsDevice.Viewport.Height + maxY - globalY - 40);
+                                                } while (new Rectangle(shotX, shotY, 40, 40).Intersects(new Rectangle(c.Position.X - 100, c.Position.Y - 100, 200, 200)));
+
+                                                eProjectiles.Add(new EPStall(5, shotX, shotY, 40, 40, 3.7f, 60, stallImage));
+                                            }
+
+                                            r.AttackCount--;
+                                            if (r.AttackCount <= 90)
+                                            {
+                                                r.Visible = true;
+                                                r.Darkness -= .005f;
+                                            }
+                                            if (r.AttackCount == 0)
+                                            {
+                                                r.PrevAttack = r.AttackNum;
+                                                r.AttackNum = 6;
+                                                r.AttackCount = 360;
+                                            }
+                                            break;
+
+                                        // Attack 2, wobble circle from center
+                                        case 2:
+                                            if(r.AttackCount == 600)
+                                            {
+                                                eProjectiles.Add(new EPCircle(5, 80, 80, c.Position.X, c.Position.Y + 450, 0, 0.95f, 24, basicImage, true));
+                                                eProjectiles.Add(new EPCircle(5, 80, 80, c.Position.X, c.Position.Y - 450, 0, 0.95f, 24, basicImage, true));
+                                            }
+                                            
+                                            if (r.AttackCount % 140 == 0 && r.AttackCount > 90 && new Rectangle((GraphicsDevice.Viewport.Width + maxX - globalX) / 2 - 200, (GraphicsDevice.Viewport.Height + maxY - globalY) / 2 - 200, 400, 400).Intersects(c.Position) == false)
+                                            {
+                                                for (int i = 1; i <= 22; i++)
+                                                {
+                                                    eProjectiles.Add(new EPWobble(5, 40, 40, (GraphicsDevice.Viewport.Width + maxX - globalX) / 2 - 20, (GraphicsDevice.Viewport.Height + maxY - globalY) / 2 - 20, ((float)(2 * Math.PI) / 22) * i, 10f, wobbleImage));
+                                                }
+                                            }
+                                            for (int i = 0; i < eProjectiles.Count; i++)
+                                            {
+                                                if (eProjectiles[i] is EPCircle && r.AttackCount > 90 && r.AttackCount <= 600)
+                                                {
+                                                    EPCircle circ = (EPCircle)eProjectiles[i];
+                                                    circ.Shoot(eProjectiles, basicImage);
+                                                }
+                                            }
+
+                                            r.AttackCount--;
+                                            if (r.AttackCount <= 90)
+                                            {
+                                                r.Visible = true;
+                                                r.Darkness -= .005f;
+                                            }
+                                            if (r.AttackCount == 0)
+                                            {
+                                                for (int i = eProjectiles.Count - 1; i >= 0; i--)
+                                                {
+                                                    if (eProjectiles[i] is EPCircle)
+                                                    {
+                                                        eProjectiles.RemoveAt(i);
+                                                    }
+                                                }
+                                                r.PrevAttack = r.AttackNum;
+                                                r.AttackNum = 6;
+                                                r.AttackCount = 360;
+                                            }
+                                            break;
+
+                                        // Attack 3, circles close in on player
+                                        case 3:
+                                            if (r.AttackCount % 120 == 0 && r.AttackCount > 90)
+                                            {
+
+                                                for (int i = 0; i < 24; i++)
+                                                {
+                                                    float moveX = -(float)Math.Sin((float)(2 * Math.PI / 24) * i - Math.PI / 2) * 400;
+                                                    float moveY = (float)Math.Cos((float)(2 * Math.PI / 24) * i - Math.PI / 2) * 400;
+                                                    eProjectiles.Add(new EPBasic(5, 40, 40, c.Position.X + (int)moveX, c.Position.Y + (int)moveY, ((float)(2 * Math.PI / 24) * i) + (float)Math.PI, 4.4f, basicImage));
+                                                }
+                                            }
+
+                                            if (r.AttackCount % 50 == 0 && r.AttackCount > 90)
+                                            {
+                                                int x = 400;
+                                                int y = 400;
+                                                do
+                                                {
+                                                    x = rgen.Next(0 - globalX, GraphicsDevice.Viewport.Width + maxX - globalX - 200) + 100;
+                                                    y = rgen.Next(0 - globalY, GraphicsDevice.Viewport.Height + maxY - globalY - 200) + 100;
+                                                } while (new Rectangle(x - 400, y - 400, 800, 800).Intersects(c.Position));
+                                                int angX = (c.Position.X + c.Position.Width / 2) - (x + 100);
+                                                int angY = (c.Position.Y + c.Position.Height / 2) - (y + 100);
+                                                float angle = (float)Math.Atan2(angY, angX);
+                                                for (int i = 0; i < 14; i++)
+                                                {
+                                                    float moveX = -(float)Math.Sin((float)(2 * Math.PI / 14) * i - Math.PI / 2) * 65;
+                                                    float moveY = (float)Math.Cos((float)(2 * Math.PI / 14) * i - Math.PI / 2) * 65;
+                                                    eProjectiles.Add(new EPBasic(5, 40, 40, (int)moveX + x, (int)moveY + y, angle, 4.05f, basicImage));
+                                                }
+                                            }
+                                            r.AttackCount--;
+                                            if (r.AttackCount <= 90)
+                                            {
+                                                r.Visible = true;
+                                                r.Darkness -= .005f;
+                                            }
+                                            if (r.AttackCount == 0)
+                                            {
+                                                r.PrevAttack = r.AttackNum;
+                                                r.AttackNum = 6;
+                                                r.AttackCount = 360;
+                                            }
+                                            break;
+
+                                        //Attack 4, three circle projectiles that spawn others
+                                        case 4:
+                                            if (r.AttackCount == 600)
+                                            {
+                                                eProjectiles.Add(new EPCircle(5, 80, 80, (GraphicsDevice.Viewport.Width + maxX - globalX) / 2 - 80, 0 - globalY, 0, 3.2f, 15, basicImage, false));
+                                                eProjectiles.Add(new EPCircle(5, 80, 80, 0 - globalX, GraphicsDevice.Viewport.Height + maxY - globalY - 80, 0, 3.2f, 15, basicImage, false));
+                                                eProjectiles.Add(new EPCircle(5, 80, 80, GraphicsDevice.Viewport.Width + maxX - globalX - 80, GraphicsDevice.Viewport.Height + maxY - globalY - 80, 0, 3.2f, 15, basicImage, false));
+                                            }
+                                            for (int i = 0; i < eProjectiles.Count; i++)
+                                            {
+                                                if (eProjectiles[i] is EPCircle && r.AttackCount > 90 && r.AttackCount <= 570)
+                                                {
+                                                    EPCircle circ = (EPCircle)eProjectiles[i];
+                                                    circ.Shoot(eProjectiles, basicImage);
+                                                }
+                                            }
+                                            r.AttackCount--;
+                                            if (r.AttackCount <= 90)
+                                            {
+                                                r.Visible = true;
+                                                r.Darkness -= .005f;
+                                            }
+                                            if (r.AttackCount == 0)
+                                            {
+                                                for (int i = eProjectiles.Count - 1; i >= 0; i--)
+                                                {
+                                                    if (eProjectiles[i] is EPCircle)
+                                                    {
+                                                        eProjectiles.RemoveAt(i);
+                                                    }
+                                                }
+                                                r.PrevAttack = r.AttackNum;
+                                                r.AttackNum = 6;
+                                                r.AttackCount = 360;
+                                            }
+                                            break;
+
+                                        // Attack 5, circles move towards player
+                                        case 5:
+                                            // Try block
+                                            if(r.AttackCount == 600)
+                                            {
+                                                r.Visible = false;
+                                                r.AttackCount = 780;
+                                                r.Darkness = .45f;
+
+                                                BinaryReader reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Reaper.dat"));
+                                                try
+                                                {
+                                                    maxOnScreen = reader.ReadInt32();
+                                                    // While loop that will run until the end of the file
+                                                    while (reader.PeekChar() != -1)
+                                                    {
+                                                        // Read in information from the round file
+                                                        string type = reader.ReadString();
+                                                        int x = reader.ReadInt32();
+                                                        int y = reader.ReadInt32();
+
+                                                        // Switch statement based on the type string, creates an enemy based on the type and adds it to the enemies list
+                                                        switch (type)
+                                                        {
+                                                            case "1":
+                                                                Enemy e1 = new Enemy1(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                                                                e1.Image = enemyImage;
+                                                                e1.SpawnCount = 0;
+                                                                enemies.Add(e1);
+                                                                break;
+
+                                                            case "2":
+                                                                Enemy e2 = new Enemy2(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                                                                e2.Image = enemyImage;
+                                                                e2.SpawnCount = 0;
+                                                                enemies.Add(e2);
+                                                                break;
+
+                                                            case "3":
+                                                                Enemy e3 = new Enemy3(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                                                                e3.Image = enemyImage;
+                                                                e3.SpawnCount = 0;
+                                                                enemies.Add(e3);
+                                                                break;
+                                                            case "4":
+                                                                Enemy e4 = new Enemy4(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                                                                e4.Image = enemyImage;
+                                                                e4.SpawnCount = 0;
+                                                                enemies.Add(e4);
+                                                                break;
+                                                        }
+                                                    }
+                                                }
+                                                // Catch Exceptions
+                                                catch (Exception ex) { }
+                                                reader.Close();
+                                            }
+
+                                            bool otherAlive = false;
+
+                                            foreach (Enemy en in enemies)
+                                            {
+                                                if(en is Reaper == false)
+                                                {
+                                                    if(en.SpawnCount == -1)
+                                                    {
+                                                        if(en.Alive == true)
+                                                        {
+                                                            otherAlive = true;
+                                                        }
+                                                    }
+                                                    if(en.SpawnCount != -1)
+                                                    {
+                                                        otherAlive = true;
+                                                    }
+                                                }
+                                            }
+
+                                            if(otherAlive == false)
+                                            {
+                                                r.Visible = true;
+                                                r.PrevAttack = r.AttackNum;
+                                                r.AttackNum = 6;
+                                                r.AttackCount = 400;
+                                            }
+                                            else
+                                            {
+                                                r.AttackCount++;
+                                            }
+                                            break;
+
+                                        // Cooldown on attacks
+                                        case 6:
+                                            r.AttackCount--;
+                                            if (r.AttackCount <= 90)
+                                            {
+                                                r.Darkness += .005f;
+                                            }
+                                            if (r.AttackCount == 0)
+                                            {
+                                                int pos = rgen.Next(5) + 1;
+                                                switch (pos)
+                                                {
+                                                    // Center
+                                                    case 1:
+                                                        r.Position = new Rectangle((GraphicsDevice.Viewport.Width + maxX - globalX) / 2 - r.Position.Width, (GraphicsDevice.Viewport.Height + maxY - globalY) / 2 - r.Position.Height, r.Position.Width, r.Position.Height);
+                                                        break;
+
+                                                    // Upper Left
+                                                    case 2:
+                                                        r.Position = new Rectangle((GraphicsDevice.Viewport.Width + maxX - globalX) / 2 - r.Position.Width - 200, (GraphicsDevice.Viewport.Height + maxY - globalY) / 2 - r.Position.Height - 200, r.Position.Width, r.Position.Height);
+                                                        break;
+
+                                                    // Upper Right
+                                                    case 3:
+                                                        r.Position = new Rectangle((GraphicsDevice.Viewport.Width + maxX - globalX) / 2 - r.Position.Width + 200, (GraphicsDevice.Viewport.Height + maxY - globalY) / 2 - r.Position.Height - 200, r.Position.Width, r.Position.Height);
+                                                        break;
+
+                                                    // Lower Right
+                                                    case 4:
+                                                        r.Position = new Rectangle((GraphicsDevice.Viewport.Width + maxX - globalX) / 2 - r.Position.Width + 200, (GraphicsDevice.Viewport.Height + maxY - globalY) / 2 - r.Position.Height + 200, r.Position.Width, r.Position.Height);
+                                                        break;
+
+                                                    // Lower Left
+                                                    case 5:
+                                                        r.Position = new Rectangle((GraphicsDevice.Viewport.Width + maxX - globalX) / 2 - r.Position.Width - 200, (GraphicsDevice.Viewport.Height + maxY - globalY) / 2 - r.Position.Height + 200, r.Position.Width, r.Position.Height);
+                                                        break;
+                                                }
+                                                r.FPosX = r.Position.X;
+                                                r.FPosY = r.Position.Y;
+                                                r.Visible = false;
+                                                int number = 0;
+                                                do
+                                                {
+                                                    number = rgen.Next(5) + 1;
+                                                } while (number == r.PrevAttack);
+                                                switch (number)
+                                                {
+                                                    case 1:
+                                                        r.AttackNum = 1;
+                                                        r.AttackCount = 600;
+                                                        break;
+                                                    case 2:
+                                                        r.AttackNum = 2;
+                                                        r.AttackCount = 600;
+                                                        break;
+                                                    case 3:
+                                                        r.AttackNum = 3;
+                                                        r.AttackCount = 600;
+                                                        break;
+                                                    case 4:
+                                                        r.AttackNum = 4;
+                                                        r.AttackCount = 600;
+                                                        break;
+                                                    case 5:
+                                                        r.AttackNum = 5;
                                                         r.AttackCount = 600;
                                                         break;
                                                 }
@@ -2043,6 +2481,10 @@ namespace GroupGame
                                                 PMine mine = (PMine)projectiles[i];
                                                 if (mine.ExplosionCount == 0) mine.Explode(c, enemies, projectiles, eProjectiles);
                                                 break;
+                                            }
+                                            else if (projectiles[i] is PSuper)
+                                            {
+                                                e.Health -= (int)(projectiles[i].Damage / 2.5);
                                             }
                                             else
                                             {
@@ -2615,7 +3057,7 @@ namespace GroupGame
                             if (e is Enemy3) e.Draw(spriteBatch, enemyAngle, frameEnemy, Color.Orange);
                             if (e is Enemy4) e.Draw(spriteBatch, enemyAngle, frameEnemy, Color.White);
                             if (e is Boss) e.Draw(spriteBatch, enemyAngle, frameEnemy, Color.White);
-                            if (e is Reaper) e.Draw(spriteBatch, enemyAngle, 0, Color.Black);
+                            if (e is Reaper) e.Draw(spriteBatch, enemyAngle, 0, Color.White);
                         }
                         else if (e.SpawnCount != -1 && (e is Reaper != true))
                         {

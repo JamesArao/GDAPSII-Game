@@ -14,6 +14,7 @@ namespace GroupGame
         private int counter;
         private int shotsFired;
         private float speed;
+        private bool moving;
 
         public int ShootingCount
         {
@@ -23,7 +24,20 @@ namespace GroupGame
 
         public override void Move()
         {
-            Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
+            if(!moving) Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
+        }
+
+        public void Move(Character c)
+        {
+            if(moving)
+            {
+                int angX = (c.Position.X + c.Position.Width / 2) - (Position.X + Position.Width / 2);
+                int angY = (c.Position.Y + c.Position.Height / 2) - (Position.Y + Position.Height / 2);
+                float angle = (float)Math.Atan2(angY, angX);
+                FPosX += -(float)Math.Sin(angle - Math.PI / 2) * speed;
+                FPosY += (float)Math.Cos(angle - Math.PI / 2) * speed;
+                Position = new Rectangle((int)FPosX, (int)FPosY, Position.Width, Position.Height);
+            }
         }
 
         public override void Draw(SpriteBatch sprite)
@@ -39,7 +53,8 @@ namespace GroupGame
                 {
                     float moveX = -(float)Math.Sin((float)(2 * Math.PI / 8) * i - Math.PI / 2) * 400;
                     float moveY = (float)Math.Cos((float)(2 * Math.PI / 8) * i - Math.PI / 2) * 400;
-                    ePList.Add(new EPBasic(Damage, 32, 32, Position.X + Position.Width / 4, Position.Y + Position.Height / 4, ((float)(2 * Math.PI / 8) * i) + (float)(shotsFired / (Math.PI / 2)), speed, img));
+                    if(!moving) ePList.Add(new EPBasic(Damage, 32, 32, Position.X + Position.Width / 4, Position.Y + Position.Height / 4, ((float)(2 * Math.PI / 8) * i) + (float)(shotsFired / (Math.PI / 2)), speed, img));
+                    if(moving) ePList.Add(new EPBasic(Damage, 32, 32, Position.X + Position.Width / 4, Position.Y + Position.Height / 4, ((float)(2 * Math.PI / 8) * i) + (float)(shotsFired / (Math.PI / 2)), speed * 4, img));
                 }
                 shotsFired++;
                 counter = 0;
@@ -51,19 +66,21 @@ namespace GroupGame
         }
 
         // Constructor
-        public EPCircle(int dmg, int w, int h, Enemy e, float ang, float spd, int count, Texture2D img):base(dmg, w, h, e, ang, spd, img)
+        public EPCircle(int dmg, int w, int h, Enemy e, float ang, float spd, int count, Texture2D img, bool m):base(dmg, w, h, e, ang, spd, img)
         {
             shootingCount = count;
             speed = spd;
+            moving = m;
         }
 
-        public EPCircle(int dmg, int w, int h, int x, int y, float ang, float spd, int count, Texture2D img):base(dmg, w, h, null, ang, spd, img)
+        public EPCircle(int dmg, int w, int h, int x, int y, float ang, float spd, int count, Texture2D img, bool m):base(dmg, w, h, null, ang, spd, img)
         {
             Position = new Rectangle((int)x, (int)y, w, h);
             FPosX = x;
             FPosY = y;
             shootingCount = count;
             speed = spd;
+            moving = m;
         }
     }
 }
