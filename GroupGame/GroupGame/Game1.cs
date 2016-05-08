@@ -234,17 +234,6 @@ namespace GroupGame
             else reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round14.dat"));
             //reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round9.dat"));
 
-            if (skulls == 3)
-            {
-                Enemy r = new Reaper((GraphicsDevice.Viewport.Width + maxX - globalX) / 2 - 120, (GraphicsDevice.Viewport.Height + maxY - globalY) / 2 - 120, whiteBox); 
-                r.Image = reaper;
-                r.SpawnCount = 0;
-                enemies.Add(r);
-                bossRound = true;
-                skulls = 0;
-            }
-            else
-            {
             // Try block
             try
             {
@@ -266,7 +255,6 @@ namespace GroupGame
                 }
                 // Catch Exceptions
                 catch (Exception ex) { }
-            }
                 reader.Close();
                 objects.Clear();
 
@@ -730,7 +718,7 @@ namespace GroupGame
             round = 0;
             score = 0;
             aState = AbilityState.a1;
-            powerupTimer = 1200;
+            powerupTimer = 900;
             skulls = 0;
             AdvanceRound();
             Bcont = true;
@@ -1359,7 +1347,22 @@ namespace GroupGame
 
                     if(pickupTimer == 60 && powerUpPickup == "Death")
                     {
-                        AdvanceRound();
+                        if (skulls != 3)
+                        {
+                            AdvanceRound();
+                        }
+                        else
+                        {
+                            enemies.Clear();
+                            ePositions.Clear();
+                            eTypes.Clear();
+                            Enemy r = new Reaper((GraphicsDevice.Viewport.Width + maxX - globalX) / 2 - 120, (GraphicsDevice.Viewport.Height + maxY - globalY) / 2 - 120, whiteBox);
+                            r.Image = reaper;
+                            r.SpawnCount = 0;
+                            enemies.Add(r);
+                            objects.Clear();
+                            skulls = 0;
+                        }
                     }
 
                     // Spawn a powerup or decrease the time until a powerup spawns
@@ -1378,12 +1381,12 @@ namespace GroupGame
                             pType = "Max Energy";
                             pImg = energy;
                         }
-                        if (pNum >= 5 && pNum <= 7)
+                        if (pNum >= 5 || pNum == 6)
                         {
                             pType = "Bonus Points";
                             pImg = points;
                         }
-                        if (pNum >= 8 && pNum <= 10)
+                        if (pNum >= 7 && pNum <= 10)
                         {
                             pType = "Death";
                             pImg = rMarker;
@@ -1403,7 +1406,7 @@ namespace GroupGame
                             pUp.Position = pRect;
                         }
                         powerups.Add(pUp);
-                        powerupTimer = 1200;
+                        powerupTimer = 900;
                     }
                     else if (powerups.Count == 0 && powerupTimer > 0)
                     {
@@ -1522,68 +1525,68 @@ namespace GroupGame
                     if (roundChange == 0 && spawned == false)
                     {
                         if (maxOnScreen == -1) maxOnScreen = eTypes.Count;
-                        //if (enemies[0] is Reaper == false)
+                        //if (enemies.Count != 0)
                         //{
-                            for (int i = maxOnScreen - 1; i >= 0; i--)
-                            {
-                                int x = (int)ePositions[i].X;
-                                int y = (int)ePositions[i].Y;
-                                Enemy enemyspawn = null;
-                                switch (eTypes[i])
+                                for (int i = maxOnScreen - 1; i >= 0; i--)
                                 {
-                                    case "1":
-                                        Enemy e1 = new Enemy1(c.Position.X - 500 + x, c.Position.Y - 300 + y);
-                                        e1.Image = enemyImage;
-                                        e1.SpawnCount = 0;
-                                        enemyspawn = e1;
-                                        break;
-
-                                    case "2":
-                                        Enemy e2 = new Enemy2(c.Position.X - 500 + x, c.Position.Y - 300 + y);
-                                        e2.Image = enemyImage;
-                                        e2.SpawnCount = 0;
-                                        enemyspawn = e2;
-                                        break;
-
-                                    case "3":
-                                        Enemy e3 = new Enemy3(c.Position.X - 500 + x, c.Position.Y - 300 + y);
-                                        e3.Image = enemyImage;
-                                        e3.SpawnCount = 0;
-                                        enemyspawn = e3;
-                                        break;
-                                    case "4":
-                                        Enemy e4 = new Enemy4(c.Position.X - 500 + x, c.Position.Y - 300 + y);
-                                        e4.Image = enemyImage;
-                                        e4.SpawnCount = 0;
-                                        enemyspawn = e4;
-                                        break;
-                                    case "B":
-                                        Enemy b = new Boss(c.Position.X - 500 + x, c.Position.Y - 300 + y, whiteBox);
-                                        b.Image = boss;
-                                        b.SpawnCount = 0;
-                                        enemyspawn = b;
-                                        break;
-                                }
-
-                                foreach (Rectangle r in objects)
-                                {
-                                    while (enemyspawn.Position.Intersects(r))
+                                    int x = (int)ePositions[i].X;
+                                    int y = (int)ePositions[i].Y;
+                                    Enemy enemyspawn = null;
+                                    switch (eTypes[i])
                                     {
-                                        x = rgen.Next(GraphicsDevice.Viewport.Width);
-                                        y = rgen.Next(GraphicsDevice.Viewport.Height);
-                                        enemyspawn.FPosX = x;
-                                        enemyspawn.FPosY = y;
-                                        enemyspawn.Position = new Rectangle((int)enemyspawn.FPosX, (int)enemyspawn.FPosY, enemyspawn.Position.Width, enemyspawn.Position.Height);
-                                    }
-                                }
+                                        case "1":
+                                            Enemy e1 = new Enemy1(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                                            e1.Image = enemyImage;
+                                            e1.SpawnCount = 0;
+                                            enemyspawn = e1;
+                                            break;
 
-                                enemies.Add(enemyspawn);
-                                eTypes.RemoveAt(i);
-                                ePositions.RemoveAt(i);
-                            }
-                            spawned = true;
-                        }
-                    //}
+                                        case "2":
+                                            Enemy e2 = new Enemy2(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                                            e2.Image = enemyImage;
+                                            e2.SpawnCount = 0;
+                                            enemyspawn = e2;
+                                            break;
+
+                                        case "3":
+                                            Enemy e3 = new Enemy3(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                                            e3.Image = enemyImage;
+                                            e3.SpawnCount = 0;
+                                            enemyspawn = e3;
+                                            break;
+                                        case "4":
+                                            Enemy e4 = new Enemy4(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                                            e4.Image = enemyImage;
+                                            e4.SpawnCount = 0;
+                                            enemyspawn = e4;
+                                            break;
+                                        case "B":
+                                            Enemy b = new Boss(c.Position.X - 500 + x, c.Position.Y - 300 + y, whiteBox);
+                                            b.Image = boss;
+                                            b.SpawnCount = 0;
+                                            enemyspawn = b;
+                                            break;
+                                    }
+
+                                    foreach (Rectangle r in objects)
+                                    {
+                                        while (enemyspawn.Position.Intersects(r))
+                                        {
+                                            x = rgen.Next(GraphicsDevice.Viewport.Width);
+                                            y = rgen.Next(GraphicsDevice.Viewport.Height);
+                                            enemyspawn.FPosX = x;
+                                            enemyspawn.FPosY = y;
+                                            enemyspawn.Position = new Rectangle((int)enemyspawn.FPosX, (int)enemyspawn.FPosY, enemyspawn.Position.Width, enemyspawn.Position.Height);
+                                        }
+                                    }
+
+                                    enemies.Add(enemyspawn);
+                                    eTypes.RemoveAt(i);
+                                    ePositions.RemoveAt(i);
+                                }
+                                spawned = true;
+                            //}
+                    }
                     if (roundChange > 0 || enemyPause > 0)
                     {
                         enemyAlive = true;
@@ -1617,6 +1620,7 @@ namespace GroupGame
                                     e.SpawnCount = -1;
                                     e.Alive = true;
                                     reaperRound = true;
+                                    c.Energy = 200;
                                 }
                                 // Otherwise increase its spawn count
                                 else
