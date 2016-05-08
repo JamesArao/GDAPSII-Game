@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-enum GameState { Menu, HordeMode, Paused, Options, CharacterSelection, GameOver, Leaderboard, Instructions}; // GameState enum for keeping track of what state our game is in
+enum GameState { Menu, HordeMode, Paused, Options, CharacterSelection, GameOver, Leaderboard, Instructions, Instructions2, Instructions3, Instructions4 }; // GameState enum for keeping track of what state our game is in
 enum AbilityState { a1, a2, a3, a4, a5, a6 }; // AbilityState enum for keeping track of the ability the player is using
 enum HeroState { Still, Walking }; // HeroState enum for keeping track of the state of the player
 enum SwitchHero { Fire, Earth, Water, Electric}; // switch heroes
@@ -88,6 +88,10 @@ namespace GroupGame
         Texture2D leaderboardButton;
         Texture2D instructionsButton;
         Texture2D instructionsScreen;
+        Texture2D instructionsScreen2;
+        Texture2D instructionsScreen3;
+        Texture2D instructionsScreen4;
+        //Texture2D instructionsScreen4;
 
         // ability textures
         Texture2D mine;
@@ -117,6 +121,7 @@ namespace GroupGame
         Rectangle rFButton;
         Rectangle rLButton;
         Rectangle rIButton;
+        Rectangle rNextButton;
         Rectangle rEButton;
         Rectangle contButton;
         Rectangle char1;
@@ -162,6 +167,7 @@ namespace GroupGame
         string powerUpPartial2;
         int pickupTimer;
         int skulls;
+        bool spawned;
 
         int maxOnScreen = -1;
         bool reaperRound = false;
@@ -214,6 +220,7 @@ namespace GroupGame
 
             bool bossRound = false;
             reaperRound = false;
+            spawned = false;
 
             enemies.Clear(); // Clear Enemies list
             enemiesSpawn.Clear(); // Clear the EnemiesSpawn list
@@ -225,13 +232,14 @@ namespace GroupGame
             BinaryReader reader;
             if (round < 14) reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round" + (round + 1) + ".dat"));
             else reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round14.dat"));
-            //reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round10.dat"));
+            //reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round9.dat"));
 
-            if (skulls == 0)
+            if (skulls == 3)
             {
                 Enemy r = new Reaper((GraphicsDevice.Viewport.Width + maxX - globalX) / 2 - 120, (GraphicsDevice.Viewport.Height + maxY - globalY) / 2 - 120, whiteBox); 
                 r.Image = reaper;
-                enemiesSpawn.Add(r);
+                r.SpawnCount = 0;
+                enemies.Add(r);
                 bossRound = true;
                 skulls = 0;
             }
@@ -253,40 +261,6 @@ namespace GroupGame
 
                         ePositions.Add(ePos);
                         eTypes.Add(type);
-
-                        
-                        // Switch statement based on the type string, creates an enemy based on the type and adds it to the enemies list
-                        switch (type)
-                        {
-                            case "1":
-                                Enemy e1 = new Enemy1(c.Position.X - 500 + x, c.Position.Y - 300 + y);
-                                e1.Image = enemyImage;
-                                enemiesSpawn.Add(e1);
-                                break;
-
-                            case "2":
-                                Enemy e2 = new Enemy2(c.Position.X - 500 + x, c.Position.Y - 300 + y);
-                                e2.Image = enemyImage;
-                                enemiesSpawn.Add(e2);
-                                break;
-
-                            case "3":
-                                Enemy e3 = new Enemy3(c.Position.X - 500 + x, c.Position.Y - 300 + y);
-                                e3.Image = enemyImage;
-                                enemiesSpawn.Add(e3);
-                                break;
-                            case "4":
-                                Enemy e4 = new Enemy4(c.Position.X - 500 + x, c.Position.Y - 300 + y);
-                                e4.Image = enemyImage;
-                                enemiesSpawn.Add(e4);
-                                break;
-                            case "B":
-                                Enemy b = new Boss(c.Position.X - 500 + x, c.Position.Y - 300 + y, whiteBox);
-                                b.Image = boss;
-                                enemiesSpawn.Add(b);
-                                bossRound = true;
-                                break;
-                        }
                     }
                     reader.Close();
                 }
@@ -294,109 +268,7 @@ namespace GroupGame
                 catch (Exception ex) { }
             }
                 reader.Close();
-            if (maxOnScreen == -1)
-            {
-                foreach (Enemy e in enemiesSpawn)
-                {
-                    //enemiesSpawn.Remove(e);
-                    e.SpawnCount = 0;
-                    enemies.Add(e);
-                }
-                enemiesSpawn.Clear();
-                for(int i = eTypes.Count - 1; i >= 0; i--)
-                {
-                    int x = (int)ePositions[i].X;
-                    int y = (int)ePositions[i].Y;
-                    switch(eTypes[i])
-                    {
-                        case "1":
-                            Enemy e1 = new Enemy1(c.Position.X - 500 + x, c.Position.Y - 300 + y);
-                            e1.Image = enemyImage;
-                            e1.SpawnCount = 0;
-                            enemies.Add(e1);
-                            break;
-
-                        case "2":
-                            Enemy e2 = new Enemy2(c.Position.X - 500 + x, c.Position.Y - 300 + y);
-                            e2.Image = enemyImage;
-                            e2.SpawnCount = 0;
-                            enemies.Add(e2);
-                            break;
-
-                        case "3":
-                            Enemy e3 = new Enemy3(c.Position.X - 500 + x, c.Position.Y - 300 + y);
-                            e3.Image = enemyImage;
-                            e3.SpawnCount = 0;
-                            enemies.Add(e3);
-                            break;
-                        case "4":
-                            Enemy e4 = new Enemy4(c.Position.X - 500 + x, c.Position.Y - 300 + y);
-                            e4.Image = enemyImage;
-                            e4.SpawnCount = 0;
-                            enemies.Add(e4);
-                            break;
-                        case "B":
-                            Enemy b = new Boss(c.Position.X - 500 + x, c.Position.Y - 300 + y, whiteBox);
-                            b.Image = boss;
-                            b.SpawnCount = 0;
-                            enemies.Add(b);
-                            break;
-                    }
-                    eTypes.RemoveAt(i);
-                    ePositions.RemoveAt(i);
-                }
-            }
-            else
-            {
-                for (int i = maxOnScreen - 1; i >= 0; i--)
-                {
-                    int x = (int)ePositions[i].X;
-                    int y = (int)ePositions[i].Y;
-                    switch (eTypes[i])
-                    {
-                        case "1":
-                            Enemy e1 = new Enemy1(c.Position.X - 500 + x, c.Position.Y - 300 + y);
-                            e1.Image = enemyImage;
-                            e1.SpawnCount = 0;
-                            enemies.Add(e1);
-                            break;
-
-                        case "2":
-                            Enemy e2 = new Enemy2(c.Position.X - 500 + x, c.Position.Y - 300 + y);
-                            e2.Image = enemyImage;
-                            e2.SpawnCount = 0;
-                            enemies.Add(e2);
-                            break;
-
-                        case "3":
-                            Enemy e3 = new Enemy3(c.Position.X - 500 + x, c.Position.Y - 300 + y);
-                            e3.Image = enemyImage;
-                            e3.SpawnCount = 0;
-                            enemies.Add(e3);
-                            break;
-                        case "4":
-                            Enemy e4 = new Enemy4(c.Position.X - 500 + x, c.Position.Y - 300 + y);
-                            e4.Image = enemyImage;
-                            e4.SpawnCount = 0;
-                            enemies.Add(e4);
-                            break;
-                        case "B":
-                            Enemy b = new Boss(c.Position.X - 500 + x, c.Position.Y - 300 + y, whiteBox);
-                            b.Image = boss;
-                            b.SpawnCount = 0;
-                            enemies.Add(b);
-                            break;
-                    }
-                    eTypes.RemoveAt(i);
-                    ePositions.RemoveAt(i);
-
-                    enemies.Add(enemiesSpawn[i]);
-                    enemies[maxOnScreen - 1 - i].SpawnCount = 0;
-                    enemiesSpawn.RemoveAt(i);
-                }
-            }
-
-            objects.Clear();
+                objects.Clear();
 
             if (bossRound == false)
             {
@@ -1001,6 +873,9 @@ namespace GroupGame
             leaderboardButton = Content.Load<Texture2D>("Leaderboard");
             instructionsButton = Content.Load<Texture2D>("Instructions");
             instructionsScreen = Content.Load<Texture2D>("InstructionsScreen");
+            instructionsScreen2 = Content.Load<Texture2D>("InstructionsScreen2");
+            instructionsScreen3 = Content.Load<Texture2D>("InstructionsScreen3");
+            //instructionsScreen4 = Content.Load<Texture2D>("InstructionsScreen4");
 
             // Load images for the game
             enemyImage = this.Content.Load<Texture2D>("Enemy");
@@ -1644,6 +1519,71 @@ namespace GroupGame
 
                     bool enemyAlive = false;
                     // Foreach loop that goes through all enemy objects in the enemies list
+                    if (roundChange == 0 && spawned == false)
+                    {
+                        if (maxOnScreen == -1) maxOnScreen = eTypes.Count;
+                        //if (enemies[0] is Reaper == false)
+                        //{
+                            for (int i = maxOnScreen - 1; i >= 0; i--)
+                            {
+                                int x = (int)ePositions[i].X;
+                                int y = (int)ePositions[i].Y;
+                                Enemy enemyspawn = null;
+                                switch (eTypes[i])
+                                {
+                                    case "1":
+                                        Enemy e1 = new Enemy1(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                                        e1.Image = enemyImage;
+                                        e1.SpawnCount = 0;
+                                        enemyspawn = e1;
+                                        break;
+
+                                    case "2":
+                                        Enemy e2 = new Enemy2(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                                        e2.Image = enemyImage;
+                                        e2.SpawnCount = 0;
+                                        enemyspawn = e2;
+                                        break;
+
+                                    case "3":
+                                        Enemy e3 = new Enemy3(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                                        e3.Image = enemyImage;
+                                        e3.SpawnCount = 0;
+                                        enemyspawn = e3;
+                                        break;
+                                    case "4":
+                                        Enemy e4 = new Enemy4(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                                        e4.Image = enemyImage;
+                                        e4.SpawnCount = 0;
+                                        enemyspawn = e4;
+                                        break;
+                                    case "B":
+                                        Enemy b = new Boss(c.Position.X - 500 + x, c.Position.Y - 300 + y, whiteBox);
+                                        b.Image = boss;
+                                        b.SpawnCount = 0;
+                                        enemyspawn = b;
+                                        break;
+                                }
+
+                                foreach (Rectangle r in objects)
+                                {
+                                    while (enemyspawn.Position.Intersects(r))
+                                    {
+                                        x = rgen.Next(GraphicsDevice.Viewport.Width);
+                                        y = rgen.Next(GraphicsDevice.Viewport.Height);
+                                        enemyspawn.FPosX = x;
+                                        enemyspawn.FPosY = y;
+                                        enemyspawn.Position = new Rectangle((int)enemyspawn.FPosX, (int)enemyspawn.FPosY, enemyspawn.Position.Width, enemyspawn.Position.Height);
+                                    }
+                                }
+
+                                enemies.Add(enemyspawn);
+                                eTypes.RemoveAt(i);
+                                ePositions.RemoveAt(i);
+                            }
+                            spawned = true;
+                        }
+                    //}
                     if (roundChange > 0 || enemyPause > 0)
                     {
                         enemyAlive = true;
@@ -2688,7 +2628,67 @@ namespace GroupGame
                         }
 
                         // An enemy has been killed and there are more enemies to spawn, add another enemy to the list and start spawning it
-                        if (maxOnScreen != -1 && enemiesSpawn.Count != 0)
+                        if(maxOnScreen != -1 && eTypes.Count != 0)
+                        {
+                            for (int i = 0; i < enemies.Count; i++)
+                            {
+                                if (enemies[i].Alive == false && enemies[i].SpawnCount == -1)
+                                {
+                                    if (eTypes.Count != 0)
+                                    {
+                                        enemies.Remove(enemies[i]);
+                                        Enemy enemyAdding = null;
+                                        int x = (int)ePositions[0].X;
+                                        int y = (int)ePositions[0].Y;
+                                        switch (eTypes[0])
+                                        {
+                                            case "1":
+                                                enemyAdding = new Enemy1(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                                                enemyAdding.Image = enemyImage;
+                                                break;
+
+                                            case "2":
+                                                enemyAdding = new Enemy2(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                                                enemyAdding.Image = enemyImage;
+                                                break;
+
+                                            case "3":
+                                                enemyAdding = new Enemy3(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                                                enemyAdding.Image = enemyImage;
+                                                break;
+                                            case "4":
+                                                enemyAdding = new Enemy4(c.Position.X - 500 + x, c.Position.Y - 300 + y);
+                                                enemyAdding.Image = enemyImage;
+                                                break;
+                                            case "B":
+                                                enemyAdding = new Boss(c.Position.X - 500 + x, c.Position.Y - 300 + y, whiteBox);
+                                                enemyAdding.Image = boss;
+                                                break;
+                                        }
+                                        foreach (Enemy buddies in enemies)
+                                        {
+                                            foreach (Rectangle boxes in objects)
+                                            {
+                                                if (enemyAdding.Position.Intersects(buddies.Position) || enemyAdding.Position.Intersects(boxes))
+                                                {
+                                                    int newx = rgen.Next(GraphicsDevice.Viewport.Width - 160) + 80;
+                                                    int newy = rgen.Next(GraphicsDevice.Viewport.Height - 160) + 80;
+                                                    enemyAdding.FPosX = newx;
+                                                    enemyAdding.FPosY = newy;
+                                                    enemyAdding.Position = new Rectangle((int)enemyAdding.FPosX, (int)enemyAdding.FPosY, enemyAdding.Position.Width, enemyAdding.Position.Height);
+                                                }
+                                            }
+                                        }
+                                        enemyAdding.SpawnCount = 0;
+                                        enemies.Add(enemyAdding);
+                                        eTypes.RemoveAt(0);
+                                        ePositions.RemoveAt(0);
+                                    }
+                                }
+                            }
+                        }
+                        
+                        /*if (maxOnScreen != -1 && enemiesSpawn.Count != 0)
                         {
                             for (int i = 0; i < enemies.Count; i++)
                             {
@@ -2717,7 +2717,7 @@ namespace GroupGame
                                     }
                                 }
                             }
-                        }
+                        }*/
                     }
 
                     // If Player is dead, the game is over
@@ -2735,7 +2735,7 @@ namespace GroupGame
                         gState = GameState.GameOver;
                     }
 
-                    // If enemyAlive is false, no enemies are alive, and the round advances
+                    // If enemyAlive is false, no enemies are alive, and the .a advances
                     if (enemyAlive == false)
                     {
                         AdvanceRound();
@@ -2942,7 +2942,65 @@ namespace GroupGame
                     // Mouse rectangle
                     mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
 
-                    rMButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height) - (rMButton.Height + 50), startButton.Width / 4, startButton.Height / 4);
+                    rMButton = new Rectangle((GraphicsDevice.Viewport.Width / 4) - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height) - (rMButton.Height + 50), startButton.Width / 4, startButton.Height / 4);
+                    rNextButton = new Rectangle((GraphicsDevice.Viewport.Width / 4)*3 - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height) - (rMButton.Height + 50), startButton.Width / 4, startButton.Height / 4);
+
+                    // If the menu button is pressed, go back to the menu
+                    if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rMButton))
+                    {
+                        gState = GameState.Menu;
+                    }
+
+                    if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rNextButton))
+                    {
+                        gState = GameState.Instructions2;
+                    }
+                    break;
+
+
+                case GameState.Instructions2:
+                    // Mouse rectangle
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+
+                    rMButton = new Rectangle((GraphicsDevice.Viewport.Width / 4) - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height) - (rMButton.Height + 50), startButton.Width / 4, startButton.Height / 4);
+                    rNextButton = new Rectangle((GraphicsDevice.Viewport.Width / 4) * 3 - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height) - (rMButton.Height + 50), startButton.Width / 4, startButton.Height / 4);
+
+                    // If the menu button is pressed, go back to the menu
+                    if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rMButton))
+                    {
+                        gState = GameState.Menu;
+                    }
+
+                    if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rNextButton))
+                    {
+                        gState = GameState.Instructions3;
+                    }
+                    break;
+
+                case GameState.Instructions3:
+                    // Mouse rectangle
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+
+                    rMButton = new Rectangle((GraphicsDevice.Viewport.Width / 4) - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height) - (rMButton.Height + 50), startButton.Width / 4, startButton.Height / 4);
+                    rNextButton = new Rectangle((GraphicsDevice.Viewport.Width / 4) * 3 - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height) - (rMButton.Height + 50), startButton.Width / 4, startButton.Height / 4);
+
+                    // If the menu button is pressed, go back to the menu
+                    if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rMButton))
+                    {
+                        gState = GameState.Menu;
+                    }
+
+                    if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rNextButton))
+                    {
+                        gState = GameState.Instructions4;
+                    }
+                    break;
+
+                case GameState.Instructions4:
+                    // Mouse rectangle
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+
+                    rMButton = new Rectangle((GraphicsDevice.Viewport.Width / 4) - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height) - (rMButton.Height + 50), startButton.Width / 4, startButton.Height / 4);
 
                     // If the menu button is pressed, go back to the menu
                     if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rMButton))
@@ -3805,6 +3863,72 @@ namespace GroupGame
                 case GameState.Instructions:
                     mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
                     spriteBatch.Draw(instructionsScreen, new Vector2(GraphicsDevice.Viewport.Width / 2 - instructionsScreen.Width / 2, 20), Color.White);
+                    if (rMButton.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(menu, rMButton, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(menu, rMButton, Color.White);
+                    }
+
+                    if (rNextButton.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(nextB, rNextButton, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(nextB, rNextButton, Color.White);
+                    }
+                    break;
+
+                case GameState.Instructions2:
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+                    spriteBatch.Draw(instructionsScreen2, new Vector2(GraphicsDevice.Viewport.Width / 2 - instructionsScreen2.Width / 2, 20), Color.White);
+                    if (rMButton.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(menu, rMButton, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(menu, rMButton, Color.White);
+                    }
+
+                    if (rNextButton.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(nextB, rNextButton, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(nextB, rNextButton, Color.White);
+                    }
+                    break;
+
+                case GameState.Instructions3:
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+                    spriteBatch.Draw(instructionsScreen3, new Vector2(GraphicsDevice.Viewport.Width / 2 - instructionsScreen3.Width / 2, 20), Color.White);
+                    if (rMButton.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(menu, rMButton, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(menu, rMButton, Color.White);
+                    }
+
+                    if (rNextButton.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(nextB, rNextButton, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(nextB, rNextButton, Color.White);
+                    }
+                    break;
+
+                case GameState.Instructions4:
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+                    spriteBatch.Draw(instructionsScreen4, new Vector2(GraphicsDevice.Viewport.Width / 2 - instructionsScreen4.Width / 2, 20), Color.White);
                     if (rMButton.Intersects(mRectangle))
                     {
                         spriteBatch.Draw(menu, rMButton, Color.Red);
