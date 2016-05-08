@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-enum GameState { Menu, HordeMode, Paused, Options, CharacterSelection, GameOver, Leaderboard, Instructions}; // GameState enum for keeping track of what state our game is in
+enum GameState { Menu, HordeMode, Paused, Options, CharacterSelection, GameOver, Leaderboard, Instructions, Instructions2, Instructions3, Instructions4 }; // GameState enum for keeping track of what state our game is in
 enum AbilityState { a1, a2, a3, a4, a5, a6 }; // AbilityState enum for keeping track of the ability the player is using
 enum HeroState { Still, Walking }; // HeroState enum for keeping track of the state of the player
 enum SwitchHero { Fire, Earth, Water, Electric}; // switch heroes
@@ -88,6 +88,10 @@ namespace GroupGame
         Texture2D leaderboardButton;
         Texture2D instructionsButton;
         Texture2D instructionsScreen;
+        Texture2D instructionsScreen2;
+        Texture2D instructionsScreen3;
+        Texture2D instructionsScreen4;
+        //Texture2D instructionsScreen4;
 
         // ability textures
         Texture2D mine;
@@ -117,6 +121,7 @@ namespace GroupGame
         Rectangle rFButton;
         Rectangle rLButton;
         Rectangle rIButton;
+        Rectangle rNextButton;
         Rectangle rEButton;
         Rectangle contButton;
         Rectangle char1;
@@ -868,6 +873,9 @@ namespace GroupGame
             leaderboardButton = Content.Load<Texture2D>("Leaderboard");
             instructionsButton = Content.Load<Texture2D>("Instructions");
             instructionsScreen = Content.Load<Texture2D>("InstructionsScreen");
+            instructionsScreen2 = Content.Load<Texture2D>("InstructionsScreen2");
+            instructionsScreen3 = Content.Load<Texture2D>("InstructionsScreen3");
+            //instructionsScreen4 = Content.Load<Texture2D>("InstructionsScreen4");
 
             // Load images for the game
             enemyImage = this.Content.Load<Texture2D>("Enemy");
@@ -2934,7 +2942,65 @@ namespace GroupGame
                     // Mouse rectangle
                     mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
 
-                    rMButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height) - (rMButton.Height + 50), startButton.Width / 4, startButton.Height / 4);
+                    rMButton = new Rectangle((GraphicsDevice.Viewport.Width / 4) - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height) - (rMButton.Height + 50), startButton.Width / 4, startButton.Height / 4);
+                    rNextButton = new Rectangle((GraphicsDevice.Viewport.Width / 4)*3 - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height) - (rMButton.Height + 50), startButton.Width / 4, startButton.Height / 4);
+
+                    // If the menu button is pressed, go back to the menu
+                    if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rMButton))
+                    {
+                        gState = GameState.Menu;
+                    }
+
+                    if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rNextButton))
+                    {
+                        gState = GameState.Instructions2;
+                    }
+                    break;
+
+
+                case GameState.Instructions2:
+                    // Mouse rectangle
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+
+                    rMButton = new Rectangle((GraphicsDevice.Viewport.Width / 4) - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height) - (rMButton.Height + 50), startButton.Width / 4, startButton.Height / 4);
+                    rNextButton = new Rectangle((GraphicsDevice.Viewport.Width / 4) * 3 - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height) - (rMButton.Height + 50), startButton.Width / 4, startButton.Height / 4);
+
+                    // If the menu button is pressed, go back to the menu
+                    if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rMButton))
+                    {
+                        gState = GameState.Menu;
+                    }
+
+                    if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rNextButton))
+                    {
+                        gState = GameState.Instructions3;
+                    }
+                    break;
+
+                case GameState.Instructions3:
+                    // Mouse rectangle
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+
+                    rMButton = new Rectangle((GraphicsDevice.Viewport.Width / 4) - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height) - (rMButton.Height + 50), startButton.Width / 4, startButton.Height / 4);
+                    rNextButton = new Rectangle((GraphicsDevice.Viewport.Width / 4) * 3 - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height) - (rMButton.Height + 50), startButton.Width / 4, startButton.Height / 4);
+
+                    // If the menu button is pressed, go back to the menu
+                    if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rMButton))
+                    {
+                        gState = GameState.Menu;
+                    }
+
+                    if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rNextButton))
+                    {
+                        gState = GameState.Instructions4;
+                    }
+                    break;
+
+                case GameState.Instructions4:
+                    // Mouse rectangle
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+
+                    rMButton = new Rectangle((GraphicsDevice.Viewport.Width / 4) - (rMButton.Width / 2), (GraphicsDevice.Viewport.Height) - (rMButton.Height + 50), startButton.Width / 4, startButton.Height / 4);
 
                     // If the menu button is pressed, go back to the menu
                     if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rMButton))
@@ -3791,6 +3857,72 @@ namespace GroupGame
                 case GameState.Instructions:
                     mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
                     spriteBatch.Draw(instructionsScreen, new Vector2(GraphicsDevice.Viewport.Width / 2 - instructionsScreen.Width / 2, 20), Color.White);
+                    if (rMButton.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(menu, rMButton, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(menu, rMButton, Color.White);
+                    }
+
+                    if (rNextButton.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(nextB, rNextButton, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(nextB, rNextButton, Color.White);
+                    }
+                    break;
+
+                case GameState.Instructions2:
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+                    spriteBatch.Draw(instructionsScreen2, new Vector2(GraphicsDevice.Viewport.Width / 2 - instructionsScreen2.Width / 2, 20), Color.White);
+                    if (rMButton.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(menu, rMButton, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(menu, rMButton, Color.White);
+                    }
+
+                    if (rNextButton.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(nextB, rNextButton, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(nextB, rNextButton, Color.White);
+                    }
+                    break;
+
+                case GameState.Instructions3:
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+                    spriteBatch.Draw(instructionsScreen3, new Vector2(GraphicsDevice.Viewport.Width / 2 - instructionsScreen3.Width / 2, 20), Color.White);
+                    if (rMButton.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(menu, rMButton, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(menu, rMButton, Color.White);
+                    }
+
+                    if (rNextButton.Intersects(mRectangle))
+                    {
+                        spriteBatch.Draw(nextB, rNextButton, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(nextB, rNextButton, Color.White);
+                    }
+                    break;
+
+                case GameState.Instructions4:
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+                    spriteBatch.Draw(instructionsScreen4, new Vector2(GraphicsDevice.Viewport.Width / 2 - instructionsScreen4.Width / 2, 20), Color.White);
                     if (rMButton.Intersects(mRectangle))
                     {
                         spriteBatch.Draw(menu, rMButton, Color.Red);
