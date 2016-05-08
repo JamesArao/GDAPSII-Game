@@ -3494,8 +3494,8 @@ namespace GroupGame
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 4 / 13, GraphicsDevice.Viewport.Height / 16, c.Health * 13 / 5, 20), Color.LawnGreen); //green life bar
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 49, GraphicsDevice.Viewport.Height / 16, c.Super * 13 / 5, 20), Color.Aqua); //purple special bar
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 1 / 8, GraphicsDevice.Viewport.Height * 200 / 211, 1370, 35), Color.DodgerBlue); //rectangle around energy bar
-                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 1 / 7, GraphicsDevice.Viewport.Height * 20 / 21, 1300, 20), Color.Red); //red energy bar
-                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 1 / 7, GraphicsDevice.Viewport.Height * 20 / 21, c.Energy * 13 / 2, 20), Color.Gold); //energy bar
+                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 1 / 7, GraphicsDevice.Viewport.Height * 1000 / 1047, 1300, 20), Color.Red); //red energy bar
+                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 1 / 7, GraphicsDevice.Viewport.Height * 1000 / 1047, c.Energy * 13 / 2, 20), Color.Gold); //energy bar
                             break;
                         case false:
                             //spriteBatch.DrawString(sFont, "Round " + round, new Vector2(GraphicsDevice.Viewport.Width - 100, GraphicsDevice.Viewport.Height - 40), Color.Black);
@@ -3514,8 +3514,8 @@ namespace GroupGame
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height / 15, c.Health * 13 / 5, 20), Color.LawnGreen); //green life bar
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 50 / 89, GraphicsDevice.Viewport.Height / 15, c.Super * 12 / 5, 20), Color.Aqua); //purple special bar
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 1 / 8, GraphicsDevice.Viewport.Height * 200 / 211, 915, 35), Color.DodgerBlue); //rectangle around energy bar
-                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 1 / 7, GraphicsDevice.Viewport.Height * 20 / 21, 860, 20), Color.Red); //red energy bar
-                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 1 / 7, GraphicsDevice.Viewport.Height * 20 / 21, c.Energy * 43 / 10, 20), Color.Gold); //sugar-free energy bar
+                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 1 / 7, GraphicsDevice.Viewport.Height * 1000 / 1047, 860, 20), Color.Red); //red energy bar
+                            spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 1 / 7, GraphicsDevice.Viewport.Height * 1000 / 1047, c.Energy * 43 / 10, 20), Color.Gold); //sugar-free energy bar
                             break;
                     }
 
