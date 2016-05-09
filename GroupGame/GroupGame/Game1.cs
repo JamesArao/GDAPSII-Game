@@ -231,8 +231,70 @@ namespace GroupGame
             // Select a random round to use
             //int num = rgen.Next(1,round+1);
             BinaryReader reader;
-            if (round < 14) reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round" + (round + 1) + ".dat"));
-            else reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round14.dat"));
+
+            Random rng = new Random();
+            //if (round < 14) reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round" + (round + 1) + ".dat"));
+            if ((round + 1) % 10 == 0 && round != 0)
+            {
+                reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round" + 10 + ".dat"));
+            }
+            else if (round < 5)
+            {
+                if(round < 3)
+                {
+                    reader = new BinaryReader(File.OpenRead(@"../../../Rounds/RoundE" + (rng.Next(12) + 1) + ".dat"));
+                }
+                else if(round == 4)
+                {
+                    reader = new BinaryReader(File.OpenRead(@"../../../Rounds/RoundM" + (rng.Next(14) + 1) + ".dat"));
+                }
+                else
+                {
+                    reader = new BinaryReader(File.OpenRead(@"../../../Rounds/RoundE" + (rng.Next(12) + 1) + ".dat"));
+                }
+
+            }
+            else if (round >= 5 && round < 11)
+            {
+                if(round % 2 == 1)
+                {
+                    reader = new BinaryReader(File.OpenRead(@"../../../Rounds/RoundE" + (rng.Next(12) + 1)  + ".dat"));
+                }
+                else
+                {
+                    reader = new BinaryReader(File.OpenRead(@"../../../Rounds/RoundM" + (rng.Next(14) + 1) + ".dat"));
+                }
+                
+            }
+            else if (round > 11 && round < 15)
+            {
+                if (round % 2 == 1)
+                {
+                    reader = new BinaryReader(File.OpenRead(@"../../../Rounds/RoundM" + (rng.Next(14) + 1) + ".dat"));
+                }
+                else
+                {
+                    reader = new BinaryReader(File.OpenRead(@"../../../Rounds/RoundH" + (rng.Next(11) + 1) + ".dat"));
+                }
+
+            }
+            else if (round >= 15 && round < 20)
+            {
+                if (round % 2 == 1)
+                {
+                    reader = new BinaryReader(File.OpenRead(@"../../../Rounds/RoundH" + (rng.Next(11) + 1) + ".dat"));
+                }
+                else
+                {
+                    reader = new BinaryReader(File.OpenRead(@"../../../Rounds/RoundM" + (rng.Next(14) + 1) + ".dat"));
+                }
+
+            }
+            else if (round > 20 && round%10 != 0)
+            {
+                reader = new BinaryReader(File.OpenRead(@"../../../Rounds/RoundH" + (rng.Next(11) + 1) + ".dat"));
+            }
+            else reader = new BinaryReader(File.OpenRead(@"../../../Rounds/RoundE10.dat"));
             //reader = new BinaryReader(File.OpenRead(@"../../../Rounds/Round9.dat"));
 
             // Try block
