@@ -3894,7 +3894,7 @@ namespace GroupGame
                     break;
 
                 case GameState.Leaderboard:
-                    spriteBatch.Draw(titleBackground, new Vector2(backgroundPoint.X, backgroundPoint.Y), Color.White);
+                    spriteBatch.Draw(titleBackground, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
                     mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
                     spriteBatch.DrawString(lFont, "LEADERBOARD", new Vector2(GraphicsDevice.Viewport.Width / 2 - 100, 30), Color.Black);
 
@@ -3937,7 +3937,7 @@ namespace GroupGame
                     break;
 
                 case GameState.Instructions:
-                    spriteBatch.Draw(titleBackground, new Vector2(backgroundPoint.X, backgroundPoint.Y), Color.White);
+                    spriteBatch.Draw(titleBackground, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
                     mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
                     spriteBatch.Draw(instructionsScreen, new Vector2(GraphicsDevice.Viewport.Width / 2 - instructionsScreen.Width / 2, 20), Color.White);
                     if (rMButton.Intersects(mRectangle))
@@ -3960,7 +3960,7 @@ namespace GroupGame
                     break;
 
                 case GameState.Instructions2:
-                    spriteBatch.Draw(titleBackground, new Vector2(backgroundPoint.X, backgroundPoint.Y), Color.White);
+                    spriteBatch.Draw(titleBackground, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
                     mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
                     spriteBatch.Draw(instructionsScreen2, new Vector2(GraphicsDevice.Viewport.Width / 2 - instructionsScreen2.Width / 2, 20), Color.White);
                     if (rMButton.Intersects(mRectangle))
@@ -3983,7 +3983,7 @@ namespace GroupGame
                     break;
 
                 case GameState.Instructions3:
-                    spriteBatch.Draw(titleBackground, new Vector2(backgroundPoint.X, backgroundPoint.Y), Color.White);
+                    spriteBatch.Draw(titleBackground, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
                     mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
                     spriteBatch.Draw(instructionsScreen3, new Vector2(GraphicsDevice.Viewport.Width / 2 - instructionsScreen3.Width / 2, 20), Color.White);
                     if (rMButton.Intersects(mRectangle))
@@ -4006,7 +4006,7 @@ namespace GroupGame
                     break;
 
                 case GameState.Instructions4:
-                    spriteBatch.Draw(titleBackground, new Vector2(backgroundPoint.X, backgroundPoint.Y), Color.White);
+                    spriteBatch.Draw(titleBackground, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
                     mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
                     spriteBatch.Draw(instructionsScreen4, new Vector2(GraphicsDevice.Viewport.Width / 2 - instructionsScreen4.Width / 2, 20), Color.White);
                     if (rMButton.Intersects(mRectangle))
