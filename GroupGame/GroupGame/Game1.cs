@@ -926,6 +926,7 @@ namespace GroupGame
             instructionsScreen = Content.Load<Texture2D>("InstructionsScreen");
             instructionsScreen2 = Content.Load<Texture2D>("InstructionsScreen2");
             instructionsScreen3 = Content.Load<Texture2D>("InstructionsScreen3");
+            instructionsScreen4 = Content.Load<Texture2D>("InstructionsScreen4");
             title = this.Content.Load<Texture2D>("Title Font");
             titleBackground = this.Content.Load<Texture2D>("Title background");
 
@@ -1066,11 +1067,12 @@ namespace GroupGame
                     Bcont = false;
 
                     // Checks to see if the start button has been pressed
-                    rSButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rSButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) - (rSButton.Height * 3), startButton.Width/4, startButton.Height/4);
-                    rOButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rOButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) - (int)(rOButton.Height * 1.5), startButton.Width / 4, startButton.Height / 4);
-                    rLButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rLButton.Width / 2), (GraphicsDevice.Viewport.Height / 2), startButton.Width / 4, startButton.Height / 4);
-                    rIButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rIButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (int)(rIButton.Height * 1.5), startButton.Width / 4, startButton.Height / 4);
-                    rEButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rEButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (int)(rEButton.Height * 3), startButton.Width / 4, startButton.Height / 4);
+
+                    rSButton = new Rectangle((GraphicsDevice.Viewport.Width / 2) - (rSButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (int)(rSButton.Height * 1.5), startButton.Width / 4, startButton.Height / 4);
+                    rOButton = new Rectangle((GraphicsDevice.Viewport.Width / 5) - (rOButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (int)(rOButton.Height * 3), startButton.Width / 4, startButton.Height / 4);
+                    rLButton = new Rectangle((GraphicsDevice.Viewport.Width / 5) * 2 - (rLButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (int)(rLButton.Height * 3), startButton.Width / 4, startButton.Height / 4);
+                    rIButton = new Rectangle((GraphicsDevice.Viewport.Width / 5) * 3 - (rIButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (int)(rIButton.Height * 3), startButton.Width / 4, startButton.Height / 4);
+                    rEButton = new Rectangle((GraphicsDevice.Viewport.Width / 5) * 4 - (rEButton.Width / 2), (GraphicsDevice.Viewport.Height / 2) + (int)(rEButton.Height * 3), startButton.Width / 4, startButton.Height / 4);
 
                     Rectangle mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
                     if (mState.LeftButton == ButtonState.Pressed && prevMState.LeftButton != ButtonState.Pressed && mRectangle.Intersects(rSButton))
