@@ -3097,8 +3097,8 @@ namespace GroupGame
             {
                 // Game is in Menu
                 case GameState.Menu:
-                    spriteBatch.Draw(titleBackground, new Vector2(backgroundPoint.X, backgroundPoint.Y), Color.White);
-                    spriteBatch.Draw(title, new Vector2(backgroundPoint.X, backgroundPoint.Y), Color.White);
+                    spriteBatch.Draw(titleBackground, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
+                    spriteBatch.Draw(title, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
                     Rectangle mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
                     if (rSButton.Intersects(mRectangle))
                     {
@@ -3148,7 +3148,7 @@ namespace GroupGame
 
                 // Game is in character selection screen
                 case GameState.CharacterSelection:
-                    spriteBatch.Draw(titleBackground, new Vector2(backgroundPoint.X, backgroundPoint.Y), Color.White);
+                    spriteBatch.Draw(titleBackground, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
                     mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
                     if (char1.Intersects(mRectangle))
                     {
@@ -3227,7 +3227,6 @@ namespace GroupGame
                 // Game is in Horde Mode
                 case GameState.HordeMode:
                     GraphicsDevice.Clear(Color.Black);
-                    spriteBatch.Draw(titleBackground, new Vector2(backgroundPoint.X, backgroundPoint.Y), Color.White);
                     spriteBatch.Draw(background, new Vector2(backgroundPoint.X, backgroundPoint.Y), Color.White);
 
                     // Draw the boxes
@@ -3670,7 +3669,6 @@ namespace GroupGame
                     break;
 
                 case GameState.Paused:
-                    spriteBatch.Draw(titleBackground, new Vector2(backgroundPoint.X, backgroundPoint.Y), Color.White);
                     // Draw background
                     spriteBatch.Draw(background, new Vector2(backgroundPoint.X, backgroundPoint.Y), Color.White);
 
@@ -3768,7 +3766,7 @@ namespace GroupGame
 
                 // Game is in Options
                 case GameState.Options:
-                    spriteBatch.Draw(titleBackground, new Vector2(backgroundPoint.X, backgroundPoint.Y), Color.White);
+                    spriteBatch.Draw(titleBackground, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
 
                     // Mouse rectangle
                     mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
@@ -3833,7 +3831,7 @@ namespace GroupGame
                     break;
 
                 case GameState.GameOver:
-                    spriteBatch.Draw(titleBackground, new Vector2(backgroundPoint.X, backgroundPoint.Y), Color.White);
+                    spriteBatch.Draw(titleBackground, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
 
                     mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
                     if(enteringName == true)
