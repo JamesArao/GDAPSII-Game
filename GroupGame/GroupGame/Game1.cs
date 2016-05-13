@@ -19,7 +19,7 @@ enum SwitchHero { Fire, Earth, Water, Electric}; // switch heroes
 namespace GroupGame
 {
     /// <summary>
-    /// This is the main type for your game.
+    /// This is the main type for your game
     /// </summary>
     public class Game1 : Game
     {
@@ -93,6 +93,7 @@ namespace GroupGame
         Texture2D instructionsScreen4;
         Texture2D title;
         Texture2D titleBackground;
+        Texture2D leaderboardBackground;
 
         // ability textures
         Texture2D mine;
@@ -983,6 +984,7 @@ namespace GroupGame
 
             // loads background
             background = this.Content.Load<Texture2D>("background");
+            leaderboardBackground = this.Content.Load<Texture2D>("LeaderboardBackground");
 
             // loads items
             boxes = this.Content.Load<Texture2D>("boxes");
@@ -3895,12 +3897,22 @@ namespace GroupGame
 
                 case GameState.Leaderboard:
                     spriteBatch.Draw(titleBackground, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
-                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
-                    spriteBatch.DrawString(lFont, "LEADERBOARD", new Vector2(GraphicsDevice.Viewport.Width / 2 - 100, 30), Color.Black);
 
-                    spriteBatch.DrawString(lFont, "Name", new Vector2(GraphicsDevice.Viewport.Width / 2 - 300, 100), Color.Black);
-                    spriteBatch.DrawString(lFont, "Round", new Vector2(GraphicsDevice.Viewport.Width / 2, 100), Color.Black);
-                    spriteBatch.DrawString(lFont, "Score", new Vector2(GraphicsDevice.Viewport.Width / 2 + 200, 100), Color.Black);
+                    if (fullscreen == true)
+                    {
+                        spriteBatch.Draw(leaderboardBackground, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(leaderboardBackground, new Rectangle(-200, 0, GraphicsDevice.Viewport.Width + 400, GraphicsDevice.Viewport.Height + 300), Color.White);
+                    }
+
+                    mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
+                    spriteBatch.DrawString(lFont, "LEADERBOARD", new Vector2(GraphicsDevice.Viewport.Width / 2 - 100, 30), Color.White);
+
+                    spriteBatch.DrawString(lFont, "Name", new Vector2(GraphicsDevice.Viewport.Width / 2 - 300, 100), Color.White);
+                    spriteBatch.DrawString(lFont, "Round", new Vector2(GraphicsDevice.Viewport.Width / 2, 100), Color.White);
+                    spriteBatch.DrawString(lFont, "Score", new Vector2(GraphicsDevice.Viewport.Width / 2 + 200, 100), Color.White);
 
                     for(int i = 1; i <= 5; i++)
                     {
@@ -3920,10 +3932,10 @@ namespace GroupGame
                                 break;
                             default: break;
                         }
-                        spriteBatch.DrawString(lFont, i + ".", new Vector2((GraphicsDevice.Viewport.Width / 2 - 400), 100 + (75 * i)), Color.Black);
-                        spriteBatch.DrawString(lFont, leaderboardNames[i - 1], new Vector2((GraphicsDevice.Viewport.Width / 2 - 350), 100 + (75 * i)), Color.Black);
-                        spriteBatch.DrawString(lFont, leaderboardRounds[i - 1].ToString(), new Vector2((GraphicsDevice.Viewport.Width / 2 + 25), 100 + (75 * i)), Color.Black);
-                        spriteBatch.DrawString(lFont, leaderboardScores[i - 1].ToString(), new Vector2((GraphicsDevice.Viewport.Width / 2 + 200), 100 + (75 * i)), Color.Black);
+                        spriteBatch.DrawString(lFont, i + ".", new Vector2((GraphicsDevice.Viewport.Width / 2 - 400), 100 + (75 * i)), Color.White);
+                        spriteBatch.DrawString(lFont, leaderboardNames[i - 1], new Vector2((GraphicsDevice.Viewport.Width / 2 - 350), 100 + (75 * i)), Color.White);
+                        spriteBatch.DrawString(lFont, leaderboardRounds[i - 1].ToString(), new Vector2((GraphicsDevice.Viewport.Width / 2 + 25), 100 + (75 * i)), Color.White);
+                        spriteBatch.DrawString(lFont, leaderboardScores[i - 1].ToString(), new Vector2((GraphicsDevice.Viewport.Width / 2 + 200), 100 + (75 * i)), Color.White);
                     }
 
                     if (rMButton.Intersects(mRectangle))

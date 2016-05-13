@@ -183,6 +183,9 @@
     <Content Include="Content\Leaderboard.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\LeaderboardBackground.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\lightningButton.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
