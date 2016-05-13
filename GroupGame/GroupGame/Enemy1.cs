@@ -31,7 +31,7 @@ namespace GroupGame
             FPosY = posY;
             CRect = new Rectangle(posX + 15, posY + 15, 20, 20); // Set the cRect based on the position
             Health = 100; // Set health
-            Speed = 1.2f; // Set speed
+            Speed = 1.9f; // Set speed
             EState = EnemyState.Chase; // Set EState to chase, for testing
         }
     }

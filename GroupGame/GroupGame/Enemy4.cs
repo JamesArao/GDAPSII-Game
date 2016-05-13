@@ -148,7 +148,7 @@ namespace GroupGame
             FPosX = posX;
             FPosY = posY;
             CRect = new Rectangle(posX + 15, posY + 15, 36, 36); // Set the cRect based on the position
-            Speed = .45f;
+            Speed = .7f;
             Health = 175;
             chargeCount = 270;
             EState = EnemyState.Chase; // Set EState to chase, for testing
