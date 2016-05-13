@@ -10,6 +10,7 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 enum GameState { Menu, HordeMode, Paused, Options, CharacterSelection, GameOver, Leaderboard, Instructions, Instructions2, Instructions3, Instructions4 }; // GameState enum for keeping track of what state our game is in
 enum AbilityState { a1, a2, a3, a4, a5, a6 }; // AbilityState enum for keeping track of the ability the player is using
@@ -210,6 +211,16 @@ namespace GroupGame
         List<string> leaderboardCharacters = new List<string>();
         bool enteringName = false;
         SpriteFont lFont;
+
+        // Attributes for sound
+        SoundEffect fireSound;
+        SoundEffect waterSound;
+        SoundEffect earthSound;
+        SoundEffect electricSound;
+        SoundEffect shootSound;
+        SoundEffect enemyShootSound;
+        SoundEffect enemyDieSound;
+        SoundEffect explosionSound;
 
         // Method for advancing the round of our Horde Mode
         public void AdvanceRound()
@@ -647,7 +658,7 @@ namespace GroupGame
                 {
                     // Test of a melee attack
                     case AbilityState.a1:
-                        projectiles.Add(new PStationary(5, 60, 60, c, rotationAngle, 15, true, meleeImage)); // Create a new projectile that will travel in the direction of the mouse
+                        projectiles.Add(new PStationary(12, 60, 60, c, rotationAngle, 15, true, meleeImage)); // Create a new projectile that will travel in the direction of the mouse
                         c.ShotDelay = 40; // Set the ShotDelay of the player. We can change this value depending on ability, stronger attacks have longer delays
                         break;
 
@@ -658,6 +669,7 @@ namespace GroupGame
                             projectiles.Add(new PBasic(25, 45, 45, c, rotationAngle, 100, false, bulletImage));
                             c.Energy -= 2;
                             c.ShotDelay = 20;
+                            //shootSound.Play();
                         }
                         break;
 
@@ -668,6 +680,7 @@ namespace GroupGame
                             projectiles.Add(new PBasic(15, 28, 28, c, rotationAngle, 90, false, bulletImage));
                             c.Energy -= 1;
                             c.ShotDelay = 3;
+                           //shootSound.Play();
                         }
                         break;
 
@@ -677,6 +690,7 @@ namespace GroupGame
                             projectiles.Add(new PExplosive(150, 30, 30, c, rotationAngle, 90, grenade));
                             c.Energy -= 10;
                             c.ShotDelay = 120;
+                            //shootSound.Play();
                         }
                         break;
                     case AbilityState.a5:
@@ -685,6 +699,7 @@ namespace GroupGame
                             projectiles.Add(new PMine(120, 30, 30, c, 0, 0, false, mine));
                             c.Energy -= 5;
                             c.ShotDelay = 100;
+                            //shootSound.Play();
                         }
                         break;
                 }
@@ -1115,6 +1130,7 @@ namespace GroupGame
                         playerImage = player1Image;
                         playerWalking = player1Walking;
                         bulletImage = bullet1Image;
+                        shootSound = fireSound;
                         ResetGame();
                         gState = GameState.HordeMode;
                     }
@@ -1125,6 +1141,7 @@ namespace GroupGame
                         playerImage = player2Image;
                         playerWalking = player2Walking;
                         bulletImage = bullet2Image;
+                        shootSound = earthSound;
                         ResetGame();
                         gState = GameState.HordeMode;
                     }
@@ -1135,6 +1152,7 @@ namespace GroupGame
                         playerImage = player4Image;
                         playerWalking = player4Walking;
                         bulletImage = bullet4Image;
+                        shootSound = waterSound;
                         ResetGame();
                         gState = GameState.HordeMode;
                     }
@@ -1145,6 +1163,7 @@ namespace GroupGame
                         playerImage = player3Image;
                         playerWalking = player3Walking;
                         bulletImage = bullet3Image;
+                        shootSound = electricSound;
                         ResetGame();
                         gState = GameState.HordeMode;
                     }
@@ -1500,11 +1519,13 @@ namespace GroupGame
                             {
                                 PExplosive ex = (PExplosive)projectiles[i];
                                 ex.Explode(c, enemies, projectiles, eProjectiles);
+                                //explosionSound.Play();
                             }
                             if (projectiles[i] is PMine)
                             {
                                 PMine mine = (PMine)projectiles[i];
                                 if (mine.ExplosionCount != 0) mine.Explode(c, enemies, projectiles, eProjectiles);
+                                //explosionSound.Play();
                             }
                             if (projectiles.Count != 0)
                             {
@@ -2641,43 +2662,56 @@ namespace GroupGame
                             // If the enemy's health is 0 or less, it dies
                             if (e.Health <= 0)
                             {
+                                bool superKilled = false;
+                                foreach(Projectile p in projectiles)
+                                {
+                                    if(p.Position.Intersects(e.CRect) && p is PSuper)
+                                    {
+                                        superKilled = true;
+                                    }
+                                }
                                 if (e is Enemy1 && e.Alive == true)
                                 {
                                     score += 100;
-                                    c.Super += 10;
+                                    if(!superKilled) c.Super += 10;
                                     if (c.Super > 100) c.Super = 100;
+                                    //enemyDieSound.Play();
                                     e.Alive = false;
                                 }
                                 if (e is Enemy2 && e.Alive == true)
                                 {
                                     score += 150;
-                                    c.Super += 10;
+                                    if (!superKilled) c.Super += 10;
                                     if (c.Super > 100) c.Super = 100;
                                     Enemy2 e2 = (Enemy2)e;
                                     e2.Shooting = false;
+                                    //enemyDieSound.Play();
                                     e.Alive = false;
                                 }
                                 if (e is Enemy3 && e.Alive == true)
                                 {
                                     score += 200;
-                                    c.Super += 10;
+                                    if (!superKilled) c.Super += 10;
                                     if (c.Super > 100) c.Super = 100;
+                                    //enemyDieSound.Play();
                                     e.Alive = false;
                                 }
                                 if (e is Enemy4 && e.Alive == true)
                                 {
                                     score += 200;
-                                    c.Super += 10;
+                                    if (!superKilled) c.Super += 10;
                                     if (c.Super > 100) c.Super = 100;
+                                    //enemyDieSound.Play();
                                     e.Alive = false;
                                 }
                                 if (e is Boss && e.Alive == true)
                                 {
                                     score += 1000;
-                                    c.Super += 10;
+                                    if (!superKilled) c.Super += 10;
                                     if (c.Super > 100) c.Super = 100;
                                     c.Health += 10;
                                     if (c.Health > 100) c.Health = 100;
+                                    //enemyDieSound.Play();
                                     e.Alive = false;
                                 }
                                 if (e is Reaper && e.Alive == true)

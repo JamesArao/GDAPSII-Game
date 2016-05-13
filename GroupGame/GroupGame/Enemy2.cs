@@ -42,13 +42,13 @@ namespace GroupGame
             if (c.Position.Intersects(range))
             {
                 ShotCount++;
-                Speed = 0.15f;
+                Speed = 0.35f;
                 shooting = true;
             }
             else
             {
                 ShotCount = 0;
-                Speed = 0.6f;
+                Speed = 1f;
                 shooting = false;
             }
         }
@@ -61,7 +61,7 @@ namespace GroupGame
             FPosY = posY;
             CRect = new Rectangle(posX + 15, posY + 15, 20, 20); // Set the cRect based on the position
             Health = 80; // Set health
-            Speed = 0.6f; // Set speed
+            Speed = 1f; // Set speed
             EState = EnemyState.Chase; // Set EState to chase, for testing
             range = new Rectangle(posX - 250, posY - 250, 500, 500);
         }
