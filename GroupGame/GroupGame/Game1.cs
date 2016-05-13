@@ -3562,6 +3562,22 @@ namespace GroupGame
                             spriteBatch.Draw(hudcircle, new Rectangle(GraphicsDevice.Viewport.Width * 5 / 11, GraphicsDevice.Viewport.Height / 45, 100, 100), Color.DodgerBlue); //circle around current weapon
                             spriteBatch.Draw(hudcircle, new Rectangle(GraphicsDevice.Viewport.Width * 100 / 217, GraphicsDevice.Viewport.Height / 30, 80, 80), Color.DarkBlue); //circle around current weapon (inner)
                             spriteBatch.DrawString(sFont, "Life", new Vector2(GraphicsDevice.Viewport.Width * 25 / 82, GraphicsDevice.Viewport.Height / 30), Color.Black); //"life"
+                            int specialint = (int)gameTime.TotalGameTime.TotalMilliseconds;
+                            if (c.Super < 100)
+                            {
+                                spriteBatch.DrawString(sFont, "SUPER", new Vector2(GraphicsDevice.Viewport.Width * 250 / 377, GraphicsDevice.Viewport.Height / 17), Color.Gray); //"special"
+                            }
+                            if (c.Super == 100)
+                            {
+                                if (specialint % 1000 < 500)
+                                {
+                                    spriteBatch.DrawString(sFont, "SUPER", new Vector2(GraphicsDevice.Viewport.Width * 250 / 377, GraphicsDevice.Viewport.Height / 17), Color.Red); //"special" flashing
+                                }
+                                else
+                                {
+                                    spriteBatch.DrawString(sFont, "SUPER", new Vector2(GraphicsDevice.Viewport.Width * 250 / 377, GraphicsDevice.Viewport.Height / 17), Color.Cyan); //"special" flashing
+                                }
+                            }
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 4 / 13, GraphicsDevice.Viewport.Height / 16, 260, 20), Color.Red); //red life bar
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 49, GraphicsDevice.Viewport.Height / 16, 260, 20), Color.Red); //red special bar
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 4 / 13, GraphicsDevice.Viewport.Height / 16, c.Health * 13 / 5, 20), Color.LawnGreen); //green life bar
@@ -3582,6 +3598,22 @@ namespace GroupGame
                             spriteBatch.Draw(hudcircle, new Rectangle(GraphicsDevice.Viewport.Width * 10 / 21, GraphicsDevice.Viewport.Height / 75, 100, 100), Color.DodgerBlue); //circle around current weapon
                             spriteBatch.Draw(hudcircle, new Rectangle(GraphicsDevice.Viewport.Width * 125 / 258, GraphicsDevice.Viewport.Height / 35, 80, 80), Color.DarkBlue); //circle around current weapon (inner)
                             spriteBatch.DrawString(sFont, "Life", new Vector2(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height / 30), Color.Black); //"life"
+                            specialint = (int)gameTime.TotalGameTime.TotalMilliseconds;
+                            if (c.Super < 100)
+                            {
+                                spriteBatch.DrawString(sFont, "SUPER", new Vector2(GraphicsDevice.Viewport.Width * 250 / 323, GraphicsDevice.Viewport.Height / 16), Color.Gray); //"special"
+                            }
+                            if (c.Super == 100)
+                            {
+                                if (specialint % 1000 < 500)
+                                {
+                                    spriteBatch.DrawString(sFont, "SUPER", new Vector2(GraphicsDevice.Viewport.Width * 250 / 323, GraphicsDevice.Viewport.Height / 16), Color.Red); //"special" flashing
+                                }
+                                else
+                                {
+                                    spriteBatch.DrawString(sFont, "SUPER", new Vector2(GraphicsDevice.Viewport.Width * 250 / 323, GraphicsDevice.Viewport.Height / 16), Color.Cyan); //"special" flashing
+                                }
+                            }
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height / 15, 260, 20), Color.Red); //red life bar
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width * 25 / 44, GraphicsDevice.Viewport.Height / 15, 230, 20), Color.Red); //red special bar
                             spriteBatch.Draw(hudrectangle, new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height / 15, c.Health * 13 / 5, 20), Color.LawnGreen); //green life bar
