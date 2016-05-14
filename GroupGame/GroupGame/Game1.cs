@@ -3970,7 +3970,7 @@ namespace GroupGame
                     }
                     else
                     {
-                        spriteBatch.Draw(leaderboardBackground, new Rectangle(-200, 0, GraphicsDevice.Viewport.Width + 400, GraphicsDevice.Viewport.Height + 300), Color.White);
+                        spriteBatch.Draw(leaderboardBackground, new Rectangle(-320, 0, GraphicsDevice.Viewport.Width + 625, GraphicsDevice.Viewport.Height + 300), Color.White);
                     }
 
                     mRectangle = new Rectangle(mState.Position.X, mState.Position.Y, 1, 1);
